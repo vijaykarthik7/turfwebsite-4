@@ -5,7 +5,7 @@ import './App.css'
 function App() {
   const isAdmin = window.location.pathname.startsWith('/admin')
   const pageTitle = isAdmin ? 'TurfOn24 Admin' : 'TurfOn24'
-  const pageUrl = isAdmin ? '/legacy/admin.html' : '/legacy/index.html'
+  const pageUrl = `${import.meta.env.BASE_URL}legacy/${isAdmin ? 'admin' : 'index'}.html`
 
   useEffect(() => {
     document.title = pageTitle
