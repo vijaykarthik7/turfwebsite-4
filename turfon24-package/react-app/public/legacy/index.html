@@ -203,7 +203,8 @@
 
   /* ===== FLOATING COMMUNICATION WIDGET — "ON Assistant" ===== */
   .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:58px; height:58px;}
-  .comm-fab-ring{display:none;}
+  .comm-fab-ring{display:block; position:absolute; inset:-5px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 24px rgba(57,255,122,0.55), inset 0 0 10px rgba(57,255,122,0.35); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
+  @keyframes fabRingPulse{0%,100%{opacity:.65; transform:scale(.98);} 50%{opacity:1; transform:scale(1.04);}}
   .comm-fab-ring::before{content:""; position:absolute; top:-2px; left:50%; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon);}
   .comm-fab{position:absolute; inset:0; border-radius:50%; background:transparent; padding:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:none; transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
   .comm-fab img{mix-blend-mode:screen;}
