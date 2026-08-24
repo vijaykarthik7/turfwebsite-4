@@ -16,8 +16,14 @@ function App() {
     const navigationLogo = pageDocument?.querySelector('#nav .official-logo')
     if (navigationLogo) {
       navigationLogo.src = taglineLogo
-      return
     }
+
+    const assistantLogo = pageDocument?.querySelector('.comm-fab img')
+    const assistantHeaderLogo = pageDocument?.querySelector('.comm-head-avatar img')
+    if (assistantLogo) assistantLogo.src = '/logo-assets/Logo.png'
+    if (assistantHeaderLogo) assistantHeaderLogo.src = '/logo-assets/Logo.png'
+
+    if (navigationLogo) return
 
     const adminBranding = pageDocument?.querySelectorAll('.vlogo, .side-head')
     if (adminBranding?.length) {
