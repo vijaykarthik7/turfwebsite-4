@@ -152,6 +152,9 @@
   .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:13px; color-scheme:dark;}
   .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:12px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
   .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
+  .history-switch{display:inline-flex; gap:4px; padding:4px; background:var(--charcoal); border:1px solid var(--border); border-radius:10px;}
+  .history-switch .filt-pill{border:0; padding:7px 14px; background:transparent; color:var(--muted);}
+  .history-switch .filt-pill.sel{background:rgba(57,255,122,0.12);}
   .toolbar .spacer{flex:1;}
 
   /* table */
@@ -391,12 +394,19 @@
 
     <!-- CUSTOMERS -->
     <div class="page" id="page-customers">
-      <div class="toolbar"><input type="text" placeholder="Search customers..."></div>
+      <div class="toolbar" style="margin-bottom:14px;">
+        <div class="history-switch" role="tablist" aria-label="Customer booking history type">
+          <button class="filt-pill sel" type="button" role="tab" aria-selected="true" data-history="hourly">Hourly bookings</button>
+          <button class="filt-pill" type="button" role="tab" aria-selected="false" data-history="extended">Extended bookings</button>
+        </div>
+        <input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date">
+      </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Customer</th><th>Mobile</th><th>Total Bookings</th><th>Total Spend</th><th>Last Booking</th><th>Status</th></tr></thead>
-          <tbody id="customersBody"></tbody>
+          <thead id="customerHistoryHead"><tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="customerHistoryBody"></tbody>
         </table>
+        <div class="table-foot"><span id="customerHistoryCount">Showing hourly booking history</span></div>
       </div>
     </div>
 
@@ -816,16 +826,43 @@
   });
 
   // ---- customers table ----
-  const customers = [
-    ['Rahul Verma','98765 43210','14','₹9,800','Aug 27','Active'],
-    ['Sana Sheikh','91234 56780','3','₹2,100','Aug 27','Active'],
-    ['Aditya Rao','99887 66554','21','₹15,400','Aug 26','Active'],
-    ['Priya Nair','90011 22334','7','₹5,600','Aug 26','Active'],
-    ['Karan Mehta','98123 45670','2','₹1,400','Jul 30','Inactive'],
-  ];
-  document.getElementById('customersBody').innerHTML = customers.map(c=>`
-    <tr><td>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td><td class="mono">${c[3]}</td><td>${c[4]}</td>
-    <td><span class="badge ${c[5]==='Active'?'confirmed':'cancelled'}">${c[5]}</span></td></tr>`).join('');
+  const customerHistory = {
+    hourly: [
+      ['Rahul Verma','98765 43210','2026-08-27','07:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Sana Sheikh','91234 56780','2026-08-27','06:00 PM','1 hr','₹700','Pending'],
+      ['Aditya Rao','99887 66554','2026-08-26','08:00 PM','3 hrs','₹2,100','Confirmed'],
+      ['Priya Nair','90011 22334','2026-08-26','07:00 PM','2 hrs','₹1,400','Cancelled'],
+      ['Karan Mehta','98123 45670','2026-08-25','06:00 AM','1 hr','₹700','Confirmed'],
+    ],
+    extended: [
+      ['Weekend Warriors Club','96500 44332','2026-08-22','2026-08-24','3 days','₹18,900','Confirmed'],
+      ['Corporate — Zynta Ltd','98700 11223','2026-09-02','2026-09-03','2 days','₹12,600','Contacted'],
+      ['Manav Iyer','97654 33221','2026-09-05','2026-09-06','2 days','₹12,600','Quotation Sent'],
+      ['Priya Nair','90011 22334','2026-08-29','2026-08-30','2 days','₹12,600','New'],
+    ],
+  };
+  let activeHistoryType = 'hourly';
+  const historyHead = document.getElementById('customerHistoryHead');
+  const historyBody = document.getElementById('customerHistoryBody');
+  const historyDate = document.getElementById('customerHistoryDate');
+  function renderCustomerHistory(){
+    const rows = customerHistory[activeHistoryType];
+    const selectedDate = historyDate.value;
+    historyHead.innerHTML = activeHistoryType === 'hourly'
+      ? '<tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Status</th></tr>'
+      : '<tr><th>Customer</th><th>Mobile</th><th>Start date</th><th>End date</th><th>Duration</th><th>Amount</th><th>Status</th></tr>';
+    historyBody.innerHTML = rows.filter(row => !selectedDate || (activeHistoryType === 'hourly' ? row[2] === selectedDate : selectedDate >= row[2] && selectedDate <= row[3])).map(row=>`
+      <tr><td>${row[0]}</td><td class="mono">${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td class="mono">${row[5]}</td><td><span class="badge ${row[6] === 'Confirmed' ? 'confirmed' : row[6] === 'Cancelled' ? 'cancelled' : 'pending'}">${row[6]}</span></td></tr>`).join('');
+    document.getElementById('customerHistoryCount').textContent = `Showing ${activeHistoryType} booking history${selectedDate ? ` for ${selectedDate}` : ''}`;
+  }
+  document.querySelectorAll('[data-history]').forEach(button=>button.addEventListener('click', ()=>{
+    activeHistoryType = button.dataset.history;
+    document.querySelectorAll('[data-history]').forEach(item=>{ item.classList.toggle('sel', item === button); item.setAttribute('aria-selected', String(item === button)); });
+    historyDate.value = '';
+    renderCustomerHistory();
+  }));
+  historyDate.addEventListener('change', renderCustomerHistory);
+  renderCustomerHistory();
 
   // ---- calendar ----
   const calGrid = document.getElementById('calGrid2');

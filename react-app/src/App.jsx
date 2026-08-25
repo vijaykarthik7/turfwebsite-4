@@ -40,7 +40,7 @@ function App() {
     const adminBranding = pageDocument?.querySelectorAll('.vlogo, .side-head')
     if (adminBranding?.length) {
       const style = pageDocument.createElement('style')
-      style.textContent = '.vlogo .admin-tagline-logo{width:210px;height:auto;display:block}.side-head .admin-tagline-logo{height:52px;width:auto;display:block;margin:0 auto}.sidebar.collapsed .side-head .admin-tagline-logo{display:none}.login-card .login-tagline-logo{width:210px;height:auto;display:block;margin-bottom:28px}.side-foot .admin-profile{display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;border:1px solid rgba(57,255,122,0.12);border-radius:28px;background:rgba(255,255,255,0.025)}.side-foot .admin-profile-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--emerald));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}.side-foot .admin-profile-email{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sidebar.collapsed .side-foot .admin-profile{justify-content:center;padding:6px}.sidebar.collapsed .side-foot .admin-profile-email{display:none}'
+      style.textContent = '.vlogo .admin-tagline-logo{width:210px;height:auto;display:block}.side-head .admin-tagline-logo{height:52px;width:auto;display:block;margin:0 auto}.sidebar.collapsed .side-head .admin-tagline-logo{display:none}.login-card .login-tagline-logo{width:210px;height:auto;display:block;margin-bottom:28px}.side-foot .admin-profile{display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;border:1px solid rgba(57,255,122,0.12);border-radius:28px;background:rgba(255,255,255,0.025)}.side-foot .admin-profile-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;flex-shrink:0}.side-foot .admin-profile-email{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sidebar.collapsed .side-foot .admin-profile{justify-content:center;padding:6px}.sidebar.collapsed .side-foot .admin-profile-email{display:none}'
       pageDocument.head.appendChild(style)
       adminBranding.forEach((branding) => {
         if (!branding.querySelector('.admin-tagline-logo')) {
@@ -60,7 +60,7 @@ function App() {
       const footerAvatar = pageDocument.querySelector('.side-foot .avatar')
       const footer = pageDocument.querySelector('.side-foot')
       if (footer && footerAvatar && !footer.querySelector('.admin-profile')) {
-        footer.innerHTML = '<div class="admin-profile"><div class="admin-profile-avatar">T</div><div class="admin-profile-email">admin@gmail.com</div></div>'
+        footer.innerHTML = '<div class="admin-profile"><img class="admin-profile-avatar" src="/logo-assets/Logo.png" alt="TurfOn24" /><div class="admin-profile-email">admin@gmail.com</div></div>'
       }
     }
   }
