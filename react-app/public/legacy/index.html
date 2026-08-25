@@ -45,6 +45,8 @@
   .nav-links a:hover{color:var(--white);}
   .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--neon); transition:width .3s ease;}
   .nav-links a:hover::after{width:100%;}
+  .mobile-menu-btn{display:none; width:42px; height:42px; padding:0; align-items:center; justify-content:center; border:1px solid var(--border); border-radius:10px; background:rgba(6,9,10,0.55); color:var(--white); cursor:pointer;}
+  .mobile-menu-btn svg{width:20px; height:20px;}
 
   .btn{font-family:'Inter',sans-serif; font-weight:600; font-size:14px; padding:11px 24px; border-radius:100px; border:none; position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:8px; transition:transform .15s ease-out, box-shadow .3s ease;}
   .btn-glow{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; box-shadow:0 0 24px rgba(57,255,122,0.4);}
@@ -397,7 +399,13 @@
 
   @media(max-width:900px){
     body{cursor:auto;} #cursorGlow{display:none;} a,button,.pin,.pill,.dg-item,.rc-day,.enquiry-link{cursor:pointer;}
-    .nav-links{display:none;}
+    nav{padding:12px 6vw;}
+    nav > .btn.btn-glow{display:none;}
+    .mobile-menu-btn{display:flex;}
+    .nav-links{display:none; position:absolute; top:calc(100% + 8px); right:6vw; width:min(230px, calc(100vw - 12vw)); padding:8px; flex-direction:column; gap:2px; background:rgba(6,9,10,0.94); border:1px solid var(--border); border-radius:12px; box-shadow:0 16px 35px rgba(0,0,0,0.35);}
+    .nav-links.mobile-open{display:flex;}
+    .nav-links a{display:block; padding:11px 12px; font-size:13px;}
+    .nav-links a::after{display:none;}
     .editorial-row, .editorial-row.rev{grid-template-columns:1fr; direction:ltr;}
     .pricing-cols{grid-template-columns:1fr;}
     .contact-grid{grid-template-columns:1fr 1fr;}
@@ -458,6 +466,7 @@
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <button class="mobile-menu-btn" type="button" aria-label="Open navigation menu" aria-expanded="false" onclick="toggleMobileNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   <button class="btn btn-glow magnetic" onclick="document.getElementById('book').scrollIntoView()">Book now</button>
 </nav>
 
@@ -1525,6 +1534,18 @@
     input.value = '';
     commReplyWithDelay(thread, "Thanks for your question — I've noted it and our team will follow up with you directly. Meanwhile, try one of the quick questions above.");
   }
+
+  function toggleMobileNav(){
+    const links = document.querySelector('.nav-links');
+    const button = document.querySelector('.mobile-menu-btn');
+    const isOpen = links.classList.toggle('mobile-open');
+    button.setAttribute('aria-expanded', String(isOpen));
+    button.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  }
+  document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('mobile-open');
+    document.querySelector('.mobile-menu-btn').setAttribute('aria-expanded', 'false');
+  }));
 
   // clean up the injected chat input row when navigating back to choices
   const _origShowChoices = commShowChoices;
