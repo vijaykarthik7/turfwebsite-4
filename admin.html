@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurfOn24 Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#030607; --charcoal:#0F1613; --charcoal-2:#141D19;
+    --emerald:#0FA857; --emerald-light:#0FA857; --neon:#39FF7A; --blue:#00C9FF;
+    --amber:#F5B841; --red:#FF6B6B;
+    --white:#F2F4F2; --muted:#8FA39B; --glass:rgba(20,32,28,0.6); --border:rgba(57,255,122,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--black); color:var(--white); font-family:'Inter',sans-serif; overflow-x:hidden;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  #gridCanvas{position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:0.4;}
+  svg{flex-shrink:0;}
+
+  /* ===== LOGIN — split screen ===== */
+  #loginScreen{position:relative; z-index:1; min-height:100vh; display:grid; grid-template-columns:1.3fr 1fr;}
+  .login-visual{position:relative; overflow:hidden; background:linear-gradient(160deg,var(--charcoal-2),var(--black)); display:flex; flex-direction:column; justify-content:center; padding:64px;}
+  .login-visual::before{content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%, rgba(57,255,122,0.14), transparent 55%); animation:sweepMove 10s ease-in-out infinite alternate;}
+  @keyframes sweepMove{from{transform:translate(-4%,-2%);} to{transform:translate(4%,3%);}}
+  .ghost24{position:absolute; right:-6%; bottom:-14%; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:min(46vw,480px); line-height:1; color:transparent; -webkit-text-stroke:1px rgba(57,255,122,0.14); pointer-events:none; user-select:none; z-index:0;}
+  .lv-particle{position:absolute; width:3px; height:3px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon); animation:lvFloat linear infinite;}
+  @keyframes lvFloat{from{transform:translateY(0); opacity:0;} 15%{opacity:0.7;} 85%{opacity:0.4;} to{transform:translateY(-260px); opacity:0;}}
+  .vcontent{position:relative; z-index:2; max-width:460px;}
+  .vcontent .vlogo{display:flex; align-items:center; gap:10px; margin-bottom:44px;}
+  .vcontent .vlogo .mark{width:34px;height:34px;border-radius:9px; background:linear-gradient(135deg,var(--emerald),var(--neon)); display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(57,255,122,0.35);}
+  .vcontent .vlogo span{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;}
+  .vcontent h2{font-size:clamp(30px,3vw,40px); font-weight:700; line-height:1.15; margin-bottom:16px; letter-spacing:-0.02em;}
+  .vcontent h2 .g{color:var(--neon);}
+  .vcontent > p{color:var(--muted); font-size:14px; line-height:1.7; margin-bottom:36px;}
+  .vchips{display:flex; gap:12px; flex-wrap:wrap;}
+  .vchip{background:var(--glass); border:1px solid var(--border); border-radius:12px; padding:13px 18px; font-size:11.5px; color:var(--muted); backdrop-filter:blur(8px); animation:chipFloat 5s ease-in-out infinite;}
+  .vchip:nth-child(2){animation-delay:-1.7s;} .vchip:nth-child(3){animation-delay:-3.4s;}
+  .vchip b{color:var(--neon); display:block; font-family:'JetBrains Mono',monospace; font-size:19px; margin-bottom:2px;}
+  @keyframes chipFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-7px);}}
+
+  .login-form-side{display:flex; align-items:center; justify-content:center; padding:40px 32px; position:relative; background:var(--black);}
+  .login-card{width:100%; max-width:340px; animation:cardIn .6s cubic-bezier(.2,.8,.2,1);}
+  @keyframes cardIn{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+  .login-title{font-size:24px; font-weight:700; margin-bottom:6px;}
+  .fl-field{position:relative; margin-bottom:22px;}
+  .fl-field input{width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--white); padding:10px 0 10px 0; font-size:14.5px; transition:border-color .2s ease;}
+  .fl-field input:focus{outline:none; border-color:var(--neon);}
+  .fl-field label{position:absolute; left:0; top:11px; color:var(--muted); font-size:14px; pointer-events:none; transition:all .2s ease;}
+  .fl-field input:focus + label, .fl-field input.has-val + label{top:-14px; font-size:11px; color:var(--neon); letter-spacing:0.04em; text-transform:uppercase;}
+  .fl-field .pw-toggle{position:absolute; right:0; top:8px; color:var(--muted); cursor:pointer; background:none; border:none; padding:4px;}
+  .fl-field .pw-toggle:hover{color:var(--neon);}
+  .login-success{display:none; align-items:center; justify-content:center; gap:10px; color:var(--neon); font-size:14px; padding:12px 0;}
+  .login-success svg{animation:checkPop .4s cubic-bezier(.2,.8,.2,1);}
+  @keyframes checkPop{from{transform:scale(0.5); opacity:0;} to{transform:scale(1); opacity:1;}}
+  .field{margin-bottom:18px;}
+  .field label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; display:block;}
+  .field input{width:100%; background:var(--black); border:1px solid var(--border); border-radius:10px; color:var(--white); padding:12px 14px; font-size:14px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .field input:focus{outline:none; border-color:var(--neon); box-shadow:0 0 0 3px rgba(57,255,122,0.12);}
+  .row-between{display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; font-size:12.5px;}
+  .chk{display:flex; align-items:center; gap:7px; color:var(--muted); cursor:pointer;}
+  .chk input{accent-color:var(--neon); width:14px; height:14px;}
+  .forgot{color:var(--neon); text-decoration:none;}
+  .forgot:hover{opacity:0.75;}
+  .btn{font-family:'Inter',sans-serif; font-weight:600; font-size:14px; padding:12px 20px; border-radius:11px; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .15s ease, box-shadow .25s ease;}
+  .btn-glow{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; box-shadow:0 0 22px rgba(57,255,122,0.35); width:100%;}
+  .btn-glow:hover{box-shadow:0 0 32px rgba(57,255,122,0.55);}
+  .btn-ghost{background:transparent; border:1px solid var(--border); color:var(--white);}
+  .btn-ghost:hover{border-color:var(--neon); color:var(--neon);}
+  .demo-note{margin-top:22px; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:rgba(57,255,122,0.05); font-size:11.5px; color:var(--muted); text-align:center; line-height:1.6;}
+  .demo-note b{color:var(--neon); font-family:'JetBrains Mono',monospace;}
+  .login-err{color:var(--red); font-size:12px; margin:-8px 0 14px; display:none;}
+
+  /* ===== APP SHELL ===== */
+  #app{display:none; position:relative; z-index:1; min-height:100vh;}
+  #app.active{display:flex;}
+  .sidebar{width:236px; flex-shrink:0; background:rgba(10,15,13,0.85); border-right:1px solid var(--border); backdrop-filter:blur(10px); display:flex; flex-direction:column; overflow:hidden; transition:width .3s cubic-bezier(.2,.8,.2,1); position:sticky; top:0; height:100vh; z-index:10;}
+  .sidebar.collapsed{width:74px;}
+  .side-head{display:flex; align-items:center; gap:10px; padding:22px 20px; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden;}
+  .side-head .mark{width:30px;height:30px;border-radius:8px; background:linear-gradient(135deg,var(--emerald),var(--neon)); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .side-head span{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px;}
+  .sidebar.collapsed .side-head span, .sidebar.collapsed .nav-label, .sidebar.collapsed .side-foot span{display:none;}
+  .side-nav{flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:0; min-height:0; padding:14px 12px; overflow:hidden;}
+  .nav-item{display:flex; align-items:center; gap:10px; min-height:38px; min-width:0; padding:5px 8px; border-radius:10px; color:var(--muted); cursor:pointer; font-size:15px; position:relative; white-space:nowrap; transition:background .2s ease, color .2s ease;}
+  .nav-item:hover{background:rgba(255,255,255,0.04); color:var(--white);}
+  .nav-item.active{background:rgba(57,255,122,0.1); color:var(--neon);}
+  .nav-item.active::before{content:""; position:absolute; left:-12px; top:8px; bottom:8px; width:3px; background:var(--neon); border-radius:0 3px 3px 0; box-shadow:0 0 8px var(--neon);}
+  .nav-item svg{flex-shrink:0;}
+  .nav-divider{height:1px; flex-shrink:0; background:var(--border); margin:12px 8px 12px;}
+  .side-foot{padding:16px 20px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; white-space:nowrap; overflow:hidden;}
+  .side-foot .avatar{width:32px;height:32px;border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--emerald)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+  .side-foot span{font-size:12.5px;}
+  .side-foot .role{color:var(--muted); font-size:10.5px; display:block;}
+
+  .main{flex:1; min-width:0; display:flex; flex-direction:column;}
+  .topbar{height:68px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; gap:20px; position:sticky; top:0; background:rgba(6,9,10,0.7); backdrop-filter:blur(10px); z-index:5;}
+  .topbar-left{display:flex; align-items:center; gap:16px; flex:1; min-width:0;}
+  .collapse-btn{width:34px;height:34px;border-radius:9px; border:1px solid var(--border); background:transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all .2s ease;}
+  .collapse-btn:hover{color:var(--neon); border-color:var(--neon);}
+  .page-title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; white-space:nowrap;}
+  .gsearch{flex:1; max-width:360px; display:flex; align-items:center; gap:9px; background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--muted); font-size:12.5px; cursor:pointer;}
+  .gsearch kbd{margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10px; border:1px solid var(--border); border-radius:5px; padding:2px 6px;}
+  .topbar-right{display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .icon-btn{width:36px;height:36px;border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:all .2s ease;}
+  .icon-btn:hover{color:var(--neon); border-color:var(--neon);}
+  .dot-badge{position:absolute; top:6px; right:6px; width:7px; height:7px; border-radius:50%; background:var(--neon); box-shadow:0 0 6px var(--neon);}
+
+  .page{display:none; padding:28px; animation:pageIn .35s ease;}
+  .page.active{display:block;}
+  @keyframes pageIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  /* stat cards */
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px;}
+  .stat-card{background:var(--glass); border:1px solid var(--border); border-radius:16px; padding:20px; position:relative; overflow:hidden; cursor:pointer; transition:transform .25s ease, border-color .25s ease;}
+  .stat-card:hover{transform:translateY(-4px); border-color:var(--neon);}
+  .stat-card .ic{width:36px;height:36px;border-radius:10px; background:rgba(57,255,122,0.1); color:var(--neon); display:flex; align-items:center; justify-content:center; margin-bottom:14px;}
+  .stat-card .num{font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:600; color:var(--white);}
+  .stat-card .lbl{font-size:12px; color:var(--muted); margin-top:4px;}
+  .panel{background:var(--glass); border:1px solid var(--border); border-radius:18px; padding:24px; margin-bottom:20px;}
+  .panel h3{font-size:16px; margin-bottom:16px;}
+  .activity-row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .activity-row:last-child{border-bottom:none;}
+  .activity-row .adot{width:8px;height:8px;border-radius:50%; background:var(--neon); flex-shrink:0;}
+  .activity-row .atime{margin-left:auto; color:var(--muted); font-size:11px; font-family:'JetBrains Mono',monospace;}
+
+  /* toolbar */
+  .toolbar{display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
+  .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:13px; min-width:200px;}
+  .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:12px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
+  .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
+  .toolbar .spacer{flex:1;}
+
+  /* table */
+  .table-wrap{background:var(--glass); border:1px solid var(--border); border-radius:16px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  thead th{text-align:left; padding:13px 16px; color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody td{padding:13px 16px; border-bottom:1px solid var(--border); white-space:nowrap; color:var(--white);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr{transition:transform .18s ease, box-shadow .18s ease;}
+  tbody tr:hover{background:rgba(255,255,255,0.02); transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,0.25); position:relative; z-index:1;}
+  .badge{display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:600;}
+  .badge::before{content:""; width:6px;height:6px;border-radius:50%; background:currentColor;}
+  .badge.pending{background:rgba(245,184,65,0.12); color:var(--amber);}
+  .badge.confirmed{background:rgba(57,255,122,0.12); color:var(--neon);}
+  .badge.cancelled{background:rgba(255,107,107,0.12); color:var(--red);}
+  .badge.verified{background:rgba(0,201,255,0.12); color:var(--blue);}
+  .row-actions{display:flex; gap:6px;}
+  .row-actions button{width:28px;height:28px;border-radius:7px; border:1px solid var(--border); background:transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .2s ease;}
+  .row-actions button:hover{border-color:var(--neon); color:var(--neon);}
+  .row-actions button.danger:hover{border-color:var(--red); color:var(--red);}
+  .table-foot{display:flex; justify-content:space-between; align-items:center; padding:14px 18px; font-size:12px; color:var(--muted); border-top:1px solid var(--border);}
+  .page-nums{display:flex; gap:5px;}
+  .page-nums span{width:26px;height:26px;border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px;}
+  .page-nums span.on{background:var(--neon); color:#04140D; font-weight:700;}
+
+  /* empty state */
+  .empty-state{text-align:center; padding:70px 20px; color:var(--muted);}
+  .empty-state svg{margin:0 auto 16px; opacity:0.5;}
+  .empty-state h3{color:var(--white); font-size:16px; margin-bottom:6px;}
+  .empty-state p{font-size:13px; max-width:340px; margin:0 auto;}
+
+  /* settings/profile form */
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .fgroup label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; display:block;}
+  .fgroup input, .fgroup textarea{width:100%; background:var(--black); border:1px solid var(--border); border-radius:10px; color:var(--white); padding:11px 13px; font-size:13.5px;}
+  .fgroup{margin-bottom:18px;}
+  .fgroup.full{grid-column:1 / -1;}
+
+  /* calendar */
+  .cal-grid2{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
+  .cal-cell{aspect-ratio:1; border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative;}
+  .cal-cell .cnt{position:absolute; bottom:6px; right:6px; background:rgba(57,255,122,0.15); color:var(--neon); font-size:9px; padding:2px 5px; border-radius:100px;}
+
+  /* charts */
+  .chart-row{display:grid; grid-template-columns:1.3fr 1fr; gap:18px;}
+  .bar{fill:var(--neon); opacity:0.85;}
+
+  /* command palette + toasts + modal */
+  .cp-overlay{position:fixed; inset:0; background:rgba(6,9,10,0.7); backdrop-filter:blur(6px); z-index:200; display:flex; align-items:flex-start; justify-content:center; padding-top:12vh; opacity:0; pointer-events:none; transition:opacity .2s ease;}
+  .cp-overlay.open{opacity:1; pointer-events:all;}
+  .cp-box{width:90%; max-width:520px; background:var(--charcoal); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .cp-input{width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); padding:16px 18px; color:var(--white); font-size:15px;}
+  .cp-input:focus{outline:none;}
+  .cp-item{padding:12px 18px; display:flex; align-items:center; gap:12px; color:var(--muted); cursor:pointer; font-size:13.5px;}
+  .cp-item:hover{background:rgba(57,255,122,0.06); color:var(--white);}
+
+  .toast-stack{position:fixed; bottom:24px; right:24px; z-index:300; display:flex; flex-direction:column; gap:10px;}
+  .toast{background:var(--charcoal); border:1px solid var(--neon); border-radius:12px; padding:13px 18px; font-size:13px; display:flex; align-items:center; gap:10px; box-shadow:0 10px 30px rgba(0,0,0,0.4); animation:toastIn .3s cubic-bezier(.2,.8,.2,1);}
+  @keyframes toastIn{from{opacity:0; transform:translateX(30px);} to{opacity:1; transform:translateX(0);}}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(6,9,10,0.78); backdrop-filter:blur(8px); z-index:150; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease; padding:24px;}
+  .modal-overlay.open{opacity:1; pointer-events:all;}
+  .modal-box{max-width:480px; width:100%; background:var(--charcoal); border:1px solid var(--border); border-radius:18px; padding:30px; position:relative; max-height:85vh; overflow-y:auto;}
+  .modal-close{position:absolute; top:14px; right:14px; width:32px;height:32px;border-radius:50%; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .modal-close:hover{color:var(--neon); border-color:var(--neon);}
+  .detail-row{display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row span:first-child{color:var(--muted);}
+
+  @media(max-width:1000px){
+    .sidebar{position:fixed; left:0; height:100vh; transform:translateX(-100%); transition:transform .3s ease; z-index:100;}
+    .sidebar.mobile-open{transform:translateX(0);}
+    .sidebar-backdrop{position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99; opacity:0; pointer-events:none; transition:opacity .3s ease;}
+    .sidebar-backdrop.show{opacity:1; pointer-events:all;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .chart-row{grid-template-columns:1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    .gsearch{display:none;}
+    #loginScreen{grid-template-columns:1fr; height:100vh; min-height:100vh; overflow:hidden; background:radial-gradient(circle at 18% 18%, rgba(15,168,87,0.18), transparent 34%), linear-gradient(145deg, #0b2118 0%, #06100c 46%, var(--black) 100%);}
+    #loginScreen::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:0.2; background-image:linear-gradient(rgba(57,255,122,0.12) 1px, transparent 1px),linear-gradient(90deg, rgba(57,255,122,0.12) 1px, transparent 1px),radial-gradient(circle, rgba(57,255,122,0.55) 0 1px, transparent 1.5px); background-size:64px 64px,64px 64px,180px 180px; background-position:center,center,12px 30px;}
+    #loginScreen::after{content:"24"; position:absolute; right:-12%; bottom:8%; z-index:0; pointer-events:none; font-family:'Space Grotesk',sans-serif; font-size:min(88vw,420px); font-weight:700; line-height:0.85; color:transparent; -webkit-text-stroke:1.5px rgba(57,255,122,0.3); text-shadow:0 0 18px rgba(57,255,122,0.1); opacity:1;}
+    .login-visual{display:none;}
+    .login-form-side{z-index:1; background:transparent;}
+    .login-card{position:relative; z-index:2;}
+    .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+    table{min-width:640px;}
+  }
+  @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+</style>
+</head>
+<body>
+
+<canvas id="gridCanvas"></canvas>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-visual">
+    <div class="ghost24">24</div>
+    <div id="lvParticles"></div>
+    <div class="vcontent">
+      <div class="vlogo"><div class="mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><span>TURFON24</span></div>
+      <h2>Turf booking,<br>managed <span class="g">around the clock.</span></h2>
+      <p>Every booking, payment, and enquiry — from every hour of the day — in one place.</p>
+      <div class="vchips">
+        <div class="vchip"><b>412</b>Total bookings</div>
+        <div class="vchip"><b>24/7</b>Live availability</div>
+        <div class="vchip"><b>₹700</b>Standard rate</div>
+      </div>
+    </div>
+  </div>
+  <div class="login-form-side">
+    <div class="login-card">
+      <div class="login-title">Welcome back</div>
+      <div class="login-sub" style="text-align:left; margin-bottom:32px;">Log in to manage TurfOn24</div>
+      <div class="fl-field">
+        <input type="text" id="loginUser" oninput="this.classList.toggle('has-val', this.value.length>0)">
+        <label>Email</label>
+      </div>
+      <div class="fl-field">
+        <input type="password" id="loginPass" oninput="this.classList.toggle('has-val', this.value.length>0)">
+        <label>Password</label>
+        <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Show password">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="login-err" id="loginErr">Incorrect email or password.</div>
+      <div class="row-between">
+        <label class="chk"><input type="checkbox" checked> Remember me</label>
+        <a href="#" class="forgot" onclick="return false;">Forgot password?</a>
+      </div>
+      <button class="btn btn-glow magnetic" id="loginBtn" onclick="tryLogin()">Log in</button>
+      <div class="login-success" id="loginSuccess"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>Welcome back — loading dashboard...</div>
+      <div class="demo-note">Demo credentials — <b>admin@turfon24.com</b> / <b>Admin@123</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="side-head"><div class="mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><span>TURFON24</span></div>
+    <div class="side-nav" id="sideNav">
+      <div class="nav-item active" data-page="dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" data-page="bookings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="nav-label">Bookings</span></div>
+      <div class="nav-item" data-page="enquiries"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Extended Enquiries</span></div>
+      <div class="nav-item" data-page="customers"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/><circle cx="18" cy="9" r="2.6"/><path d="M15.5 14c2.8.3 4.5 2 4.5 6"/></svg><span class="nav-label">Customers</span></div>
+      <div class="nav-item" data-page="calendar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="nav-label">Calendar</span></div>
+      <div class="nav-item" data-page="reports"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="nav-label">Reports</span></div>
+      <div class="nav-item" data-page="whatsapp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg><span class="nav-label">WhatsApp Enquiries</span></div>
+      <div class="nav-item" data-page="chatbot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Chatbot Conversations</span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-page="settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V19a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.5V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.5 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span class="nav-label">Website Settings</span></div>
+      <div class="nav-item" data-page="profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="nav-label">Profile</span></div>
+      <div class="nav-item" onclick="logout()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg><span class="nav-label">Logout</span></div>
+    </div>
+    <div class="side-foot"><div class="avatar">A</div><div><span>Admin</span><span class="role">Owner</span></div></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="collapse-btn" onclick="toggleSidebar()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+      </div>
+      <div class="gsearch" onclick="openCmdPalette()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search bookings, customers...<kbd>⌘K</kbd></div>
+      <div class="topbar-right">
+        <button class="icon-btn" onclick="openCmdPalette()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
+        <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot-badge"></span></button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="panel" id="venueStatusPanel" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span id="venueDot" style="width:11px; height:11px; border-radius:50%; background:#39FF7A; box-shadow:0 0 10px #39FF7A; flex-shrink:0; animation:radarPing2 1.8s ease-in-out infinite;"></span>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;" id="venueStatusText">Turf Available</div>
+            <div style="font-size:11.5px; color:var(--muted);" id="venueStatusSub">Next booking in 45 minutes — 07:00 AM slot</div>
+          </div>
+        </div>
+        <div class="mono" style="font-size:11px; color:var(--muted);">Live · updated just now</div>
+      </div>
+      <div class="stat-grid" id="statGrid"></div>
+      <div class="panel">
+        <h3>Recent activity</h3>
+        <div id="activityList"></div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div class="page" id="page-bookings">
+      <div class="toolbar">
+        <input type="text" placeholder="Search by name, mobile, booking ID...">
+        <div class="filt-pill sel">All</div><div class="filt-pill">Pending</div><div class="filt-pill">Confirmed</div><div class="filt-pill">Cancelled</div>
+        <div class="spacer"></div>
+        <button class="btn btn-ghost" onclick="showToast('Bookings exported to CSV')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Booking ID</th><th>Customer</th><th>Mobile</th><th>Date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="bookingsBody"></tbody>
+        </table>
+        <div class="table-foot"><span>Showing 1–8 of 42 bookings</span><div class="page-nums"><span class="on">1</span><span>2</span><span>3</span><span>›</span></div></div>
+      </div>
+    </div>
+
+    <!-- ENQUIRIES -->
+    <div class="page" id="page-enquiries">
+      <div class="toolbar">
+        <input type="text" placeholder="Search enquiries...">
+        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Closed</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Enquiry ID</th><th>Customer</th><th>Mobile</th><th>Start</th><th>End</th><th>Days</th><th>Preferred</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="enquiriesBody"></tbody>
+        </table>
+        <div class="table-foot"><span>Showing 1–5 of 5 enquiries</span></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="page" id="page-customers">
+      <div class="toolbar"><input type="text" placeholder="Search customers..."></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Customer</th><th>Mobile</th><th>Total Bookings</th><th>Total Spend</th><th>Last Booking</th><th>Status</th></tr></thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="page" id="page-calendar">
+      <div class="panel">
+        <h3>August 2026 — booked slots per day</h3>
+        <div class="cal-grid2" id="calGrid2"></div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="page" id="page-reports">
+      <div class="chart-row">
+        <div class="panel"><h3>Bookings this week</h3><svg viewBox="0 0 400 180" width="100%" height="180"></svg><div id="barChart"></div></div>
+        <div class="panel"><h3>Payment status split</h3><div id="donutChart"></div></div>
+      </div>
+      <div class="panel"><h3>Revenue — last 6 weeks</h3><div id="lineChart"></div></div>
+    </div>
+
+    <!-- WHATSAPP ENQUIRIES -->
+    <div class="page" id="page-whatsapp">
+      <div class="toolbar">
+        <input type="text" placeholder="Search by name, phone...">
+        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Archived</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Message</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="whatsappBody"></tbody>
+        </table>
+        <div class="table-foot"><span>Showing all WhatsApp enquiries</span></div>
+      </div>
+    </div>
+
+    <!-- CHATBOT CONVERSATIONS -->
+    <div class="page" id="page-chatbot">
+      <div class="toolbar">
+        <input type="text" placeholder="Search by visitor name, phone...">
+        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Resolved</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Visitor</th><th>Phone</th><th>Email</th><th>Questions asked</th><th>Timestamp</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="chatbotBody"></tbody>
+        </table>
+        <div class="table-foot"><span>Showing all chatbot conversations</span></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="panel">
+        <h3>Business details</h3>
+        <div class="form-grid">
+          <div class="fgroup"><label>Business name</label><input type="text" value="TurfOn24"></div>
+          <div class="fgroup"><label>Hourly rate (₹)</label><input type="text" value="700"></div>
+          <div class="fgroup"><label>Phone</label><input type="text" value="+91 98xxx xxxxx"></div>
+          <div class="fgroup"><label>WhatsApp</label><input type="text" value="+91 98xxx xxxxx"></div>
+          <div class="fgroup"><label>Email</label><input type="text" value="play@turfon24.com"></div>
+          <div class="fgroup"><label>UPI ID</label><input type="text" value="turfon24@upi"></div>
+          <div class="fgroup full"><label>Address</label><input type="text" value="Turf Grounds, Sector 12"></div>
+        </div>
+        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="showToast('Settings saved')">Save changes</button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="page" id="page-profile">
+      <div class="panel">
+        <h3>Your profile</h3>
+        <div class="form-grid">
+          <div class="fgroup"><label>Name</label><input type="text" value="Admin"></div>
+          <div class="fgroup"><label>Email</label><input type="text" value="admin@turfon24.com"></div>
+          <div class="fgroup"><label>New password</label><input type="password" placeholder="••••••••"></div>
+          <div class="fgroup"><label>Confirm password</label><input type="password" placeholder="••••••••"></div>
+        </div>
+        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="showToast('Profile updated')">Save changes</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMMAND PALETTE -->
+<div class="cp-overlay" id="cmdPalette">
+  <div class="cp-box">
+    <input class="cp-input" id="cpInput" placeholder="Type a command or search...">
+    <div id="cpList">
+      <div class="cp-item" onclick="cpGo('dashboard')">Go to Dashboard</div>
+      <div class="cp-item" onclick="cpGo('bookings')">Go to Bookings</div>
+      <div class="cp-item" onclick="cpGo('enquiries')">Go to Extended Enquiries</div>
+      <div class="cp-item" onclick="cpGo('customers')">Go to Customers</div>
+      <div class="cp-item" onclick="cpGo('reports')">Go to Reports</div>
+      <div class="cp-item" onclick="cpGo('settings')">Go to Website Settings</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <h3 style="margin-bottom:16px;">Booking details</h3>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+  // ---- login ----
+  function tryLogin(){
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    const err = document.getElementById('loginErr');
+    if((u === 'admin@turfon24.com' && p === 'Admin@123') || (u==='' && p==='')){
+      err.style.display = 'none';
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('loginSuccess').style.display = 'flex';
+      setTimeout(()=>{
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').classList.add('active');
+      }, 700);
+    } else {
+      err.style.display = 'block';
+    }
+  }
+  function togglePw(){
+    const pw = document.getElementById('loginPass');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+  }
+  function logout(){
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('loginScreen').style.display = 'grid';
+    document.getElementById('loginBtn').style.display = 'inline-flex';
+    document.getElementById('loginSuccess').style.display = 'none';
+    document.getElementById('loginErr').style.display = 'none';
+  }
+
+  // ---- nav ----
+  const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
+  document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      item.classList.add('active');
+      const p = item.dataset.page;
+      document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+      document.getElementById('page-'+p).classList.add('active');
+      document.getElementById('pageTitle').textContent = pageTitles[p];
+      if(window.innerWidth <= 1000) closeMobileSidebar();
+    });
+  });
+  function toggleSidebar(){
+    if(window.innerWidth <= 1000){
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+      document.getElementById('sidebarBackdrop').classList.toggle('show');
+    } else {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+  }
+  function closeMobileSidebar(){
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('sidebarBackdrop').classList.remove('show');
+  }
+  function cpGo(p){
+    document.querySelector('.nav-item[data-page="'+p+'"]').click();
+    closeCmdPalette();
+  }
+
+  // ---- command palette ----
+  function openCmdPalette(){ document.getElementById('cmdPalette').classList.add('open'); document.getElementById('cpInput').focus(); }
+  function closeCmdPalette(){ document.getElementById('cmdPalette').classList.remove('open'); }
+  document.getElementById('cmdPalette').addEventListener('click', e=>{ if(e.target.id==='cmdPalette') closeCmdPalette(); });
+  window.addEventListener('keydown', e=>{
+    if((e.metaKey||e.ctrlKey) && e.key==='k'){ e.preventDefault(); openCmdPalette(); }
+    if(e.key==='Escape'){ closeCmdPalette(); closeModal('detailModal'); }
+  });
+
+  // ---- toast ----
+  function showToast(msg){
+    const stack = document.getElementById('toastStack');
+    const t = document.createElement('div');
+    t.className='toast';
+    t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#39FF7A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>' + msg;
+    stack.appendChild(t);
+    setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s ease'; setTimeout(()=>t.remove(),300); }, 2800);
+  }
+
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) closeModal(ov.id); });
+  });
+
+  // ---- stat cards ----
+  const statIcons = {
+    wa: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg>',
+    chat: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg>',
+    total: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18"/></svg>',
+    today: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+    pend: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>',
+    pay: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    enq: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg>',
+    done: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12.5l5 5L20 6"/></svg>',
+    cancel: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>',
+    cust: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/></svg>',
+  };
+  const stats = [
+    {icon:'total', num:412, label:'Total bookings', trend:[8,10,9,12,11,14,13], up:true, pct:'+12%'},
+    {icon:'today', num:9, label:"Today's bookings", trend:[3,5,4,6,5,7,9], up:true, pct:'+8%'},
+    {icon:'pend', num:6, label:'Pending confirmations', trend:[9,8,7,8,6,5,6], up:false, pct:'-5%'},
+    {icon:'pay', num:4, label:'Pending payment verification', trend:[6,5,6,4,5,3,4], up:false, pct:'-3%'},
+    {icon:'enq', num:5, label:'Extended booking enquiries', trend:[2,3,2,4,3,5,5], up:true, pct:'+21%'},
+    {icon:'done', num:378, label:'Completed bookings', trend:[7,9,8,10,11,12,13], up:true, pct:'+9%'},
+    {icon:'cancel', num:19, label:'Cancelled bookings', trend:[5,4,5,3,4,2,3], up:false, pct:'-11%'},
+    {icon:'cust', num:164, label:'Total customers', trend:[4,6,5,7,8,9,11], up:true, pct:'+15%'},
+    {icon:'wa', num:4, label:'WhatsApp enquiries', trend:[1,2,1,3,2,4,4], up:true, pct:'+18%', page:'whatsapp'},
+    {icon:'chat', num:4, label:'Chatbot conversations', trend:[2,1,3,2,4,3,4], up:true, pct:'+6%', page:'chatbot'},
+  ];
+  function sparkline(data, up){
+    const max = Math.max(...data), min = Math.min(...data);
+    const pts = data.map((v,i)=> `${(i/(data.length-1))*100},${28 - ((v-min)/(max-min||1))*24}`).join(' ');
+    const color = up ? '#39FF7A' : '#FF6B6B';
+    return `<svg viewBox="0 0 100 28" preserveAspectRatio="none" width="72" height="28"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+  const statGrid = document.getElementById('statGrid');
+  stats.forEach(s=>{
+    const el = document.createElement('div');
+    el.className='stat-card';
+    el.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div class="ic">${statIcons[s.icon]}</div>
+        <span style="font-size:11px; font-weight:600; color:${s.up?'#39FF7A':'#FF6B6B'};">${s.pct}</span>
+      </div>
+      <div class="num" data-target="${s.num}">0</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
+        <div class="lbl">${s.label}</div>
+        <div style="flex-shrink:0;">${sparkline(s.trend, s.up)}</div>
+      </div>`;
+    if(s.page){ el.addEventListener('click', ()=> document.querySelector('.nav-item[data-page="'+s.page+'"]').click()); }
+    statGrid.appendChild(el);
+  });
+  document.querySelectorAll('.stat-card .num').forEach(el=>{
+    const target = parseInt(el.dataset.target);
+    const t0 = performance.now(), dur=1100;
+    function step(now){
+      const p = Math.min((now-t0)/dur,1);
+      el.textContent = Math.round(target*p).toLocaleString('en-IN');
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+
+  // ---- activity ----
+  const activity = [
+    ['New booking from Rahul Verma — Aug 27, 07:00 AM', '2 min ago'],
+    ['Payment verified for booking #BK1042', '18 min ago'],
+    ['Extended enquiry received from Priya Nair', '1 hr ago'],
+    ['Booking #BK1039 cancelled by customer', '3 hrs ago'],
+    ['New customer registered — Aditya Rao', '5 hrs ago'],
+  ];
+  document.getElementById('activityList').innerHTML = activity.map(a=>`<div class="activity-row"><span class="adot"></span>${a[0]}<span class="atime">${a[1]}</span></div>`).join('');
+
+  // ---- bookings table ----
+  const bookings = [
+    ['BK1042','Rahul Verma','98765 43210','Aug 27','07:00 AM','2 hrs','₹1,400','verified','confirmed'],
+    ['BK1041','Sana Sheikh','91234 56780','Aug 27','06:00 PM','1 hr','₹700','pending','pending'],
+    ['BK1040','Aditya Rao','99887 66554','Aug 26','08:00 PM','3 hrs','₹2,100','verified','confirmed'],
+    ['BK1039','Priya Nair','90011 22334','Aug 26','07:00 PM','2 hrs','₹1,400','pending','cancelled'],
+    ['BK1038','Karan Mehta','98123 45670','Aug 25','06:00 AM','1 hr','₹700','verified','confirmed'],
+    ['BK1037','Neha Joshi','97865 43120','Aug 25','09:00 PM','2 hrs','₹1,400','pending','pending'],
+    ['BK1036','Vikram Singh','96543 21098','Aug 24','07:00 PM','4 hrs','₹2,800','verified','confirmed'],
+    ['BK1035','Ayesha Khan','95432 10987','Aug 24','06:00 PM','1 hr','₹700','verified','confirmed'],
+  ];
+  const bstatusLbl = {confirmed:'Confirmed', pending:'Pending', cancelled:'Cancelled'};
+  const pstatusLbl = {verified:'Verified', pending:'Pending'};
+  document.getElementById('bookingsBody').innerHTML = bookings.map(b=>`
+    <tr>
+      <td class="mono">${b[0]}</td><td>${b[1]}</td><td class="mono">${b[2]}</td><td>${b[3]}</td><td>${b[4]}</td><td>${b[5]}</td><td class="mono">${b[6]}</td>
+      <td><span class="badge ${b[7]}">${pstatusLbl[b[7]]}</span></td>
+      <td><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></td>
+      <td><div class="row-actions">
+        <button onclick='openBookingDetail(${JSON.stringify(b)})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button onclick="showToast('Booking ${b[0]} confirmed')" title="Confirm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
+        <button class="danger" onclick="showToast('Booking ${b[0]} cancelled')" title="Cancel"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div></td>
+    </tr>`).join('');
+
+  function openBookingDetail(b){
+    document.getElementById('detailBody').innerHTML = `
+      <div class="detail-row"><span>Booking ID</span><span class="mono">${b[0]}</span></div>
+      <div class="detail-row"><span>Customer</span><span>${b[1]}</span></div>
+      <div class="detail-row"><span>Mobile</span><span class="mono">${b[2]}</span></div>
+      <div class="detail-row"><span>Date</span><span>${b[3]}</span></div>
+      <div class="detail-row"><span>Time slot</span><span>${b[4]}</span></div>
+      <div class="detail-row"><span>Duration</span><span>${b[5]}</span></div>
+      <div class="detail-row"><span>Amount</span><span class="mono">${b[6]}</span></div>
+      <div class="detail-row"><span>Payment status</span><span class="badge ${b[7]}">${pstatusLbl[b[7]]}</span></div>
+      <div class="detail-row"><span>Booking status</span><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></div>`;
+    openModal('detailModal');
+  }
+
+  // ---- enquiries table ----
+  const enquiries = [
+    ['EQ204','Priya Nair','90011 22334','Aug 29','Aug 30','2','Evening','New'],
+    ['EQ203','Corporate — Zynta Ltd','98700 11223','Sep 2','Sep 3','2','Morning','Contacted'],
+    ['EQ202','Manav Iyer','97654 33221','Sep 5','Sep 6','2','Night','Quotation Sent'],
+    ['EQ201','Weekend Warriors Club','96500 44332','Aug 22','Aug 24','3','Evening','Confirmed'],
+    ['EQ200','Riya Kapoor','95400 55667','Aug 15','Aug 16','2','Morning','Closed'],
+  ];
+  const enqBadge = {'New':'verified','Contacted':'pending','Quotation Sent':'pending','Confirmed':'confirmed','Closed':'cancelled'};
+  document.getElementById('enquiriesBody').innerHTML = enquiries.map(e=>`
+    <tr><td class="mono">${e[0]}</td><td>${e[1]}</td><td class="mono">${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td><td>${e[5]}</td><td>${e[6]}</td>
+    <td><span class="badge ${enqBadge[e[7]]}">${e[7]}</span></td>
+    <td><div class="row-actions">
+      <button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button onclick="showToast('Calling ${e[1]}...')" title="Call"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11 11 0 0 0 3.4.55 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11 11 0 0 0 .55 3.4 1 1 0 0 1-.25 1Z"/></svg></button>
+    </div></td></tr>`).join('');
+
+  // ---- WhatsApp enquiries table ----
+  const waEnquiries = [
+    ['Rahul Verma','98765 43210','rahul.v@example.com','Do you have a slot free this Saturday evening?','2 min ago','new'],
+    ['Sana Sheikh','91234 56780','sana.s@example.com','Can I get a group discount for 10+ people?','1 hr ago','pending'],
+    ['Aditya Rao','99887 66554','aditya.r@example.com','Is the turf covered in case of rain?','4 hrs ago','confirmed'],
+    ['Priya Nair','90011 22334','priya.n@example.com','Looking to book for a corporate tournament.','Yesterday','cancelled'],
+  ];
+  const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cancelled:'Archived'};
+  document.getElementById('whatsappBody').innerHTML = waEnquiries.map(w=>`
+    <tr><td>${w[0]}</td><td class="mono">${w[1]}</td><td>${w[2]}</td><td style="white-space:normal; max-width:220px;">${w[3]}</td><td>${w[4]}</td>
+    <td><span class="badge ${w[5]}">${waStatusLbl[w[5]]}</span></td>
+    <td><div class="row-actions">
+      <button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button onclick="showToast('Marked as contacted')" title="Mark as contacted"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
+      <button onclick="showToast('Opening reply...')" title="Reply"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg></button>
+      <button class="danger" onclick="showToast('Enquiry archived')" title="Archive"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg></button>
+    </div></td></tr>`).join('');
+
+  // ---- Chatbot conversations table ----
+  const chatConvos = [
+    ['Karan Mehta','98123 45670','karan.m@example.com','Pricing, Booking steps','10 min ago','new'],
+    ['Neha Joshi','97865 43120','neha.j@example.com','Operating hours, OTP','3 hrs ago','new'],
+    ['Vikram Singh','96543 21098','vikram.s@example.com','Multi-day booking, Location','Yesterday','resolved'],
+    ['Ayesha Khan','95432 10987','ayesha.k@example.com','Payment methods','2 days ago','resolved'],
+  ];
+  document.getElementById('chatbotBody').innerHTML = chatConvos.map(c=>`
+    <tr><td>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td><td style="white-space:normal; max-width:200px;">${c[3]}</td><td>${c[4]}</td>
+    <td><span class="badge ${c[5]==='new'?'pending':'confirmed'}">${c[5]==='new'?'New':'Resolved'}</span></td>
+    <td><div class="row-actions">
+      <button onclick="showToast('Opening conversation...')" title="Continue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v13H8l-4 4Z"/></svg></button>
+      <button onclick="showToast('Marked as resolved')" title="Mark resolved"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
+      <button onclick="showToast('Conversation exported')" title="Export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
+    </div></td></tr>`).join('');
+
+  // ---- customers table ----
+  const customers = [
+    ['Rahul Verma','98765 43210','14','₹9,800','Aug 27','Active'],
+    ['Sana Sheikh','91234 56780','3','₹2,100','Aug 27','Active'],
+    ['Aditya Rao','99887 66554','21','₹15,400','Aug 26','Active'],
+    ['Priya Nair','90011 22334','7','₹5,600','Aug 26','Active'],
+    ['Karan Mehta','98123 45670','2','₹1,400','Jul 30','Inactive'],
+  ];
+  document.getElementById('customersBody').innerHTML = customers.map(c=>`
+    <tr><td>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td><td class="mono">${c[3]}</td><td>${c[4]}</td>
+    <td><span class="badge ${c[5]==='Active'?'confirmed':'cancelled'}">${c[5]}</span></td></tr>`).join('');
+
+  // ---- calendar ----
+  const calGrid = document.getElementById('calGrid2');
+  for(let i=1;i<=31;i++){
+    const d = document.createElement('div');
+    d.className='cal-cell';
+    const count = (i*7)%9;
+    d.innerHTML = i + (count>0 ? `<span class="cnt">${count}</span>` : '');
+    calGrid.appendChild(d);
+  }
+
+  // ---- charts (self-contained SVG, no external lib) ----
+  const barData = [5,8,6,10,7,12,9];
+  const barDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const barMax = Math.max(...barData);
+  const barSvg = document.querySelector('#page-reports svg');
+  let bars = '';
+  barData.forEach((v,i)=>{
+    const h = (v/barMax)*130;
+    const x = 20 + i*52;
+    bars += `<rect class="bar" x="${x}" y="${160-h}" width="30" height="${h}" rx="5"/><text x="${x+15}" y="175" fill="#8FA39B" font-size="10" text-anchor="middle" font-family="JetBrains Mono, monospace">${barDays[i]}</text>`;
+  });
+  barSvg.innerHTML = bars;
+
+  const revData = [32000,38500,29000,44200,41000,52300];
+  const revMax = Math.max(...revData);
+  let pts = revData.map((v,i)=>`${i*70},${120-(v/revMax)*100}`).join(' ');
+  document.getElementById('lineChart').innerHTML = `
+    <svg viewBox="0 0 350 140" width="100%" height="140">
+      <polyline points="${pts}" fill="none" stroke="#39FF7A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      ${revData.map((v,i)=>`<circle cx="${i*70}" cy="${120-(v/revMax)*100}" r="4" fill="#39FF7A"/>`).join('')}
+    </svg>`;
+
+  document.getElementById('donutChart').innerHTML = `
+    <svg viewBox="0 0 120 120" width="140" height="140" style="margin:0 auto; display:block;">
+      <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16"/>
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#39FF7A" stroke-width="16" stroke-dasharray="212 283" transform="rotate(-90 60 60)"/>
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#F5B841" stroke-width="16" stroke-dasharray="42 283" stroke-dashoffset="-212" transform="rotate(-90 60 60)"/>
+    </svg>
+    <div style="display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:11px; color:#8FA39B;">
+      <span><span style="color:#39FF7A;">●</span> Verified 75%</span>
+      <span><span style="color:#F5B841;">●</span> Pending 15%</span>
+    </div>`;
+
+  // ---- login visual particles ----
+  const lvBox = document.getElementById('lvParticles');
+  for(let i=0;i<14;i++){
+    const p = document.createElement('div');
+    p.className='lv-particle';
+    p.style.left = (10+Math.random()*80)+'%';
+    p.style.bottom = (Math.random()*30)+'%';
+    p.style.animationDuration = (7+Math.random()*7)+'s';
+    p.style.animationDelay = (Math.random()*7)+'s';
+    lvBox.appendChild(p);
+  }
+
+  // ---- magnetic buttons (used sparingly, e.g. login) ----
+  document.querySelectorAll('.magnetic').forEach(btn=>{
+    btn.addEventListener('mousemove', (e)=>{
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width/2, y = e.clientY - r.top - r.height/2;
+      btn.style.transform = `translate(${x*0.18}px, ${y*0.25}px)`;
+    });
+    btn.addEventListener('mouseleave', ()=>{ btn.style.transform = 'translate(0,0)'; });
+  });
+
+  // ---- background grid ----
+  const canvas = document.getElementById('gridCanvas');
+  const ctx = canvas.getContext('2d');
+  let w,h;
+  function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const spacing=48;
+    for(let x=0;x<w;x+=spacing){ for(let y=0;y<h;y+=spacing){
+      ctx.fillStyle='rgba(57,255,122,0.05)'; ctx.beginPath(); ctx.arc(x,y,1,0,Math.PI*2); ctx.fill();
+    }}
+  }
+  draw();
+</script>
+
+</body>
+</html>
