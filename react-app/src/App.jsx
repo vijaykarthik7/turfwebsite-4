@@ -4,8 +4,8 @@ import LoadingRadar from './components/ui/loading-radar'
 import './App.css'
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
   const isAdmin = window.location.pathname.startsWith('/admin')
+  const [isLoading, setIsLoading] = useState(!isAdmin)
   const pageTitle = isAdmin ? 'TurfOn24 Admin' : 'TurfOn24'
   const pageUrl = `${import.meta.env.BASE_URL}legacy/${isAdmin ? 'admin' : 'index'}.html`
 
@@ -14,9 +14,10 @@ function App() {
   }, [pageTitle])
 
   useEffect(() => {
+    if (isAdmin) return undefined
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 1800)
     return () => window.clearTimeout(loadingTimer)
-  }, [])
+  }, [isAdmin])
 
   const replaceNavigationLogo = (event) => {
     const pageDocument = event.currentTarget.contentDocument
@@ -60,19 +61,21 @@ function App() {
       const footerAvatar = pageDocument.querySelector('.side-foot .avatar')
       const footer = pageDocument.querySelector('.side-foot')
       if (footer && footerAvatar && !footer.querySelector('.admin-profile')) {
-        footer.innerHTML = '<div class="admin-profile"><img class="admin-profile-avatar" src="/logo-assets/Logo.png" alt="TurfOn24" /><div class="admin-profile-email">admin@gmail.com</div></div>'
+        footer.innerHTML = '<div class="admin-profile"><img class="admin-profile-avatar" src="/logo-assets/Turfon24_Logo_Mark.png" alt="TurfOn24" /><div class="admin-profile-email">ask@turfon24.com</div></div>'
       }
     }
   }
 
   return (
     <main className="legacy-shell">
-      <div className={`loading-screen${isLoading ? '' : ' loading-screen--hidden'}`}>
-        <LoadingRadar />
-        <div className="loading-screen__brand">
-          <img className="loading-screen__tagline" src={taglineLogo} alt="TurfOn24" />
+      {!isAdmin && (
+        <div className={`loading-screen${isLoading ? '' : ' loading-screen--hidden'}`}>
+          <LoadingRadar />
+          <div className="loading-screen__brand">
+            <img className="loading-screen__tagline" src={taglineLogo} alt="TurfOn24" />
+          </div>
         </div>
-      </div>
+      )}
       <iframe
         key={pageUrl}
         className="legacy-page"

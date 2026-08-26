@@ -162,9 +162,8 @@
   .blueprint-svg{position:absolute; inset:0; width:100%; height:100%; transition:transform 1s cubic-bezier(.2,.8,.2,1);}
   .bp-line{fill:none; stroke:rgba(57,255,122,0.55); stroke-width:1.4; stroke-dasharray:2200; stroke-dashoffset:2200; transition:stroke-dashoffset 2.6s cubic-bezier(.2,.7,.2,1);}
   .bp-center-spot{fill:var(--neon); stroke:none; opacity:0.8;}
-  .bp-center-pointer{stroke:rgba(242,244,242,0.75); stroke-width:1.2; opacity:0; transition:opacity 1s ease 1.6s;}
   .bp-center-label{fill:var(--white); font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0; transition:opacity 1s ease 1.8s;}
-  .blueprint-stage.drawn .bp-center-pointer,.blueprint-stage.drawn .bp-center-label{opacity:1;}
+  .blueprint-stage.drawn .bp-center-label{opacity:1;}
   .blueprint-stage.drawn .bp-line{stroke-dashoffset:0;}
   .bp-fill{opacity:0; transition:opacity 1.4s ease;}
   .blueprint-stage.reality .bp-fill{opacity:1;}
@@ -211,16 +210,16 @@
   .enquiry-link{color:var(--neon); text-decoration:underline; text-underline-offset:3px; cursor:none; transition:opacity .2s ease;}
 
   /* ===== FLOATING COMMUNICATION WIDGET — "ON Assistant" ===== */
-  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:78px; height:78px;}
-  .comm-fab-ring{display:block; position:absolute; inset:-5px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 24px rgba(57,255,122,0.55), inset 0 0 10px rgba(57,255,122,0.35); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
+  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:54px; height:54px;}
+  .comm-fab-ring{display:block; position:absolute; inset:-3px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 20px rgba(57,255,122,0.5), inset 0 0 8px rgba(57,255,122,0.3); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
   @keyframes fabRingPulse{0%,100%{opacity:.65; transform:scale(.98);} 50%{opacity:1; transform:scale(1.04);}}
   .comm-fab-ring::before{content:""; position:absolute; top:-2px; left:50%; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon);}
-  .comm-fab{position:absolute; inset:0; border-radius:50%; background:transparent; padding:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:none; transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
-  .comm-fab img{width:100%; height:100%; object-fit:contain; mix-blend-mode:screen;}
+  .comm-fab{position:absolute; inset:0; border-radius:50%; background:transparent; padding:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:none; transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
+  .comm-fab img{width:26px; height:26px; object-fit:contain; mix-blend-mode:screen;}
   @keyframes fabFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);}}
   .comm-fab:hover{transform:scale(1.08);}
-  .comm-fab-wrap .cdot{position:absolute; top:-2px; right:-2px; width:13px; height:13px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
-  .comm-click-ring{position:absolute; inset:-7px; border-radius:50%; border:1px solid var(--neon); opacity:0; pointer-events:none;}
+  .comm-fab-wrap .cdot{position:absolute; top:-1px; right:-1px; width:10px; height:10px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
+  .comm-click-ring{position:absolute; inset:-4px; border-radius:50%; border:1px solid var(--neon); opacity:0; pointer-events:none;}
   .comm-click-ring.go{animation:clickRingGo .6s ease-out;}
   @keyframes clickRingGo{0%{opacity:0.8; transform:scale(1);} 100%{opacity:0; transform:scale(1.8);}}
   .comm-panel{position:fixed; right:24px; bottom:92px; z-index:80; width:340px; max-width:calc(100vw - 40px); max-height:min(500px, 70vh); background:rgba(15,22,19,0.75); border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(57,255,122,0.15); backdrop-filter:blur(18px); transform:translateY(16px) scale(0.92); opacity:0; filter:blur(4px); pointer-events:none; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease; display:flex; flex-direction:column;}
@@ -299,6 +298,8 @@
   @keyframes bkPaneIn{from{opacity:0; transform:translateX(14px);} to{opacity:1; transform:translateX(0);}}
   .field-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; display:block;}
   .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  #bkDurPills{display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px;}
+  #bkDurPills .pill{text-align:center; white-space:nowrap; padding-left:4px; padding-right:4px;}
   .pill{padding:9px 16px; border:1px solid var(--border); border-radius:100px; font-size:12.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; transition:all .2s ease;}
   .pill.sel, .pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
   .pill.unavail{opacity:0.28; text-decoration:line-through; pointer-events:none;}
@@ -345,6 +346,11 @@
   @media(min-width:901px){footer p{position:absolute; left:50%; transform:translateX(-50%);}}
   .social{display:flex; gap:14px;}
   .social a{width:36px;height:36px;border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--muted); text-decoration:none; font-size:14px; transition:all .3s ease;}
+  .social a svg{display:none;}
+  .social a::before{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; line-height:1;}
+  .social a:nth-child(1)::before{content:'IG';}
+  .social a:nth-child(2)::before{content:'FB';}
+  .social a:nth-child(3)::before{content:'WA';}
   .social a:hover{border-color:var(--neon); color:var(--neon); transform:translateY(-3px) rotate(8deg);}
 
   #liveIndicator{position:fixed; left:24px; bottom:24px; z-index:60; width:52px; height:52px; display:flex; align-items:center; justify-content:center; pointer-events:none; opacity:0; transition:opacity .5s ease;}
@@ -402,9 +408,20 @@
     nav{padding:12px 6vw;}
     nav > .btn.btn-glow{display:none;}
     .mobile-menu-btn{display:flex;}
-    .nav-links{display:none; position:absolute; top:calc(100% + 8px); right:6vw; width:min(230px, calc(100vw - 12vw)); padding:8px; flex-direction:column; gap:2px; background:rgba(6,9,10,0.94); border:1px solid var(--border); border-radius:12px; box-shadow:0 16px 35px rgba(0,0,0,0.35);}
-    .nav-links.mobile-open{display:flex;}
-    .nav-links a{display:block; padding:11px 12px; font-size:13px;}
+    .nav-links{display:flex; visibility:hidden; opacity:0; pointer-events:none; position:absolute; top:100%; left:0; right:0; width:auto; padding:4px 0 8px; flex-direction:column; gap:0; background:rgba(3,6,7,0.97); border-top:1px solid rgba(57,255,122,0.18); border-bottom:1px solid rgba(57,255,122,0.24); transform:translateY(-10px); transition:opacity .25s ease, transform .25s ease, visibility 0s linear .25s; backdrop-filter:blur(18px);}
+    .nav-links.mobile-open{visibility:visible; opacity:1; pointer-events:auto; transform:translateY(0); transition-delay:0s;}
+    .nav-links li{width:100%; opacity:0; transform:translateX(-12px); border-bottom:1px solid rgba(57,255,122,0.14); transition:opacity .25s ease, transform .25s ease;}
+    .nav-links li:last-child{border-bottom:none;}
+    .nav-links.mobile-open li{opacity:1; transform:translateX(0);}
+    .nav-links.mobile-open li:nth-child(1){transition-delay:.04s;}
+    .nav-links.mobile-open li:nth-child(2){transition-delay:.08s;}
+    .nav-links.mobile-open li:nth-child(3){transition-delay:.12s;}
+    .nav-links.mobile-open li:nth-child(4){transition-delay:.16s;}
+    .nav-links.mobile-open li:nth-child(5){transition-delay:.20s;}
+    .nav-links.mobile-open li:nth-child(6){transition-delay:.24s;}
+    .nav-links a{display:block; padding:16px 6vw; border-radius:0; font-size:13px; line-height:1.2; transition:background .2s ease, color .2s ease;}
+    .nav-links a:hover{background:rgba(57,255,122,0.08); color:var(--neon);}
+    .nav-links a:hover{background:rgba(57,255,122,0.08); color:var(--neon);}
     .nav-links a::after{display:none;}
     .editorial-row, .editorial-row.rev{grid-template-columns:1fr; direction:ltr;}
     .pricing-cols{grid-template-columns:1fr;}
@@ -428,14 +445,18 @@
     #extTimePills{flex-wrap:nowrap; gap:6px;}
     #extTimePills .pill{padding:7px 10px; font-size:10px; white-space:nowrap;}
     .comm-fab-wrap{right:18px; bottom:18px;}
-    #book .booking-shell{padding:34px 24px;}
-    #book .steps-row{margin-bottom:42px;}
+    #book .booking-shell{padding:76px 24px 34px;}
+    #book .steps-row{margin:0 -10px 42px; gap:0;}
     #book .bstep-dot{width:32px; height:32px; font-size:12px;}
     #book .bstep::after{top:15px;}
-    #book .bstep-label{font-size:11px;}
+    #book .bstep-label{font-size:9px; letter-spacing:0.02em;}
     #book .field-label{font-size:14px; margin-bottom:12px;}
     #book .pill{padding:11px 16px; font-size:13.5px;}
     #book .pill-row{gap:10px; margin-bottom:28px;}
+    #book #bkTimePills{grid-template-columns:repeat(3, minmax(0, 1fr));}
+    #book #bkTimePills .pill{padding-left:4px; padding-right:4px; font-size:12px; text-align:center; white-space:nowrap;}
+    #book #bkDurPills{grid-template-columns:repeat(2, minmax(0, 1fr));}
+    #book #bkDurPills .pill{padding-left:8px; padding-right:8px;}
     #book .bk-note{font-size:13px;}
     #book .bk-total{padding:20px 18px;}
     #book .bk-total .amt{font-size:32px;}
@@ -602,8 +623,7 @@
         <text class="bp-tag" x="380" y="34">105.0m</text>
         <text class="bp-tag" x="784" y="234" transform="rotate(90 784 234)">68.0m</text>
         <circle class="bp-center-spot" cx="400" cy="230" r="4"/>
-        <line class="bp-center-pointer" x1="404" y1="230" x2="500" y2="230"/>
-        <text class="bp-center-label" x="510" y="234">Center</text>
+        <text class="bp-center-label" x="400" y="210" text-anchor="middle" dominant-baseline="middle">Center</text>
       </svg>
 
       <div class="bp-hotspot" data-name="Parking" data-desc="On-site parking for cars and bikes, steps from the pitch entrance." style="left:7.5%; top:94%;"></div>
@@ -629,12 +649,12 @@
     <div class="reveal" style="text-align:center;">
       <div class="eyebrow" style="justify-content:center;">Pricing</div>
       <h2 class="section-title">One flat rate. Any hour, any day.</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Standard price is a clean ₹700/hour. Add hours as you like — the total scales linearly. Need the turf for more than 1 day? <span class="enquiry-link" onclick="openModal('extendedModal')">Send us an enquiry.</span></p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Standard price is a clean ₹800/hour. Add hours as you like — the total scales linearly. Need the turf for more than 1 day? <span class="enquiry-link" onclick="openModal('extendedModal')">Send us an enquiry.</span></p>
     </div>
     <div class="pricing-cols reveal">
       <div class="pricing-card"><div class="pulse-bg"></div>
         <div class="rate-label">Standard rate</div>
-        <div class="price-num"><span data-count="700" data-prefix="₹">₹700</span> <span class="price-unit">/ hour</span></div>
+        <div class="price-num"><span data-count="800" data-prefix="₹">₹800</span> <span class="price-unit">/ hour</span></div>
         <div class="rate-desc">Same rate day or night — no surge, no hidden fee. Pay only for the hours you book.</div>
         <div class="rate-badges">
           <div class="rate-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Instant slot confirmation</span></div>
@@ -667,7 +687,7 @@
     <div class="reveal" style="text-align:center;">
       <div class="eyebrow" style="justify-content:center;">Book your slot</div>
       <h2 class="section-title">Reserve the pitch</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Verify your number, then pick any date and time, day or night — ₹700 per hour.</p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Verify your number, then pick any date and time, day or night — ₹800 per hour.</p>
     </div>
 
     <div class="booking-shell reveal">
@@ -741,9 +761,10 @@
         <label class="field-label">Review your booking</label>
         <div class="bk-summary">
           <div class="bk-row"><span>Booking date</span><b id="bkSumDate">—</b></div>
-          <div class="bk-row"><span>Time slot</span><b id="bkSumTime">—</b></div>
+          <div class="bk-row"><span>Start time</span><b id="bkSumStart">—</b></div>
+          <div class="bk-row"><span>End time</span><b id="bkSumEnd">—</b></div>
           <div class="bk-row"><span>Duration</span><b id="bkSumDur">—</b></div>
-          <div class="bk-row"><span>Price per hour</span><b>₹700</b></div>
+          <div class="bk-row"><span>Price per hour</span><b>₹800</b></div>
           <div class="bk-row total"><span>Total amount</span><b id="bkSumTotal">—</b></div>
         </div>
         <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(6)">Confirm & proceed to payment →</button>
@@ -1072,6 +1093,14 @@
 
   // ===== HOURLY BOOKING WIZARD =====
   let bkState = { date:null, dateLabel:'', time:null, hours:2 };
+
+  function bkEndTime(){
+    if(!bkState.time) return '—';
+    const startIndex = bkTimes.indexOf(bkState.time);
+    if(startIndex < 0) return '—';
+    const endHour = (startIndex + bkState.hours) % 24;
+    return bkTimes[endHour];
+  }
   let bkCurrentStep = 1;
 
   function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
@@ -1150,22 +1179,23 @@
     const amtEl = document.getElementById('bkDurAmt');
     amtEl.style.opacity = 0.25;
     setTimeout(()=>{
-      amtEl.textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+      amtEl.textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
       amtEl.style.opacity = 1;
     }, 120);
   }
 
   function bkFillSummary(){
     document.getElementById('bkSumDate').textContent = bkState.dateLabel || '—';
-    document.getElementById('bkSumTime').textContent = bkState.time || '—';
+    document.getElementById('bkSumStart').textContent = bkState.time || '—';
+    document.getElementById('bkSumEnd').textContent = bkEndTime();
     document.getElementById('bkSumDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
-    document.getElementById('bkSumTotal').textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+    document.getElementById('bkSumTotal').textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
   }
   function bkFillPayment(){
     document.getElementById('bkPayDate').textContent = bkState.dateLabel || '—';
     document.getElementById('bkPayTime').textContent = bkState.time || '—';
     document.getElementById('bkPayDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
-    document.getElementById('bkPayAmt').textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+    document.getElementById('bkPayAmt').textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
   }
   function bkCompletePayment(){
     openModal('paymentConfirmModal');
@@ -1429,7 +1459,8 @@
     const phone = document.getElementById('waPhone').value.trim();
     const email = document.getElementById('waEmail').value.trim();
     const msg = document.getElementById('waMsg').value.trim();
-    const waText = encodeURIComponent(`Hi TurfOn24, I'm ${name} (${phone} / ${email}). ${msg}`);
+    const waMessage = `Hi TurfOn24,\n\nCustomer Details\nName: ${name}\nPhone: ${phone}\nEmail: ${email}\n\nBooking Enquiry\nI would like to enquire about booking a turf.\n\nMessage:\n${msg}\n\nThank you,\n${name}`;
+    const waText = encodeURIComponent(waMessage);
     commBody.innerHTML = `
       <div class="comm-success">
         <div class="csi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg></div>
@@ -1451,7 +1482,7 @@
 
   const chatQA = {
     'Book a Slot': "Head to Book Your Slot, verify your mobile with OTP, then pick a date, time and duration — you'll get a UPI QR code to pay.",
-    'Pricing': "Our standard rate is ₹700/hour, no surge pricing — pay only for the hours you book.",
+    'Pricing': "Our standard rate is ₹800/hour, no surge pricing — pay only for the hours you book.",
     'Availability': "We're open 24 hours a day, every day — book any slot, any time.",
     'Location': "You'll find our exact location in the Contact section — tap 'View on Google Maps' there.",
     'Contact Support': "Phone, WhatsApp, or email — all in the Contact section. Or just keep chatting with me here.",

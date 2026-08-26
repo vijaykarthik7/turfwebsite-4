@@ -65,13 +65,17 @@
   .chk input{accent-color:var(--neon); width:14px; height:14px;}
   .forgot{color:var(--neon); text-decoration:none;}
   .forgot:hover{opacity:0.75;}
+  .password-reset-form{display:none; position:fixed; inset:0; z-index:20; align-items:center; justify-content:center; padding:20px; background:rgba(3,6,7,0.82);}
+  .password-reset-form.open{display:flex;}
+  .password-reset-card{position:relative; width:min(360px,100%); padding:28px; background:var(--charcoal); border:1px solid var(--border); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .password-reset-card h3{margin-bottom:8px;}
+  .password-reset-card p{color:var(--muted); font-size:12px; line-height:1.5; margin-bottom:20px;}
+  .password-reset-error{display:none; color:var(--red); font-size:12px; margin-bottom:12px;}
   .btn{font-family:'Inter',sans-serif; font-weight:600; font-size:14px; padding:12px 20px; border-radius:11px; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .15s ease, box-shadow .25s ease;}
   .btn-glow{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; box-shadow:0 0 22px rgba(57,255,122,0.35); width:100%;}
   .btn-glow:hover{box-shadow:0 0 32px rgba(57,255,122,0.55);}
   .btn-ghost{background:transparent; border:1px solid var(--border); color:var(--white);}
   .btn-ghost:hover{border-color:var(--neon); color:var(--neon);}
-  .demo-note{margin-top:22px; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:rgba(57,255,122,0.05); font-size:11.5px; color:var(--muted); text-align:center; line-height:1.6;}
-  .demo-note b{color:var(--neon); font-family:'JetBrains Mono',monospace;}
   .login-err{color:var(--red); font-size:12px; margin:-8px 0 14px; display:none;}
 
   /* ===== APP SHELL ===== */
@@ -233,7 +237,7 @@
       <div class="vchips">
         <div class="vchip"><b>412</b>Total bookings</div>
         <div class="vchip"><b>24/7</b>Live availability</div>
-        <div class="vchip"><b>₹700</b>Standard rate</div>
+        <div class="vchip"><b>₹800</b>Standard rate</div>
       </div>
     </div>
   </div>
@@ -255,16 +259,29 @@
       <div class="login-err" id="loginErr">Incorrect email or password.</div>
       <div class="row-between">
         <label class="chk"><input type="checkbox" checked> Remember me</label>
-        <a href="#" class="forgot" onclick="return false;">Forgot password?</a>
+        <a href="#" class="forgot" onclick="openPasswordReset(); return false;">Forgot password?</a>
       </div>
       <button class="btn btn-glow magnetic" id="loginBtn" onclick="tryLogin()">Log in</button>
       <div class="login-success" id="loginSuccess"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>Welcome back — loading dashboard...</div>
-      <div class="demo-note">Demo credentials — <b>admin@turfon24.com</b> / <b>Admin@123</b></div>
+      
     </div>
   </div>
 </div>
 
 <!-- APP -->
+<div class="password-reset-form" id="passwordReset" aria-hidden="true">
+  <form class="password-reset-card" onsubmit="resetAdminPassword(event)">
+    <button type="button" class="modal-close" onclick="closePasswordReset()" aria-label="Close">✕</button>
+    <h3>Reset password</h3>
+    <p>Enter the admin email and choose a new password.</p>
+    <div class="fgroup"><label for="resetEmail">Admin email</label><input id="resetEmail" type="email" required value="ask@turfon24.com"></div>
+    <div class="fgroup"><label for="resetPassword">New password</label><input id="resetPassword" type="password" minlength="8" required></div>
+    <div class="fgroup"><label for="resetPasswordConfirm">Confirm password</label><input id="resetPasswordConfirm" type="password" minlength="8" required></div>
+    <div class="password-reset-error" id="passwordResetError"></div>
+    <button class="btn btn-glow" type="submit">Save new password</button>
+  </form>
+</div>
+
 <div id="app">
   <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
   <div class="sidebar" id="sidebar">
@@ -414,10 +431,10 @@
         <h3>Business details</h3>
         <div class="form-grid">
           <div class="fgroup"><label>Business name</label><input type="text" value="TurfOn24"></div>
-          <div class="fgroup"><label>Hourly rate (₹)</label><input type="text" value="700"></div>
-          <div class="fgroup"><label>Phone</label><input type="text" value="+91 98xxx xxxxx"></div>
-          <div class="fgroup"><label>WhatsApp</label><input type="text" value="+91 98xxx xxxxx"></div>
-          <div class="fgroup"><label>Email</label><input type="text" value="play@turfon24.com"></div>
+          <div class="fgroup"><label>Hourly rate (₹)</label><input type="text" value="800"></div>
+          <div class="fgroup"><label>Phone</label><input type="text" value="+91 89399 89366"></div>
+          <div class="fgroup"><label>WhatsApp</label><input type="text" value="+91 89399 89366"></div>
+          <div class="fgroup"><label>Email</label><input type="text" value="ask@turfon24.com"></div>
           <div class="fgroup"><label>UPI ID</label><input type="text" value="turfon24@upi"></div>
           <div class="fgroup full"><label>Address</label><input type="text" value="Turf Grounds, Sector 12"></div>
         </div>
@@ -431,7 +448,7 @@
         <h3>Your profile</h3>
         <div class="form-grid">
           <div class="fgroup"><label>Name</label><input type="text" value="Admin"></div>
-          <div class="fgroup"><label>Email</label><input type="text" value="admin@turfon24.com"></div>
+          <div class="fgroup"><label>Email</label><input type="text" value="ask@turfon24.com"></div>
           <div class="fgroup"><label>New password</label><input type="password" placeholder="••••••••"></div>
           <div class="fgroup"><label>Confirm password</label><input type="password" placeholder="••••••••"></div>
         </div>
@@ -470,11 +487,16 @@
 
 <script>
   // ---- login ----
+  const ADMIN_EMAIL = 'ask@turfon24.com';
+  const DEFAULT_ADMIN_PASSWORD = 'Turfon24@139';
+  const ADMIN_PASSWORD_KEY = 'turfon24-admin-password';
+
   function tryLogin(){
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginErr');
-    if((u === 'admin@turfon24.com' && p === 'Admin@123') || (u==='' && p==='')){
+    const savedPassword = localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_ADMIN_PASSWORD;
+    if(u === ADMIN_EMAIL && p === savedPassword){
       err.style.display = 'none';
       document.getElementById('loginBtn').style.display = 'none';
       document.getElementById('loginSuccess').style.display = 'flex';
@@ -485,6 +507,31 @@
     } else {
       err.style.display = 'block';
     }
+  }
+  function openPasswordReset(){
+    const reset = document.getElementById('passwordReset');
+    if (reset) { reset.classList.add('open'); reset.setAttribute('aria-hidden', 'false'); document.getElementById('resetEmail').focus(); }
+  }
+  function closePasswordReset(){
+    const reset = document.getElementById('passwordReset');
+    if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
+  }
+  function resetAdminPassword(event){
+    event.preventDefault();
+    const email = document.getElementById('resetEmail').value.trim();
+    const password = document.getElementById('resetPassword').value;
+    const confirmation = document.getElementById('resetPasswordConfirm').value;
+    const error = document.getElementById('passwordResetError');
+    if (email !== ADMIN_EMAIL) { error.textContent = 'Use the admin email address.'; error.style.display = 'block'; return; }
+    if (password !== confirmation) { error.textContent = 'Passwords do not match.'; error.style.display = 'block'; return; }
+    localStorage.setItem(ADMIN_PASSWORD_KEY, password);
+    closePasswordReset();
+    document.getElementById('loginUser').value = ADMIN_EMAIL;
+    document.getElementById('loginPass').value = '';
+    const loginError = document.getElementById('loginErr');
+    loginError.textContent = 'Password updated. Log in with your new password.';
+    loginError.style.color = 'var(--neon)';
+    loginError.style.display = 'block';
   }
   function togglePw(){
     const pw = document.getElementById('loginPass');
@@ -625,13 +672,13 @@
   // ---- bookings table ----
   const bookings = [
     ['BK1042','Rahul Verma','98765 43210','Aug 27','07:00 AM','2 hrs','₹1,400','verified','confirmed'],
-    ['BK1041','Sana Sheikh','91234 56780','Aug 27','06:00 PM','1 hr','₹700','pending','pending'],
+    ['BK1041','Sana Sheikh','91234 56780','Aug 27','06:00 PM','1 hr','₹800','pending','pending'],
     ['BK1040','Aditya Rao','99887 66554','Aug 26','08:00 PM','3 hrs','₹2,100','verified','confirmed'],
     ['BK1039','Priya Nair','90011 22334','Aug 26','07:00 PM','2 hrs','₹1,400','pending','cancelled'],
-    ['BK1038','Karan Mehta','98123 45670','Aug 25','06:00 AM','1 hr','₹700','verified','confirmed'],
+    ['BK1038','Karan Mehta','98123 45670','Aug 25','06:00 AM','1 hr','₹800','verified','confirmed'],
     ['BK1037','Neha Joshi','97865 43120','Aug 25','09:00 PM','2 hrs','₹1,400','pending','pending'],
     ['BK1036','Vikram Singh','96543 21098','Aug 24','07:00 PM','4 hrs','₹2,800','verified','confirmed'],
-    ['BK1035','Ayesha Khan','95432 10987','Aug 24','06:00 PM','1 hr','₹700','verified','confirmed'],
+    ['BK1035','Ayesha Khan','95432 10987','Aug 24','06:00 PM','1 hr','₹800','verified','confirmed'],
   ];
   const bstatusLbl = {confirmed:'Confirmed', pending:'Pending', cancelled:'Cancelled'};
   const pstatusLbl = {verified:'Verified', pending:'Pending'};

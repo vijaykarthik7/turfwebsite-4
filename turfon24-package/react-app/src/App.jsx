@@ -48,7 +48,7 @@ function App() {
       const footerAvatar = pageDocument.querySelector('.side-foot .avatar')
       const footer = pageDocument.querySelector('.side-foot')
       if (footer && footerAvatar && !footer.querySelector('.admin-profile')) {
-        footer.innerHTML = '<div class="admin-profile"><div class="admin-profile-avatar">T</div><div class="admin-profile-email">admin@gmail.com</div></div>'
+        footer.innerHTML = '<div class="admin-profile"><img class="admin-profile-avatar" src="/logo-assets/Turfon24_Logo_Mark.png" alt="TurfOn24" /><div class="admin-profile-email">ask@turfon24.com</div></div>'
       }
     }
   }

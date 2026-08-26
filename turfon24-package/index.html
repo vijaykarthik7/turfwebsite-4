@@ -162,6 +162,10 @@
   .blueprint-stage.reality .bp-line{stroke:rgba(255,255,255,0.5);}
   .bp-tag{fill:rgba(57,255,122,0.4); font-family:'JetBrains Mono',monospace; font-size:9px; opacity:0; transition:opacity 1s ease 1.6s;}
   .blueprint-stage.drawn .bp-tag{opacity:1;}
+  /* Center annotation — spot, split pointer lines with gap, and label */
+  .bp-center-spot{fill:var(--neon); stroke:none; opacity:0.8;}
+  .bp-center-label{fill:var(--white); font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0; transition:opacity 1s ease 1.8s;}
+  .blueprint-stage.drawn .bp-center-label{opacity:1;}
   .bp-hotspot{position:absolute; width:14px; height:14px; margin:-7px 0 0 -7px; border-radius:50%; cursor:pointer; z-index:3;}
   .bp-hotspot::before{content:""; position:absolute; inset:0; border-radius:50%; background:var(--neon); box-shadow:0 0 10px var(--neon); animation:bpBreathe 3s ease-in-out infinite; transition:box-shadow .25s ease;}
   .bp-hotspot::after{content:""; position:absolute; inset:-8px; border-radius:50%; border:1px solid rgba(57,255,122,0.4); animation:bpRing 3s ease-out infinite;}
@@ -202,14 +206,15 @@
   .enquiry-link{color:var(--neon); text-decoration:underline; text-underline-offset:3px; cursor:none; transition:opacity .2s ease;}
 
   /* ===== FLOATING COMMUNICATION WIDGET — "ON Assistant" ===== */
-  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:58px; height:58px;}
-  .comm-fab-ring{position:absolute; inset:-7px; border-radius:50%; border:1px solid rgba(57,255,122,0.35); animation:spin 10s linear infinite;}
+  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:54px; height:54px;}
+  .comm-fab-ring{position:absolute; inset:-4px; border-radius:50%; border:1px solid rgba(57,255,122,0.35); animation:spin 10s linear infinite;}
   .comm-fab-ring::before{content:""; position:absolute; top:-2px; left:50%; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon);}
-  .comm-fab{position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 30%, #151F1B, #030607); padding:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 26px rgba(57,255,122,0.35); transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
+  .comm-fab{position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 30%, #151F1B, #030607); padding:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 6px 18px rgba(57,255,122,0.3); transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
+  .comm-fab img{width:26px; height:26px; object-fit:contain;}
   @keyframes fabFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);}}
   .comm-fab:hover{transform:scale(1.08);}
-  .comm-fab-wrap .cdot{position:absolute; top:-2px; right:-2px; width:13px; height:13px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
-  .comm-click-ring{position:absolute; inset:-7px; border-radius:50%; border:1px solid var(--neon); opacity:0; pointer-events:none;}
+  .comm-fab-wrap .cdot{position:absolute; top:-1px; right:-1px; width:10px; height:10px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
+  .comm-click-ring{position:absolute; inset:-4px; border-radius:50%; border:1px solid var(--neon); opacity:0; pointer-events:none;}
   .comm-click-ring.go{animation:clickRingGo .6s ease-out;}
   @keyframes clickRingGo{0%{opacity:0.8; transform:scale(1);} 100%{opacity:0; transform:scale(1.8);}}
   .comm-panel{position:fixed; right:24px; bottom:92px; z-index:80; width:380px; max-width:calc(100vw - 32px); max-height:min(560px, 70vh); background:rgba(15,22,19,0.75); border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(57,255,122,0.15); backdrop-filter:blur(18px); transform:translateY(16px) scale(0.92); opacity:0; filter:blur(4px); pointer-events:none; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease; display:flex; flex-direction:column;}
@@ -543,7 +548,8 @@
 
         <text class="bp-tag" x="380" y="34">105.0m</text>
         <text class="bp-tag" x="784" y="234" transform="rotate(90 784 234)">68.0m</text>
-        <text class="bp-tag" x="366" y="234">CENTER</text>
+        <circle class="bp-center-spot" cx="400" cy="230" r="4"/>
+        <text class="bp-center-label" x="400" y="210" text-anchor="middle" dominant-baseline="middle">Center</text>
       </svg>
 
       <div class="bp-hotspot" data-name="Parking" data-desc="On-site parking for cars and bikes, steps from the pitch entrance." style="left:7.5%; top:94%;"></div>
@@ -569,12 +575,12 @@
     <div class="reveal" style="text-align:center;">
       <div class="eyebrow" style="justify-content:center;">Pricing</div>
       <h2 class="section-title">One flat rate. Any hour, any day.</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Standard price is a clean ₹700/hour. Add hours as you like — the total scales linearly. Need the turf for more than 1 day? <span class="enquiry-link" onclick="openModal('extendedModal')">Send us an enquiry.</span></p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Standard price is a clean ₹800/hour. Add hours as you like — the total scales linearly. Need the turf for more than 1 day? <span class="enquiry-link" onclick="openModal('extendedModal')">Send us an enquiry.</span></p>
     </div>
     <div class="pricing-cols reveal">
       <div class="pricing-card"><div class="pulse-bg"></div>
         <div class="rate-label">Standard rate</div>
-        <div class="price-num"><span data-count="700" data-prefix="₹">₹700</span> <span class="price-unit">/ hour</span></div>
+        <div class="price-num"><span data-count="800" data-prefix="₹">₹800</span> <span class="price-unit">/ hour</span></div>
         <div class="rate-desc">Same rate day or night — no surge, no hidden fee. Pay only for the hours you book.</div>
         <div class="rate-badges">
           <div class="rate-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Instant slot confirmation</span></div>
@@ -607,7 +613,7 @@
     <div class="reveal" style="text-align:center;">
       <div class="eyebrow" style="justify-content:center;">Book your slot</div>
       <h2 class="section-title">Reserve the pitch</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Verify your number, then pick any date and time, day or night — ₹700 per hour.</p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto;">Verify your number, then pick any date and time, day or night — ₹800 per hour.</p>
     </div>
 
     <div class="booking-shell reveal">
@@ -672,9 +678,10 @@
         <label class="field-label">Review your booking</label>
         <div class="bk-summary">
           <div class="bk-row"><span>Booking date</span><b id="bkSumDate">—</b></div>
-          <div class="bk-row"><span>Time slot</span><b id="bkSumTime">—</b></div>
+          <div class="bk-row"><span>Start time</span><b id="bkSumStart">—</b></div>
+          <div class="bk-row"><span>End time</span><b id="bkSumEnd">—</b></div>
           <div class="bk-row"><span>Duration</span><b id="bkSumDur">—</b></div>
-          <div class="bk-row"><span>Price per hour</span><b>₹700</b></div>
+          <div class="bk-row"><span>Price per hour</span><b>₹800</b></div>
           <div class="bk-row total"><span>Total amount</span><b id="bkSumTotal">—</b></div>
         </div>
         <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(6)">Confirm & proceed to payment →</button>
@@ -958,6 +965,14 @@
   // ===== HOURLY BOOKING WIZARD =====
   let bkState = { date:null, dateLabel:'', time:null, hours:2 };
 
+  function bkEndTime(){
+    if(!bkState.time) return '—';
+    const startIndex = bkTimes.indexOf(bkState.time);
+    if(startIndex < 0) return '—';
+    const endHour = (startIndex + bkState.hours) % 24;
+    return bkTimes[endHour];
+  }
+
   function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
   function bkVerifyOtp(){
     document.getElementById('bkOtpStatus').style.display='flex';
@@ -1025,22 +1040,23 @@
     const amtEl = document.getElementById('bkDurAmt');
     amtEl.style.opacity = 0.25;
     setTimeout(()=>{
-      amtEl.textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+      amtEl.textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
       amtEl.style.opacity = 1;
     }, 120);
   }
 
   function bkFillSummary(){
     document.getElementById('bkSumDate').textContent = bkState.dateLabel || '—';
-    document.getElementById('bkSumTime').textContent = bkState.time || '—';
+    document.getElementById('bkSumStart').textContent = bkState.time || '—';
+    document.getElementById('bkSumEnd').textContent = bkEndTime();
     document.getElementById('bkSumDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
-    document.getElementById('bkSumTotal').textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+    document.getElementById('bkSumTotal').textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
   }
   function bkFillPayment(){
     document.getElementById('bkPayDate').textContent = bkState.dateLabel || '—';
     document.getElementById('bkPayTime').textContent = bkState.time || '—';
     document.getElementById('bkPayDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
-    document.getElementById('bkPayAmt').textContent = `₹${(bkState.hours*700).toLocaleString('en-IN')}`;
+    document.getElementById('bkPayAmt').textContent = `₹${(bkState.hours*800).toLocaleString('en-IN')}`;
   }
   function bkCompletePayment(){
     openModal('paymentConfirmModal');
@@ -1275,7 +1291,7 @@
 
   const chatQA = {
     'Book a Slot': "Head to Book Your Slot, verify your mobile with OTP, then pick a date, time and duration — you'll get a UPI QR code to pay.",
-    'Pricing': "Our standard rate is ₹700/hour, no surge pricing — pay only for the hours you book.",
+    'Pricing': "Our standard rate is ₹800/hour, no surge pricing — pay only for the hours you book.",
     'Availability': "We're open 24 hours a day, every day — book any slot, any time.",
     'Location': "You'll find our exact location in the Contact section — tap 'View on Google Maps' there.",
     'Contact Support': "Phone, WhatsApp, or email — all in the Contact section. Or just keep chatting with me here.",
