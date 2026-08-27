@@ -79,6 +79,9 @@
   .forgot:hover{opacity:0.75;}
   .password-reset-form{display:none; position:fixed; inset:0; z-index:20; align-items:center; justify-content:center; padding:20px; background:rgba(3,6,7,0.82);}
   .password-reset-form.open{display:flex;}
+  .reset-stage{display:none;}
+  .reset-stage.active{display:block;}
+  .reset-back{display:block; margin:16px auto 0; border:0; background:none; color:var(--muted); cursor:pointer;}
   .password-reset-card{position:relative; width:min(360px,100%); padding:28px; background:var(--charcoal); border:1px solid var(--border); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5);}
   .password-reset-card h3{margin-bottom:8px;}
   .password-reset-card p{color:var(--muted); font-size:12px; line-height:1.5; margin-bottom:20px;}
@@ -234,6 +237,11 @@
   .fgroup input, .fgroup textarea{width:100%; background:var(--black); border:1px solid var(--border); border-radius:10px; color:var(--white); padding:11px 13px; font-size:12.5px;}
   .fgroup{margin-bottom:18px;}
   .fgroup.full{grid-column:1 / -1;}
+  .profile-picture{display:flex; align-items:center; gap:16px; margin-bottom:22px;}
+  .profile-picture-preview{width:76px; height:76px; border-radius:50%; object-fit:cover; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--white); font-size:24px; font-weight:700; background:linear-gradient(135deg,var(--blue),var(--emerald)); border:1px solid var(--border);}
+  .profile-picture-actions input{display:none;}
+  .profile-picture-actions label{display:inline-flex; padding:10px 14px; border:1px solid var(--border); border-radius:8px; color:var(--white); cursor:pointer; font-size:12px;}
+  .profile-picture-actions label:hover{border-color:var(--neon); color:var(--neon);}
 
   /* calendar */
   .cal-grid2{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
@@ -344,16 +352,13 @@
 
 <!-- APP -->
 <div class="password-reset-form" id="passwordReset" aria-hidden="true">
-  <form class="password-reset-card" onsubmit="resetAdminPassword(event)">
+  <div class="password-reset-card">
     <button type="button" class="modal-close" onclick="closePasswordReset()" aria-label="Close">✕</button>
-    <h3>Reset password</h3>
-    <p>Enter the admin email and choose a new password.</p>
-    <div class="fgroup"><label for="resetEmail">Admin email</label><input id="resetEmail" type="email" required value="ask@turfon24.com"></div>
-    <div class="fgroup"><label for="resetPassword">New password</label><input id="resetPassword" type="password" minlength="8" required></div>
-    <div class="fgroup"><label for="resetPasswordConfirm">Confirm password</label><input id="resetPasswordConfirm" type="password" minlength="8" required></div>
-    <div class="password-reset-error" id="passwordResetError"></div>
-    <button class="btn btn-glow" type="submit">Save new password</button>
-  </form>
+    <div class="reset-stage active" id="resetRequestStage"><h3>Forgot password</h3><p>Enter your admin email and we'll send you a verification link.</p><div class="fgroup"><label for="resetEmail">Admin email</label><input id="resetEmail" type="email" required autocomplete="email"></div><div class="password-reset-error" id="resetRequestError"></div><button class="btn btn-glow" type="button" onclick="requestPasswordReset()">Send verification email</button><button class="reset-back" type="button" onclick="closePasswordReset()">Back to login</button></div>
+    <div class="reset-stage" id="resetSentStage"><h3>Check your email</h3><p>If an account is registered with that email, we've sent a password reset link. The link expires in 30 minutes.</p><div class="password-reset-error" id="resetSentError"></div><button class="btn btn-outline" type="button" onclick="requestPasswordReset()">Resend email</button><button class="reset-back" type="button" onclick="closePasswordReset()">Back to login</button></div>
+    <div class="reset-stage" id="resetPasswordStage"><h3>Reset password</h3><p>Create a new password for your admin account.</p><form onsubmit="resetAdminPassword(event)"><div class="fgroup"><label for="resetPassword">New password</label><input id="resetPassword" type="password" minlength="12" required autocomplete="new-password"></div><div class="fgroup"><label for="resetPasswordConfirm">Confirm password</label><input id="resetPasswordConfirm" type="password" minlength="12" required autocomplete="new-password"></div><div class="password-reset-error" id="passwordResetError"></div><button class="btn btn-glow" type="submit">Save new password</button></form></div>
+    <div class="reset-stage" id="resetSuccessStage"><h3>Password updated successfully</h3><p>Your admin password has been changed. Please log in again with your new password.</p><button class="btn btn-glow" type="button" onclick="closePasswordReset()">Back to login</button></div>
+  </div>
 </div>
 
 <div id="app">
@@ -526,15 +531,15 @@
       <div class="panel">
         <h3>Business details</h3>
         <div class="form-grid">
-          <div class="fgroup"><label>Business name</label><input type="text" value="TurfOn24"></div>
-          <div class="fgroup"><label>Hourly rate (₹)</label><input type="text" value="800"></div>
-          <div class="fgroup"><label>Phone</label><input type="text" value="+91 89399 89366"></div>
-          <div class="fgroup"><label>WhatsApp</label><input type="text" value="+91 89399 89366"></div>
-          <div class="fgroup"><label>Email</label><input type="text" value="ask@turfon24.com"></div>
-          <div class="fgroup"><label>UPI ID</label><input type="text" value="turfon24@upi"></div>
-          <div class="fgroup full"><label>Address</label><input type="text" value="Turf Grounds, Sector 12"></div>
+          <div class="fgroup"><label>Business name</label><input id="settingBusinessName" type="text" value="TurfOn24"></div>
+          <div class="fgroup"><label>Hourly rate (₹)</label><input id="settingHourlyRate" type="text" value="800"></div>
+          <div class="fgroup"><label>Phone</label><input id="settingPhone" type="text" value="+91 89399 89366"></div>
+          <div class="fgroup"><label>WhatsApp</label><input id="settingWhatsApp" type="text" value="+91 89399 89366"></div>
+          <div class="fgroup"><label>Email</label><input id="settingEmail" type="text" value="ask@turfon24.com"></div>
+          <div class="fgroup"><label>UPI ID</label><input id="settingUpi" type="text" value="turfon24@upi"></div>
+          <div class="fgroup full"><label>Address</label><input id="settingAddress" type="text" value="Turf Grounds, Sector 12"></div>
         </div>
-        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="showToast('Settings saved')">Save changes</button>
+        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="saveWebsiteSettings()">Save changes</button>
       </div>
     </div>
 
@@ -542,13 +547,14 @@
     <div class="page" id="page-profile">
       <div class="panel">
         <h3>Your profile</h3>
+        <div class="profile-picture"><div class="profile-picture-preview" id="profilePicturePreview">A</div><div class="profile-picture-actions"><label for="profilePictureInput">Change profile picture</label><input id="profilePictureInput" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewProfilePicture(event)"></div></div>
         <div class="form-grid">
           <div class="fgroup"><label>Name</label><input type="text" value="Admin"></div>
           <div class="fgroup"><label>Email</label><input type="text" value="ask@turfon24.com"></div>
           <div class="fgroup"><label>New password</label><input type="password" placeholder="••••••••"></div>
           <div class="fgroup"><label>Confirm password</label><input type="password" placeholder="••••••••"></div>
         </div>
-        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="showToast('Profile updated')">Save changes</button>
+        <button class="btn btn-glow" style="width:auto; padding:12px 26px;" onclick="saveProfileChanges()">Save changes</button>
       </div>
     </div>
 
@@ -584,15 +590,13 @@
 <script>
   // ---- login ----
   const ADMIN_EMAIL = 'ask@turfon24.com';
-  const DEFAULT_ADMIN_PASSWORD = 'Turfon24@139';
-  const ADMIN_PASSWORD_KEY = 'turfon24-admin-password';
-
-  function tryLogin(){
+  async function tryLogin(){
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginErr');
-    const savedPassword = localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_ADMIN_PASSWORD;
-    if(u === ADMIN_EMAIL && p === savedPassword){
+    try {
+      const response = await fetch('/api/admin/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:u, password:p})});
+      if(!response.ok) throw new Error('login failed');
       err.style.display = 'none';
       document.getElementById('loginBtn').style.display = 'none';
       document.getElementById('loginSuccess').style.display = 'flex';
@@ -600,34 +604,48 @@
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('app').classList.add('active');
       }, 700);
-    } else {
+    } catch {
       err.style.display = 'block';
     }
   }
+  function showResetStage(id){ document.querySelectorAll('.reset-stage').forEach(stage => stage.classList.toggle('active', stage.id === id)); }
   function openPasswordReset(){
     const reset = document.getElementById('passwordReset');
-    if (reset) { reset.classList.add('open'); reset.setAttribute('aria-hidden', 'false'); document.getElementById('resetEmail').focus(); }
+    if (reset) { reset.classList.add('open'); reset.setAttribute('aria-hidden', 'false'); showResetStage('resetRequestStage'); document.getElementById('resetEmail').focus(); }
   }
   function closePasswordReset(){
     const reset = document.getElementById('passwordReset');
     if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
   }
-  function resetAdminPassword(event){
+  async function requestPasswordReset(){
+    const error = document.getElementById('resetRequestError');
+    try {
+      const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('resetEmail').value.trim()})});
+      const data = await response.json();
+      if(!response.ok) throw new Error(data.message || 'Unable to send the reset email.');
+      showResetStage('resetSentStage');
+    } catch (requestError) { error.textContent = requestError.message; error.style.display = 'block'; }
+  }
+  async function verifyResetToken(){
+    const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
+    if(!token) return;
+    const response = await fetch('/api/admin/verify-reset-token?token=' + encodeURIComponent(token));
+    const data = await response.json();
+    openPasswordReset();
+    if(data.valid) showResetStage('resetPasswordStage');
+    else { showResetStage('resetRequestStage'); const error = document.getElementById('resetRequestError'); error.textContent = data.reason === 'expired' ? 'This password reset link has expired. Please request a new reset link.' : data.reason === 'used' ? 'This password reset link has already been used. Please request a new reset link.' : 'Invalid password reset link.'; error.style.display = 'block'; }
+  }
+  async function resetAdminPassword(event){
     event.preventDefault();
-    const email = document.getElementById('resetEmail').value.trim();
     const password = document.getElementById('resetPassword').value;
     const confirmation = document.getElementById('resetPasswordConfirm').value;
     const error = document.getElementById('passwordResetError');
-    if (email !== ADMIN_EMAIL) { error.textContent = 'Use the admin email address.'; error.style.display = 'block'; return; }
     if (password !== confirmation) { error.textContent = 'Passwords do not match.'; error.style.display = 'block'; return; }
-    localStorage.setItem(ADMIN_PASSWORD_KEY, password);
-    closePasswordReset();
-    document.getElementById('loginUser').value = ADMIN_EMAIL;
-    document.getElementById('loginPass').value = '';
-    const loginError = document.getElementById('loginErr');
-    loginError.textContent = 'Password updated. Log in with your new password.';
-    loginError.style.color = 'var(--neon)';
-    loginError.style.display = 'block';
+    const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
+    const response = await fetch('/api/admin/reset-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token, newPassword:password})});
+    const data = await response.json();
+    if(!response.ok){ error.textContent = data.message; error.style.display = 'block'; return; }
+    showResetStage('resetSuccessStage');
   }
   function togglePw(){
     const pw = document.getElementById('loginPass');
@@ -640,9 +658,51 @@
     document.getElementById('loginSuccess').style.display = 'none';
     document.getElementById('loginErr').style.display = 'none';
   }
+  verifyResetToken().catch(() => {});
+  window.setInterval(async () => {
+    if (!document.getElementById('app').classList.contains('active')) return;
+    const response = await fetch('/api/admin/session').catch(() => null);
+    if (response && response.status === 401) logout();
+  }, 60000);
 
   // ---- nav ----
   const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
+  const SITE_SETTINGS_KEY = 'turfon24-site-settings';
+  const defaultSiteSettings = { businessName:'TurfOn24', hourlyRate:'800', phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', upi:'turfon24@upi', address:'Turf Grounds, Sector 12' };
+  function loadWebsiteSettings(){
+    const settings = {...defaultSiteSettings, ...JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}')};
+    Object.entries({businessName:'settingBusinessName', hourlyRate:'settingHourlyRate', phone:'settingPhone', whatsapp:'settingWhatsApp', email:'settingEmail', upi:'settingUpi', address:'settingAddress'}).forEach(([key,id])=>{ const field=document.getElementById(id); if(field) field.value=settings[key]; });
+  }
+  function saveWebsiteSettings(){
+    const settings = {businessName:document.getElementById('settingBusinessName').value.trim(), hourlyRate:document.getElementById('settingHourlyRate').value.trim(), phone:document.getElementById('settingPhone').value.trim(), whatsapp:document.getElementById('settingWhatsApp').value.trim(), email:document.getElementById('settingEmail').value.trim(), upi:document.getElementById('settingUpi').value.trim(), address:document.getElementById('settingAddress').value.trim()};
+    localStorage.setItem(SITE_SETTINGS_KEY, JSON.stringify(settings));
+    showToast('Settings saved and published');
+  }
+  loadWebsiteSettings();
+  const PROFILE_PICTURE_KEY = 'turfon24-admin-profile-picture';
+  function applyProfilePicture(source){
+    const preview = document.getElementById('profilePicturePreview');
+    const avatar = document.querySelector('.side-foot .avatar');
+    const injectedAvatar = document.querySelector('.side-foot .admin-profile-avatar');
+    if(!preview || !avatar) return;
+    preview.textContent = '';
+    preview.style.backgroundImage = `url(${source})`;
+    preview.style.backgroundSize = 'cover';
+    avatar.textContent = '';
+    avatar.style.backgroundImage = `url(${source})`;
+    avatar.style.backgroundSize = 'cover';
+    if(injectedAvatar) injectedAvatar.src = source;
+  }
+  function previewProfilePicture(event){
+    const file = event.target.files[0];
+    if(!file || file.size > 2 * 1024 * 1024) { showToast('Choose an image smaller than 2 MB'); return; }
+    const reader = new FileReader();
+    reader.onload = () => { localStorage.setItem(PROFILE_PICTURE_KEY, reader.result); applyProfilePicture(reader.result); window.parent.postMessage({type:'turfon24-profile-picture', source:reader.result}, '*'); showToast('Profile picture updated'); };
+    reader.readAsDataURL(file);
+  }
+  function saveProfileChanges(){ showToast('Profile updated'); }
+  const savedProfilePicture = localStorage.getItem(PROFILE_PICTURE_KEY);
+  if(savedProfilePicture) applyProfilePicture(savedProfilePicture);
   document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
     item.addEventListener('click', ()=>{
       document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));

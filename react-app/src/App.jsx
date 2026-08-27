@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
+import QRCode from 'qrcode'
 import taglineLogo from './assets/Tagline.png'
 import LoadingRadar from './components/ui/loading-radar'
 import './App.css'
+
+window.renderPaymentQr = (image, status, uri) => QRCode.toDataURL(uri, { width: 320, margin: 2, errorCorrectionLevel: 'M' }).then((dataUrl) => {
+  image.src = dataUrl
+  image.style.display = 'block'
+  status.style.display = 'none'
+})
 
 function App() {
   const isAdmin = window.location.pathname.startsWith('/admin')
@@ -17,6 +24,17 @@ function App() {
     if (isAdmin) return undefined
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 1800)
     return () => window.clearTimeout(loadingTimer)
+  }, [isAdmin])
+
+  useEffect(() => {
+    if (!isAdmin) return undefined
+    const handleProfilePictureUpdate = (event) => {
+      if (event.data?.type !== 'turfon24-profile-picture') return
+      const avatar = document.querySelector('.legacy-page')?.contentDocument?.querySelector('.admin-profile-avatar')
+      if (avatar) avatar.src = event.data.source
+    }
+    window.addEventListener('message', handleProfilePictureUpdate)
+    return () => window.removeEventListener('message', handleProfilePictureUpdate)
   }, [isAdmin])
 
   const replaceNavigationLogo = (event) => {
@@ -61,7 +79,8 @@ function App() {
       const footerAvatar = pageDocument.querySelector('.side-foot .avatar')
       const footer = pageDocument.querySelector('.side-foot')
       if (footer && footerAvatar && !footer.querySelector('.admin-profile')) {
-        footer.innerHTML = '<div class="admin-profile"><img class="admin-profile-avatar" src="/logo-assets/Turfon24_Logo_Mark.png" alt="TurfOn24" /><div class="admin-profile-email">ask@turfon24.com</div></div>'
+        const profilePicture = window.localStorage.getItem('turfon24-admin-profile-picture') || '/logo-assets/Turfon24_Logo_Mark.png'
+        footer.innerHTML = `<div class="admin-profile"><img class="admin-profile-avatar" src="${profilePicture}" alt="TurfOn24" /><div class="admin-profile-email">ask@turfon24.com</div></div>`
       }
     }
   }

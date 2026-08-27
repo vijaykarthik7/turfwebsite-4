@@ -1,5 +1,15 @@
 # React + Vite
 
+## Secure Admin Password Reset
+
+The reset flow uses the Vercel serverless functions in `api/admin`, Postgres, bcrypt, and SMTP. Apply `db/migrations/001_admin_password_reset.sql` before using it; the migration seeds the existing admin email with its bcrypt password hash.
+
+Configure these server-only Vercel environment variables:
+
+`DATABASE_URL`, `APP_URL`, `MAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, and optionally `SMTP_SECURE=true`.
+
+Never expose SMTP or database credentials through Vite variables or frontend code. The email provider must be configured before the request endpoint can successfully deliver a reset email.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
