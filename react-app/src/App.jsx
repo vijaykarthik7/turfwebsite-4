@@ -10,10 +10,76 @@ window.renderPaymentQr = (image, status, uri) => QRCode.toDataURL(uri, { width: 
   status.style.display = 'none'
 })
 
+const OPENING_DATE = '2026-09-13T00:00:00+05:30'
+
+function getCountdown() {
+  const remaining = Math.max(0, Date.parse(OPENING_DATE) - Date.now())
+  const totalSeconds = Math.floor(remaining / 1000)
+  return {
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+    isOpen: remaining === 0,
+  }
+}
+
+function LaunchPage({ onExplore }) {
+  const [countdown, setCountdown] = useState(getCountdown)
+
+  useEffect(() => {
+    const updateCountdown = () => setCountdown(getCountdown())
+    updateCountdown()
+    const timer = window.setInterval(updateCountdown, 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="launch-page">
+      <div className="launch-grid" aria-hidden="true" />
+      <div className="launch-light launch-light--one" aria-hidden="true" />
+      <div className="launch-light launch-light--two" aria-hidden="true" />
+      <header className="launch-header">
+        <img src={taglineLogo} alt="TurfOn24" className="launch-logo" />
+        <span className="launch-header-mark">24</span>
+      </header>
+      <main className="launch-content">
+        <div className="launch-eyebrow"><span aria-hidden="true">●</span> {countdown.isOpen ? 'NOW OPEN' : 'OPENING SOON'}</div>
+        <h1>{countdown.isOpen ? "WE'RE OPEN" : "WE'RE OPENING SOON"}</h1>
+        <p className="launch-tagline">YOUR TURF. YOUR TIME. YOUR GAME.</p>
+        <div className="launch-date"><span>GRAND OPENING</span><strong>13 SEPTEMBER 2026</strong></div>
+        {countdown.isOpen ? (
+          <p className="launch-message">The wait is over. TurfOn24 is now open and ready for the game.</p>
+        ) : (
+          <>
+            <p className="launch-message">The wait is almost over.<br />Get ready to play, compete, and make your game count.</p>
+            <div className="countdown-grid" aria-label="Countdown to the TurfOn24 opening" aria-live="polite">
+              {[
+                ['days', 'DAYS', countdown.days],
+                ['hours', 'HOURS', countdown.hours],
+                ['minutes', 'MINUTES', countdown.minutes],
+                ['seconds', 'SECONDS', countdown.seconds],
+              ].map(([key, label, value]) => (
+                <div className="countdown-card" key={key}>
+                  <strong>{key === 'days' ? value : String(value).padStart(2, '0')}</strong>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        <button className="launch-cta" type="button" onClick={onExplore}>{countdown.isOpen ? 'Book your slot' : 'Explore TurfOn24'}<span aria-hidden="true">→</span></button>
+      </main>
+      <footer className="launch-footer"><span>ASIA / KOLKATA</span><span>TURFON24 · CUDDALORE</span></footer>
+    </div>
+  )
+}
+
 function App() {
   const isAdmin = window.location.pathname.startsWith('/admin')
+  const [showLegacy, setShowLegacy] = useState(isAdmin)
   const [isLoading, setIsLoading] = useState(!isAdmin)
-  const pageTitle = isAdmin ? 'TurfOn24 Admin' : 'TurfOn24'
+  const pageTitle = isAdmin ? 'TurfOn24 Admin' : (!showLegacy ? 'TurfOn24 — Opening Soon' : 'TurfOn24')
   const pageUrl = `${import.meta.env.BASE_URL}legacy/${isAdmin ? 'admin' : 'index'}.html`
 
   useEffect(() => {
@@ -21,10 +87,10 @@ function App() {
   }, [pageTitle])
 
   useEffect(() => {
-    if (isAdmin) return undefined
+    if (isAdmin || !showLegacy) return undefined
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 1800)
     return () => window.clearTimeout(loadingTimer)
-  }, [isAdmin])
+  }, [isAdmin, showLegacy])
 
   useEffect(() => {
     if (!isAdmin) return undefined
@@ -84,6 +150,8 @@ function App() {
       }
     }
   }
+
+  if (!isAdmin && !showLegacy) return <LaunchPage onExplore={() => setShowLegacy(true)} />
 
   return (
     <main className="legacy-shell">
