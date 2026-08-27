@@ -41,7 +41,6 @@ function LaunchPage({ onExplore }) {
       <div className="launch-light launch-light--two" aria-hidden="true" />
       <header className="launch-header">
         <img src={taglineLogo} alt="TurfOn24" className="launch-logo" />
-        <span className="launch-header-mark">24</span>
       </header>
       <main className="launch-content">
         <div className="launch-eyebrow"><span aria-hidden="true">●</span> {countdown.isOpen ? 'NOW OPEN' : 'OPENING SOON'}</div>
