@@ -28,5 +28,5 @@ CREATE INDEX IF NOT EXISTS password_reset_tokens_admin_created_idx ON password_r
 CREATE INDEX IF NOT EXISTS password_reset_tokens_hash_idx ON password_reset_tokens (token_hash);
 
 INSERT INTO admin_users (email, password_hash)
-VALUES ('ask@turfon24.com', '$2b$12$Dw7E4DAYnz1IdMDnkRVn/eVY7P3XiWJTPdtHHsTVMin2T/uVVntue')
+VALUES ('ask@turfon24.com', '$2b$12$2txl3sI0.7dVwbvdDmmDxeoX8Hx6GIXiSvdnYD79FSypB/gy2soSe')
 ON CONFLICT (email) DO NOTHING;
