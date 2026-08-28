@@ -428,11 +428,11 @@
     <!-- BOOKINGS -->
     <div class="page" id="page-bookings">
       <div class="toolbar">
-        <input type="text" placeholder="Search by name, mobile, booking ID...">
-        <input class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date">
-        <div class="filt-pill sel">All</div><div class="filt-pill">Pending</div><div class="filt-pill">Confirmed</div><div class="filt-pill">Cancelled</div>
+        <input id="bookingSearch" type="text" placeholder="Search by name, mobile, booking ID...">
+        <input id="bookingDate" class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date">
+        <div class="filt-pill sel" data-booking-status="all">All</div><div class="filt-pill" data-booking-status="pending">Pending</div><div class="filt-pill" data-booking-status="confirmed">Confirmed</div><div class="filt-pill" data-booking-status="cancelled">Cancelled</div>
         <div class="spacer"></div>
-        <button class="btn btn-ghost" onclick="showToast('Bookings exported to CSV')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
+        <button class="btn btn-ghost" id="bookingExport"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -446,9 +446,10 @@
     <!-- ENQUIRIES -->
     <div class="page" id="page-enquiries">
       <div class="toolbar">
-        <input type="text" placeholder="Search enquiries...">
-        <input class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date">
-        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Closed</div>
+        <input id="enquirySearch" type="text" placeholder="Search enquiries...">
+        <input id="enquiryDate" class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date">
+        <div class="filt-pill sel" data-enquiry-status="all">All</div><div class="filt-pill" data-enquiry-status="new">New</div><div class="filt-pill" data-enquiry-status="contacted">Contacted</div><div class="filt-pill" data-enquiry-status="closed">Closed</div>
+        <button class="btn btn-ghost" id="enquiryExport" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -467,10 +468,11 @@
           <button class="filt-pill" type="button" role="tab" aria-selected="false" data-history="extended">Extended bookings</button>
         </div>
         <input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date">
+        <button class="btn btn-ghost" id="customerHistoryExport" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead id="customerHistoryHead"><tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Status</th></tr></thead>
+          <thead id="customerHistoryHead"><tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th></tr></thead>
           <tbody id="customerHistoryBody"></tbody>
         </table>
         <div class="table-foot"><span id="customerHistoryCount">Showing hourly booking history</span></div>
@@ -591,14 +593,40 @@
   // ---- login ----
   const ADMIN_EMAIL = 'ask@turfon24.com';
   const DEMO_PASSWORD = 'Turf123';
+  // Session persistence. sessionStorage keeps the admin logged in across page
+  // refreshes within the current tab/session, but clears when the browser
+  // (tab/page session) is closed — so reopening the admin requires login again.
+  // Only a non-sensitive "active" marker is stored here; never the password.
+  const ADMIN_SESSION_KEY = 'turfon24-admin-session';
+  function setAdminSession(){
+    try { sessionStorage.setItem(ADMIN_SESSION_KEY, 'active'); } catch (error) {}
+  }
+  function clearAdminSession(){
+    try { sessionStorage.removeItem(ADMIN_SESSION_KEY); } catch (error) {}
+  }
+  function showDashboard(){
+    const loginScreen = document.getElementById('loginScreen');
+    const app = document.getElementById('app');
+    if (loginScreen) loginScreen.style.display = 'none';
+    if (app) app.classList.add('active');
+  }
   function showLoggedIn(){
-    document.getElementById('loginErr').style.display = 'none';
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('loginSuccess').style.display = 'flex';
-    setTimeout(()=>{
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('app').classList.add('active');
-    }, 700);
+    const err = document.getElementById('loginErr');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginSuccess = document.getElementById('loginSuccess');
+    setAdminSession();
+    if (err) err.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (loginSuccess) loginSuccess.style.display = 'flex';
+    setTimeout(showDashboard, 700);
+  }
+  // Restore a valid session before the dashboard/login is shown. Because the
+  // check is synchronous and runs on load, a stored session is restored before
+  // any protected view renders — no redirect-to-login race on refresh.
+  function restoreAdminSession(){
+    let isLoggedIn = false;
+    try { isLoggedIn = sessionStorage.getItem(ADMIN_SESSION_KEY) === 'active'; } catch (error) {}
+    if (isLoggedIn) showDashboard();
   }
   function tryLogin(){
     const u = document.getElementById('loginUser').value.trim();
@@ -658,12 +686,14 @@
     pw.type = pw.type === 'password' ? 'text' : 'password';
   }
   function logout(){
+    clearAdminSession();
     document.getElementById('app').classList.remove('active');
     document.getElementById('loginScreen').style.display = 'grid';
     document.getElementById('loginBtn').style.display = 'inline-flex';
     document.getElementById('loginSuccess').style.display = 'none';
     document.getElementById('loginErr').style.display = 'none';
   }
+  restoreAdminSession();
   verifyResetToken().catch(() => {});
   // ---- nav ----
   const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
@@ -968,18 +998,63 @@
       <button onclick="showToast('Conversation exported')" title="Export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
     </div></td></tr>`).join('');
 
-  document.querySelectorAll('.date-filter').forEach(filter=>{
-    filter.addEventListener('change', ()=>{
-      const rows = filter.closest('.page').querySelectorAll('tbody tr');
-      rows.forEach(row=>{
-        const value = filter.value;
-        const matches = !value || (row.dataset.start && value >= row.dataset.start && value <= row.dataset.end) || row.dataset.date === value;
-        row.hidden = !matches;
-      });
-    });
-  });
-
   // ---- customers table ----
+  function normalizeStatus(value){ return String(value || '').trim().toLowerCase(); }
+  function csvEscape(value){ return `"${String(value ?? '').replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`; }
+  function exportCsv(filename, columns, rows){
+    const csv = [columns.map(column=>csvEscape(column.label)).join(','), ...rows.map(row=>columns.map(column=>csvEscape(row[column.key])).join(','))].join('\r\n');
+    const url = URL.createObjectURL(new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8;'}));
+    const link = document.createElement('a');
+    link.href = url; link.download = filename; link.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 0);
+  }
+  let bookingStatus = 'all';
+  let enquiryStatus = 'all';
+  function bookingRows(){
+    const search = document.getElementById('bookingSearch').value.trim().toLowerCase();
+    const date = document.getElementById('bookingDate').value;
+    return bookings.filter(row=>{
+      const matchesSearch = !search || row.slice(0, 3).join(' ').toLowerCase().includes(search);
+      return matchesSearch && (!date || row[9] === date) && (bookingStatus === 'all' || normalizeStatus(row[8]) === bookingStatus);
+    });
+  }
+  function renderBookings(){
+    const rows = bookingRows();
+    document.getElementById('bookingsBody').innerHTML = rows.map(b=>`<tr><td class="mono">${b[0]}</td><td>${b[1]}</td><td class="mono">${b[2]}</td><td>${b[3]}</td><td>${b[4]}</td><td>${b[5]}</td><td class="mono">${b[6]}</td><td><span class="badge ${b[7]}">${pstatusLbl[b[7]]}</span></td><td><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></td><td><div class="row-actions"><button onclick='openBookingDetail(${JSON.stringify(b)})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('');
+    document.querySelector('#page-bookings .table-foot > span').textContent = `Showing ${rows.length} of ${bookings.length} bookings`;
+  }
+  document.querySelectorAll('[data-booking-status]').forEach(button=>button.addEventListener('click', ()=>{
+    bookingStatus = button.dataset.bookingStatus;
+    document.querySelectorAll('[data-booking-status]').forEach(item=>item.classList.toggle('sel', item === button));
+    renderBookings();
+  }));
+  ['bookingSearch','bookingDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'bookingDate' ? 'change' : 'input', renderBookings));
+  document.getElementById('bookingExport').addEventListener('click', ()=>exportCsv(`bookings-${new Date().toISOString().slice(0,10)}.csv`, [{key:'id',label:'Booking ID'},{key:'name',label:'Customer Name'},{key:'mobile',label:'Mobile'},{key:'date',label:'Date'},{key:'start',label:'Start Time'},{key:'duration',label:'Duration'},{key:'amount',label:'Amount'},{key:'payment',label:'Payment Status'},{key:'status',label:'Booking Status'},{key:'created',label:'Created At'}], bookingRows().map(b=>({id:b[0],name:b[1],mobile:b[2],date:b[3],start:b[4],duration:b[5],amount:b[6],payment:pstatusLbl[b[7]],status:bstatusLbl[b[8]],created:b[9]}))));
+
+  function enquiryRows(){
+    const search = document.getElementById('enquirySearch').value.trim().toLowerCase();
+    const date = document.getElementById('enquiryDate').value;
+    return enquiries.filter(row=>{
+      const status = normalizeStatus(row[7]);
+      const matchesStatus = enquiryStatus === 'all' || (enquiryStatus === 'closed' ? status === 'closed' : status === enquiryStatus);
+      return matchesStatus && (!search || row.slice(0, 7).join(' ').toLowerCase().includes(search)) && (!date || (date >= row[8] && date <= row[9]));
+    });
+  }
+  function renderEnquiries(){
+    const rows = enquiryRows();
+    document.getElementById('enquiriesBody').innerHTML = rows.map(e=>`<tr><td class="mono">${e[0]}</td><td>${e[1]}</td><td class="mono">${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td><td>${e[5]}</td><td>${e[6]}</td><td><span class="badge ${enqBadge[e[7]] || 'pending'}">${e[7]}</span></td><td><div class="row-actions"><button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('');
+    document.querySelector('#page-enquiries .table-foot > span').textContent = `Showing ${rows.length} of ${enquiries.length} enquiries`;
+  }
+  document.querySelectorAll('[data-enquiry-status]').forEach(button=>button.addEventListener('click', ()=>{
+    enquiryStatus = button.dataset.enquiryStatus;
+    document.querySelectorAll('[data-enquiry-status]').forEach(item=>item.classList.toggle('sel', item === button));
+    renderEnquiries();
+  }));
+  ['enquirySearch','enquiryDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'enquiryDate' ? 'change' : 'input', renderEnquiries));
+  document.getElementById('enquiryExport').addEventListener('click', ()=>exportCsv(`extended-enquiries-${new Date().toISOString().slice(0,10)}.csv`, [{key:'id',label:'Enquiry ID'},{key:'name',label:'Customer Name'},{key:'phone',label:'Phone'},{key:'start',label:'Start Date'},{key:'end',label:'End Date'},{key:'days',label:'Duration'},{key:'preferred',label:'Preferred Times'},{key:'status',label:'Status'}], enquiryRows().map(e=>({id:e[0],name:e[1],phone:e[2],start:e[8],end:e[9],days:e[5],preferred:e[6],status:e[7]}))));
+  renderBookings();
+  renderEnquiries();
+
   const customerHistory = {
     hourly: [
       ['Rahul Verma','98765 43210','2026-08-27','07:00 PM','2 hrs','₹1,400','Confirmed'],
@@ -987,12 +1062,30 @@
       ['Aditya Rao','99887 66554','2026-08-26','08:00 PM','3 hrs','₹2,100','Confirmed'],
       ['Priya Nair','90011 22334','2026-08-26','07:00 PM','2 hrs','₹1,400','Cancelled'],
       ['Karan Mehta','98123 45670','2026-08-25','06:00 AM','1 hr','₹800','Confirmed'],
+      ['Rahul Verma','98765 43210','2026-08-24','06:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Sana Sheikh','91234 56780','2026-08-24','07:00 PM','1 hr','₹800','Cancelled'],
+      ['Aarav Sharma','98765 54321','2026-08-23','05:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Ishita Gupta','91234 56789','2026-08-22','08:00 PM','1 hr','₹800','Confirmed'],
+      ['Aditya Rao','99887 66554','2026-08-21','06:00 AM','2 hrs','₹1,400','Confirmed'],
+      ['Rohan Malhotra','96500 22331','2026-08-20','07:00 PM','3 hrs','₹2,100','Confirmed'],
+      ['Priya Nair','90011 22334','2026-08-19','06:00 PM','1 hr','₹800','Confirmed'],
+      ['Karan Mehta','98123 45670','2026-08-18','07:00 PM','2 hrs','₹1,400','Pending'],
+      ['Sana Sheikh','91234 56780','2026-08-17','08:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Rahul Verma','98765 43210','2026-08-16','06:00 AM','1 hr','₹800','Confirmed'],
     ],
     extended: [
       ['Weekend Warriors Club','96500 44332','2026-08-22','2026-08-24','3 days','₹18,900','Confirmed'],
       ['Corporate — Zynta Ltd','98700 11223','2026-09-02','2026-09-03','2 days','₹12,600','Contacted'],
       ['Manav Iyer','97654 33221','2026-09-05','2026-09-06','2 days','₹12,600','Quotation Sent'],
       ['Priya Nair','90011 22334','2026-08-29','2026-08-30','2 days','₹12,600','New'],
+      ['Sunrise FC Academy','96500 44321','2026-08-15','2026-08-17','3 days','₹18,900','Confirmed'],
+      ['Corporate — Zynta Ltd','98700 11223','2026-08-08','2026-08-09','2 days','₹12,600','Confirmed'],
+      ['Weekend Warriors Club','96500 44332','2026-08-01','2026-08-02','2 days','₹12,600','Confirmed'],
+      ['Manav Iyer','97654 33221','2026-07-25','2026-07-26','2 days','₹12,600','Confirmed'],
+      ['St. Mary\'s College','91200 11223','2026-07-18','2026-07-20','3 days','₹18,900','Contacted'],
+      ['Rahul Verma','98765 43210','2026-07-10','2026-07-12','3 days','₹18,900','Confirmed'],
+      ['Sunrise FC Academy','96500 44321','2026-07-03','2026-07-04','2 days','₹12,600','Quotation Sent'],
+      ['Priya Nair','90011 22334','2026-06-27','2026-06-28','2 days','₹12,600','Confirmed'],
     ],
   };
   let activeHistoryType = 'hourly';
@@ -1003,11 +1096,13 @@
     const rows = customerHistory[activeHistoryType];
     const selectedDate = historyDate.value;
     historyHead.innerHTML = activeHistoryType === 'hourly'
-      ? '<tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Status</th></tr>'
-      : '<tr><th>Customer</th><th>Mobile</th><th>Start date</th><th>End date</th><th>Duration</th><th>Amount</th><th>Status</th></tr>';
-    historyBody.innerHTML = rows.filter(row => !selectedDate || (activeHistoryType === 'hourly' ? row[2] === selectedDate : selectedDate >= row[2] && selectedDate <= row[3])).map(row=>`
-      <tr><td>${row[0]}</td><td class="mono">${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td class="mono">${row[5]}</td><td><span class="badge ${row[6] === 'Confirmed' ? 'confirmed' : row[6] === 'Cancelled' ? 'cancelled' : 'pending'}">${row[6]}</span></td></tr>`).join('');
-    document.getElementById('customerHistoryCount').textContent = `Showing ${activeHistoryType} booking history${selectedDate ? ` for ${selectedDate}` : ''}`;
+      ? '<tr><th>Customer</th><th>Mobile</th><th>Booking date</th><th>Time</th><th>Duration</th><th>Amount</th></tr>'
+      : '<tr><th>Customer</th><th>Mobile</th><th>Start date</th><th>End date</th><th>Duration</th><th>Amount</th></tr>';
+    const filteredRows = rows.filter(row => !selectedDate || (activeHistoryType === 'hourly' ? row[2] === selectedDate : selectedDate >= row[2] && selectedDate <= row[3]));
+    historyBody.innerHTML = filteredRows.map(row=>`
+      <tr><td>${row[0]}</td><td class="mono">${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td class="mono">${row[5]}</td></tr>`).join('');
+    document.getElementById('customerHistoryCount').textContent = `Showing ${filteredRows.length} ${activeHistoryType} booking history${selectedDate ? ` for ${selectedDate}` : ''}`;
+    return filteredRows;
   }
   document.querySelectorAll('[data-history]').forEach(button=>button.addEventListener('click', ()=>{
     activeHistoryType = button.dataset.history;
@@ -1017,6 +1112,16 @@
   }));
   historyDate.addEventListener('change', renderCustomerHistory);
   renderCustomerHistory();
+  document.getElementById('customerHistoryExport').addEventListener('click', ()=>{
+    const filteredRows = renderCustomerHistory();
+    const columns = activeHistoryType === 'hourly'
+      ? [{key:'customer',label:'Customer'},{key:'mobile',label:'Mobile'},{key:'date',label:'Booking Date'},{key:'time',label:'Time'},{key:'duration',label:'Duration'},{key:'amount',label:'Amount'}]
+      : [{key:'customer',label:'Customer'},{key:'mobile',label:'Mobile'},{key:'start',label:'Start Date'},{key:'end',label:'End Date'},{key:'duration',label:'Duration'},{key:'amount',label:'Amount'}];
+    const rows = filteredRows.map(row => activeHistoryType === 'hourly'
+      ? {customer:row[0],mobile:row[1],date:row[2],time:row[3],duration:row[4],amount:row[5]}
+      : {customer:row[0],mobile:row[1],start:row[2],end:row[3],duration:row[4],amount:row[5]});
+    exportCsv(`customer-${activeHistoryType}-history-${new Date().toISOString().slice(0,10)}.csv`, columns, rows);
+  });
 
   // ---- calendar ----
   const calGrid = document.getElementById('calGrid2');

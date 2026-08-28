@@ -165,7 +165,7 @@
   .bp-center-label{fill:var(--white); font-family:'JetBrains Mono',monospace; font-size:11px; opacity:0; transition:opacity 1s ease 1.8s;}
   .blueprint-stage.drawn .bp-center-label{opacity:1;}
   .blueprint-stage.drawn .bp-line{stroke-dashoffset:0;}
-  .bp-fill{opacity:0; transition:opacity 1.4s ease;}
+  .bp-fill{opacity:1;}
   .blueprint-stage.reality .bp-fill{opacity:1;}
   .blueprint-stage.reality .bp-line{stroke:rgba(255,255,255,0.5);}
   .bp-tag{fill:rgba(57,255,122,0.4); font-family:'JetBrains Mono',monospace; font-size:9px; opacity:0; transition:opacity 1s ease 1.6s;}
@@ -223,7 +223,7 @@
   .comm-click-ring.go{animation:clickRingGo .6s ease-out;}
   @keyframes clickRingGo{0%{opacity:0.8; transform:scale(1);} 100%{opacity:0; transform:scale(1.8);}}
   .comm-panel{position:fixed; right:24px; bottom:92px; z-index:80; width:340px; max-width:calc(100vw - 40px); max-height:min(500px, 70vh); background:rgba(15,22,19,0.75); border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(57,255,122,0.15); backdrop-filter:blur(18px); transform:translateY(16px) scale(0.92); opacity:0; filter:blur(4px); pointer-events:none; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease; display:flex; flex-direction:column;}
-  .comm-panel::before{content:""; position:absolute; inset:0; border-radius:22px; padding:1px; background:linear-gradient(160deg, rgba(57,255,122,0.5), rgba(0,201,255,0.15) 40%, transparent 70%); 
+  .comm-panel::before{content:""; position:absolute; inset:0; border-radius:22px; padding:1px; background:linear-gradient(340deg, rgba(57,255,122,0.5), rgba(0,201,255,0.15) 40%, transparent 70%); 
   
   
   
@@ -241,7 +241,7 @@
   
   .linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;}
   .comm-panel.open{transform:translateY(0) scale(1); opacity:1; filter:blur(0); pointer-events:all;}
-  .comm-head{padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(135deg, #06351f, #06251c, #071714); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; gap:8px;}
+  .comm-head{padding:12px 14px; border-bottom:1px solid rgba(143,163,155,0.18); background:var(--charcoal); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; gap:8px;}
   .comm-head-id{display:flex; align-items:center; justify-content:center; flex:1; min-width:0;}
   .comm-head-avatar{display:none;}
   .comm-head-txt{text-align:left;}
@@ -249,14 +249,14 @@
   .comm-head-txt .online{font-size:9.5px; color:var(--neon); display:flex; align-items:center; gap:5px;}
   .comm-head-txt .online::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--neon); box-shadow:0 0 6px var(--neon);}
   .comm-head h4{font-size:12px;}
-  .comm-back{color:var(--muted); cursor:pointer; display:flex; align-items:center; gap:6px; font-size:10.5px;}
+  .comm-back{color:var(--white); cursor:pointer; display:flex; align-items:center; gap:6px; font-size:10.5px;}
   .comm-back:hover{color:var(--neon);}
-  .comm-close-btn{color:var(--muted); cursor:pointer; display:flex; flex-shrink:0;}
+  .comm-close-btn{color:var(--white); cursor:pointer; display:flex; flex-shrink:0;}
   .comm-close-btn:hover{color:var(--neon);}
   .comm-body{padding:12px; overflow-y:auto; flex:1; display:flex; flex-direction:column;}
   .comm-body .fm-field{margin-bottom:8px;}
   .comm-body .fm-field textarea{min-height:52px; resize:vertical;}
-  .comm-choice{display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:14px; cursor:pointer; transition:all .2s ease; margin-bottom:8px;}
+  .comm-choice{display:flex; align-items:center; gap:10px; padding:11px; border:1px solid var(--border); border-radius:14px; cursor:pointer; transition:all .2s ease; margin-bottom:8px; background:linear-gradient(90deg,rgba(0,201,255,0.1),rgba(57,255,122,0.18));}
   .comm-choice:hover{border-color:var(--neon); background:rgba(57,255,122,0.05); transform:translateY(-1px);}
   .comm-choice .cic{width:32px;height:32px;border-radius:10px; background:rgba(57,255,122,0.1); color:var(--neon); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
   .comm-choice .ctxt b{display:block; font-size:12px;}
@@ -298,22 +298,21 @@
   .ext-features li .ck{color:var(--neon); font-family:'JetBrains Mono',monospace;}
 
   /* ===== BOOK YOUR SLOT ===== */
-  .booking-shell{width:100%; max-width:680px; margin:0 auto; background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:44px; backdrop-filter:blur(14px); text-align:left; position:relative;}
+  .booking-shell{width:100%; max-width:680px; margin:0 auto; background:var(--glass); border:1px solid var(--border); border-radius:24px; padding:44px; box-sizing:border-box; backdrop-filter:blur(14px); text-align:left; position:relative;}
   .booking-back{position:absolute; top:16px; left:16px; width:30px; height:30px; padding:0; border:1px solid var(--border); border-radius:50%; display:none; align-items:center; justify-content:center; background:rgba(255,255,255,0.04); color:var(--muted); transition:all .2s ease;}
   .booking-back:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
   .booking-back svg{width:16px; height:16px;}
   .booking-close{position:absolute; top:16px; right:16px; width:30px; height:30px; padding:0; z-index:2; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.04); color:var(--muted); transition:all .2s ease;}
   .booking-close:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08); transform:rotate(90deg);}
   .booking-close svg{width:16px; height:16px;}
-  .steps-row{display:flex; justify-content:space-between; margin-bottom:38px; gap:4px;}
-  .bstep{display:flex; flex-direction:column; align-items:center; gap:7px; flex:1; position:relative;}
-  .bstep-dot{width:27px;height:27px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--black); z-index:1; transition:all .3s ease;}
+  .steps-row{position:relative; display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:0; margin-bottom:38px;}
+  .steps-row::before{content:""; position:absolute; top:13px; left:0; right:0; height:2px; background:var(--border); z-index:0; transform:translateY(-50%);}
+  .bstep{display:flex; flex-direction:column; align-items:center; gap:7px; position:relative; z-index:1; min-width:0;}
+  .bstep-dot{width:27px;height:27px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--black); transition:all .3s ease;}
   .bstep.active .bstep-dot{background:var(--neon); color:#04140D; border-color:var(--neon); box-shadow:0 0 14px rgba(57,255,122,0.5);}
   .bstep.done .bstep-dot{background:transparent; color:var(--neon); border-color:var(--neon);}
-  .bstep-label{font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em; text-align:center;}
-  .bstep::after{content:""; position:absolute; top:13px; left:50%; width:100%; height:1px; background:var(--border); z-index:0;}
-  .bstep:last-child::after{display:none;}
-  .bstep.done::after{background:var(--neon); opacity:0.5;}
+  .bstep-label{font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}
+  .steps-row.done-through::before{background:var(--neon); opacity:0.5;}
   .bk-pane{width:100%; max-width:100%; min-width:0; animation:bkPaneIn .4s ease;}
   @keyframes bkPaneIn{from{opacity:0; transform:translateX(14px);} to{opacity:1; transform:translateX(0);}}
   .field-label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; display:block;}
@@ -321,8 +320,10 @@
   .booking-date-heading > span{display:inline;}
   .booking-month{white-space:nowrap;}
   .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
-  #bkTimePills{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:10px; width:100%; max-width:100%; box-sizing:border-box;}
-  #bkTimePills .pill{width:100%; min-width:0; box-sizing:border-box; text-align:center; white-space:nowrap;}
+  #bkDurationPills{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px; width:100%; max-width:100%; box-sizing:border-box; margin-bottom:6px;}
+  #bkDurationPills .pill{width:100%; min-width:0; box-sizing:border-box; text-align:center; padding:11px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #bkTimePills{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; width:100%; max-width:100%; box-sizing:border-box;}
+  #bkTimePills .pill{width:100%; min-width:0; min-height:44px; box-sizing:border-box; text-align:center; white-space:pre-line; overflow-wrap:anywhere; line-height:1.35;}
   .pill{padding:9px 16px; border:1px solid var(--border); border-radius:100px; font-size:12.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; transition:all .2s ease;}
   .pill.sel, .pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
   .pill.unavail{opacity:0.28; text-decoration:line-through; pointer-events:none;}
@@ -513,16 +514,18 @@
     .comm-fab-wrap{right:18px; bottom:18px;}
     #book{width:100%; max-width:100%; padding-left:3vw; padding-right:3vw;}
     #book .booking-shell{width:100%; max-width:none; margin-left:0; margin-right:0; padding:76px 16px 34px;}
-    #book .steps-row{width:100%; max-width:100%; margin:0 0 42px; gap:0;}
+    #book .steps-row{width:100%; max-width:100%; margin:0 0 42px; gap:0; grid-template-columns:repeat(6, minmax(0,1fr));}
+    #book .steps-row::before{top:16px;}
     #book .bstep-dot{width:32px; height:32px; font-size:12px;}
-    #book .bstep::after{top:15px;}
     #book .bstep-label{font-size:9px; letter-spacing:0.02em;}
     #book .field-label{font-size:14px; margin-bottom:12px;}
     #book .field-label.booking-date-heading{font-size:clamp(11px, 3vw, 13px) !important; letter-spacing:0.02em !important; line-height:1.2;}
     #book .pill{padding:11px 16px; font-size:13.5px;}
     #book .pill-row{gap:10px; margin-bottom:28px;}
-    #book #bkTimePills{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr));}
-    #book #bkTimePills .pill{padding-left:4px; padding-right:4px; font-size:12px; text-align:center; white-space:nowrap;}
+    #book #bkDurationPills{grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-bottom:8px;}
+    #book #bkDurationPills .pill{padding:12px 8px;}
+    #book #bkTimePills{grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));}
+    #book #bkTimePills .pill{padding-left:4px; padding-right:4px; font-size:12px; text-align:center; white-space:pre-line;}
     #book .bk-note{font-size:13px;}
     #book .bk-total{padding:20px 18px;}
     #book .bk-total .amt{font-size:32px;}
@@ -539,6 +542,12 @@
   @media(max-width:480px){
     .bk-range-row{grid-template-columns:1fr; gap:8px;}
     .bk-range-arrow{transform:rotate(90deg);}
+    #book .steps-row{grid-template-columns:repeat(6, minmax(0,1fr)); gap:0;}
+    #book .bstep-dot{width:28px; height:28px; font-size:11px;}
+    #book .steps-row::before{top:14px;}
+    #book .bstep-label{font-size:8px; letter-spacing:0.01em;}
+    #book #bkDurationPills{grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; margin-bottom:8px;}
+    #book #bkDurationPills .pill{padding:12px 6px;}
   }
 </style>
 </head>
@@ -766,9 +775,10 @@
       <div class="steps-row" id="bkStepsRow">
         <div class="bstep active" data-step="1"><div class="bstep-dot">1</div><div class="bstep-label">Verify</div></div>
         <div class="bstep" data-step="2"><div class="bstep-dot">2</div><div class="bstep-label">Date</div></div>
-        <div class="bstep" data-step="3"><div class="bstep-dot">3</div><div class="bstep-label">Time&nbsp;Range</div></div>
-        <div class="bstep" data-step="4"><div class="bstep-dot">4</div><div class="bstep-label">Summary</div></div>
-        <div class="bstep" data-step="5"><div class="bstep-dot">5</div><div class="bstep-label">Pay</div></div>
+        <div class="bstep" data-step="3"><div class="bstep-dot">3</div><div class="bstep-label">Duration</div></div>
+        <div class="bstep" data-step="4"><div class="bstep-dot">4</div><div class="bstep-label">Time&nbsp;Range</div></div>
+        <div class="bstep" data-step="5"><div class="bstep-dot">5</div><div class="bstep-label">Summary</div></div>
+        <div class="bstep" data-step="6"><div class="bstep-dot">6</div><div class="bstep-label">Pay</div></div>
       </div>
 
       <!-- PANE 1 — PHONE VERIFICATION -->
@@ -794,29 +804,34 @@
           <div class="rc-head"><span id="bkCalendarMonth"></span><span id="bkDateHint">Past dates are disabled</span></div>
           <div class="rc-grid" id="bkCalGrid"></div>
         </div>
-        <button class="btn btn-glow magnetic" id="bkDateContinue" style="width:100%; justify-content:center;" disabled onclick="bkGoStep(3)">Continue to time slot →</button>
+        <button class="btn btn-glow magnetic" id="bkDateContinue" style="width:100%; justify-content:center;" disabled onclick="bkGoStep(3)">Continue to duration →</button>
       </div>
 
-      <!-- PANE 3 — TIME RANGE (START + END) -->
+      <!-- PANE 3 — DURATION -->
       <div id="bkPane3" class="bk-pane" style="display:none;">
-        <div class="bk-range-row">
-          <div class="bk-range-chip" id="bkStartChip"><span class="bk-range-tag">Start time</span><b id="bkStartTime">—</b></div>
-          <div class="bk-range-arrow">→</div>
-          <div class="bk-range-chip" id="bkEndChip"><span class="bk-range-tag">End time</span><b id="bkEndTime">—</b></div>
+        <label class="field-label">Select duration</label>
+        <div class="pill-row" id="bkDurationPills">
+          <div class="pill" data-duration="1">1 hour</div><div class="pill" data-duration="2">2 hours</div><div class="pill" data-duration="3">3 hours</div><div class="pill" data-duration="4">4 hours</div><div class="pill" data-duration="5">5 hours</div><div class="pill" data-duration="6">6 hours</div><div class="pill" data-duration="7">7 hours</div><div class="pill" data-duration="8">8 hours</div><div class="pill" data-duration="9">9 hours</div><div class="pill" data-duration="10">10 hours</div><div class="pill" data-duration="11">11 hours</div><div class="pill" data-duration="12">12 hours</div>
         </div>
-        <label class="field-label">Pick your time range</label>
+        <div class="bk-note">Choose how long you want to book the turf.</div>
+        <button class="btn btn-glow magnetic" id="bkDurationContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(4)">Continue to time range →</button>
+      </div>
+
+      <!-- PANE 4 — AVAILABLE TIME RANGES -->
+      <div id="bkPane4" class="bk-pane" style="display:none;">
+        <label class="field-label">Available time ranges</label>
         <div class="pill-row" id="bkTimePills"></div>
-        <div class="bk-note" id="bkTimeHint">Tap a start time, then an end time to build your range. Greyed-out slots are booked.</div>
+        <div class="bk-note" id="bkTimeHint">Choose an available time range.</div>
         <div class="bk-summary" id="bkRangeSummary" style="display:none; margin-top:18px; margin-bottom:0;">
           <div class="bk-row"><span>Selected range</span><b id="bkRangeSel">—</b></div>
           <div class="bk-row"><span>Duration</span><b id="bkDurLabel">—</b></div>
           <div class="bk-row total"><span>Total amount</span><b id="bkDurAmt">—</b></div>
         </div>
-        <button class="btn btn-glow magnetic" id="bkTimeContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(4)">Continue to summary →</button>
+        <button class="btn btn-glow magnetic" id="bkTimeContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(5)">Continue to summary →</button>
       </div>
 
-      <!-- PANE 4 — BOOKING SUMMARY -->
-      <div id="bkPane4" class="bk-pane" style="display:none;">
+      <!-- PANE 5 — BOOKING SUMMARY -->
+      <div id="bkPane5" class="bk-pane" style="display:none;">
         <label class="field-label">Review your booking</label>
         <div class="bk-summary">
           <div class="bk-row"><span>Booking date</span><b id="bkSumDate">—</b></div>
@@ -826,11 +841,11 @@
           <div class="bk-row"><span>Price per hour</span><b data-site-rate>₹800</b></div>
           <div class="bk-row total"><span>Total amount</span><b id="bkSumTotal">—</b></div>
         </div>
-        <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(5)">Confirm & proceed to payment →</button>
+        <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(6)">Confirm & proceed to payment →</button>
       </div>
 
-      <!-- PANE 5 — UPI QR PAYMENT -->
-      <div id="bkPane5" class="bk-pane" style="display:none;">
+      <!-- PANE 6 — UPI QR PAYMENT -->
+      <div id="bkPane6" class="bk-pane" style="display:none;">
         <div class="qr-card">
           <div class="qr-glow-border"></div>
           <label class="field-label">Scan to pay</label>
@@ -1085,11 +1100,16 @@
   function wirePills(id, cb){
     document.getElementById(id).addEventListener('click', (e)=>{
       const p = e.target.closest('.pill'); if(!p) return;
-      document.querySelectorAll('#'+id+' .pill').forEach(x=>x.classList.remove('sel'));
-      p.classList.add('sel'); if(cb) cb();
+      if(id === 'extTimePills') p.classList.toggle('sel');
+      else { document.querySelectorAll('#'+id+' .pill').forEach(x=>x.classList.remove('sel')); p.classList.add('sel'); }
+      if(cb) cb(p);
     });
   }
-  wirePills('extTimePills');
+  let extendedPreferredTimes = [];
+  wirePills('extTimePills', (pill)=>{
+    extendedPreferredTimes = [...document.querySelectorAll('#extTimePills .pill.sel')].map(item => item.textContent.trim());
+    pill.setAttribute('aria-pressed', pill.classList.contains('sel'));
+  });
 
   document.querySelectorAll('.contact-card').forEach(card=>{
     const link = card.querySelector('a');
@@ -1105,7 +1125,10 @@
   });
 
   function openModal(id){ document.getElementById(id).classList.add('open'); }
-  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('open');
+    if(id === 'extendedModal' || id === 'extendedSuccessModal') resetExtendedBooking();
+  }
   document.querySelectorAll('.modal-overlay').forEach(ov=>{
     ov.addEventListener('click', (e)=>{ if(e.target===ov) closeModal(ov.id); });
   });
@@ -1174,7 +1197,7 @@
     renderRange();
   }
   function renderRange(){
-    document.querySelectorAll('.rc-day.avail').forEach(d=>{
+    document.querySelectorAll('#rcGrid .rc-day.avail').forEach(d=>{
       const n = parseInt(d.dataset.day);
       d.classList.remove('range-edge','in-range');
       if(n===rangeStart || n===rangeEnd) d.classList.add('range-edge');
@@ -1184,6 +1207,22 @@
     document.getElementById('rcEnd').textContent = rangeEnd ? `${calendarMonthShort} ${rangeEnd}` : '—';
     document.getElementById('rcDays').textContent = (rangeStart && rangeEnd) ? (rangeEnd-rangeStart+1) : '—';
     document.getElementById('rangeHint').textContent = !rangeStart ? 'Pick a start date' : (!rangeEnd ? 'Now pick an end date' : 'Range selected');
+  }
+
+  function resetExtendedBooking(){
+    ['extName','extMobile','extOtp','extNotes'].forEach(id => { const field = document.getElementById(id); if(field) field.value = ''; });
+    rangeStart = null;
+    rangeEnd = null;
+    extendedPreferredTimes = [];
+    document.querySelectorAll('#extTimePills .pill').forEach(pill => { pill.classList.remove('sel'); pill.setAttribute('aria-pressed', 'false'); });
+    document.getElementById('extOtpBlock').style.display = 'none';
+    document.getElementById('extOtpStatus').style.display = 'none';
+    document.getElementById('extSubmitBtn').setAttribute('disabled', '');
+    document.getElementById('rcStart').textContent = '—';
+    document.getElementById('rcEnd').textContent = '—';
+    document.getElementById('rcDays').textContent = '—';
+    document.getElementById('rangeHint').textContent = 'Pick a start date';
+    document.querySelectorAll('#rcGrid .rc-day').forEach(day => day.classList.remove('range-edge', 'in-range'));
   }
 
   let paymentSession = null;
@@ -1225,8 +1264,8 @@
   }
 
   // ===== HOURLY BOOKING WIZARD =====
-  let bkState = { date:null, dateLabel:'', start:null, end:null };
-  let bkRangeStart = null, bkRangeEnd = null;
+  let bkState = { date:null, dateLabel:'', duration:0, start:null, end:null, selectedRange:null };
+  let bkDurationHours = 0, bkSelectedRange = null;
   let bkCurrentStep = 1;
 
   function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
@@ -1237,15 +1276,17 @@
 
   function bkGoStep(n){
     bkCurrentStep = n;
-    for(let i=1;i<=5;i++){ document.getElementById('bkPane'+i).style.display = i===n ? 'block' : 'none'; }
+    for(let i=1;i<=6;i++){ document.getElementById('bkPane'+i).style.display = i===n ? 'block' : 'none'; }
     document.getElementById('bkBackButton').style.display = n > 1 ? 'flex' : 'none';
     document.querySelectorAll('#bkStepsRow .bstep').forEach(s=>{
       const sn = parseInt(s.dataset.step);
       s.classList.toggle('active', sn===n);
       s.classList.toggle('done', sn<n);
     });
-    if(n===4) bkFillSummary();
-    if(n===5) bkFillPayment();
+    document.getElementById('bkStepsRow').classList.toggle('done-through', n > 1);
+    if(n===4){ renderAvailableTimeRanges(); }
+    if(n===5) bkFillSummary();
+    if(n===6) bkFillPayment();
   }
   function bkGoBack(){
     if(bkCurrentStep > 1) bkGoStep(bkCurrentStep - 1);
@@ -1259,11 +1300,12 @@
     selectedDay.classList.add('range-edge');
     bkState.date = day;
     bkState.dateLabel = `${calendarMonthShort} ${day}, ${calendarYear}`;
-    bkRangeStart = null; bkRangeEnd = null;
+    bkDurationHours = 0; bkSelectedRange = null;
+    bkState.duration = 0; bkState.start = null; bkState.end = null; bkState.selectedRange = null;
     bkState.start = null; bkState.end = null;
-    renderBookingTimes(day);
+    document.querySelectorAll('#bkDurationPills .pill').forEach(pill=>pill.classList.remove('sel'));
+    document.getElementById('bkDurationContinue').setAttribute('disabled', '');
     document.getElementById('bkTimeContinue').setAttribute('disabled', '');
-    bkSyncRange();
     document.getElementById('bkDateHint').textContent = 'Date selected';
     document.getElementById('bkDateContinue').removeAttribute('disabled');
   });
@@ -1272,93 +1314,85 @@
   const bkTimes = ['12:00 AM','01:00 AM','02:00 AM','03:00 AM','04:00 AM','05:00 AM','06:00 AM','07:00 AM','08:00 AM','09:00 AM','10:00 AM','11:00 AM','12:00 PM','01:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM','06:00 PM','07:00 PM','08:00 PM','09:00 PM','10:00 PM','11:00 PM'];
   const bkUnavailable = ['09:00 AM','06:00 PM','09:00 PM'];
   const bkTimePills = document.getElementById('bkTimePills');
+  document.getElementById('bkDurationPills').addEventListener('click', (event)=>{
+    const pill = event.target.closest('.pill');
+    if(!pill) return;
+    document.querySelectorAll('#bkDurationPills .pill').forEach(item=>item.classList.remove('sel'));
+    pill.classList.add('sel');
+    bkDurationHours = Number(pill.dataset.duration);
+    bkState.duration = bkDurationHours;
+    bkSelectedRange = null;
+    bkState.start = null;
+    bkState.end = null;
+    document.getElementById('bkDurationContinue').removeAttribute('disabled');
+  });
 
   function bkSlotAvailable(hour){ return !bkUnavailable.includes(bkTimes[hour]); }
-  function bkCanEndAt(startHour, endHour){
-    for(let h = startHour + 1; h <= endHour; h++){ if(!bkSlotAvailable(h)) return false; }
-    return true;
-  }
-  function bkPickSlot(hour){
-    if(!bkSlotAvailable(hour)) return;
-    if(bkRangeStart === null || (bkRangeStart !== null && bkRangeEnd !== null)){
-      bkRangeStart = hour; bkRangeEnd = null;
-    } else if(hour > bkRangeStart && bkCanEndAt(bkRangeStart, hour)){
-      bkRangeEnd = hour;
-    } else if(hour <= bkRangeStart){
-      bkRangeStart = hour; bkRangeEnd = null;
+  function bkTimeLabel(hour){ return bkTimes[((hour % bkTimes.length) + bkTimes.length) % bkTimes.length]; }
+  function bkStartDateTime(hour){ return new Date(calendarYear, calendarMonth, bkState.date, hour); }
+  function bkUnavailableIntervals(startDateTime, endDateTime){
+    const intervals = [];
+    for(let day = new Date(startDateTime); day < endDateTime; day.setDate(day.getDate() + 1)){
+      bkUnavailable.forEach(timeLabel=>{
+        const hour = bkTimes.indexOf(timeLabel);
+        const unavailableStart = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour);
+        const unavailableEnd = new Date(unavailableStart.getTime() + 60 * 60 * 1000);
+        if(unavailableStart < endDateTime && unavailableEnd > startDateTime) intervals.push({ start: unavailableStart, end: unavailableEnd });
+      });
     }
-    bkState.start = bkRangeStart === null ? null : bkTimes[bkRangeStart];
-    bkState.end = bkRangeEnd === null ? null : bkTimes[bkRangeEnd];
-    bkApplyRangeUI();
-    bkSyncRange();
+    return intervals;
   }
-  function bkApplyRangeUI(){
-    document.querySelectorAll('#bkTimePills .pill').forEach(p=>{
-      const hour = parseInt(p.dataset.hour);
-      p.classList.remove('start','in-range','end','end-option');
-      if(bkRangeStart !== null && bkRangeEnd === null){
-        if(hour <= bkRangeStart) return;
-        if(bkCanEndAt(bkRangeStart, hour)) p.classList.add('end-option');
-      }
-      if(hour === bkRangeStart) p.classList.add('start');
-      else if(hour === bkRangeEnd) p.classList.add('end');
-      else if(bkRangeStart !== null && bkRangeEnd !== null && hour > bkRangeStart && hour < bkRangeEnd) p.classList.add('in-range');
+  function getAvailableTimeRanges(){
+    const ranges = [];
+    if(!bkDurationHours) return ranges;
+    for(let startHour = 0; startHour < bkTimes.length; startHour++){
+      const startDateTime = bkStartDateTime(startHour);
+      const endDateTime = new Date(startDateTime.getTime() + bkDurationHours * 60 * 60 * 1000);
+      if (bkState.date === today.getDate() && startDateTime <= new Date()) continue;
+      if(!bkUnavailableIntervals(startDateTime, endDateTime).length) ranges.push({start: startDateTime, end: endDateTime});
+    }
+    return ranges;
+  }
+  function selectBookingRange(range){
+    bkSelectedRange = range;
+    bkState.start = formatBookingTime(range.start);
+    bkState.end = formatBookingTime(range.end);
+    bkState.selectedRange = range;
+    document.querySelectorAll('#bkTimePills .pill').forEach(pill=>pill.classList.toggle('sel', Number(pill.dataset.start) === range.start.getTime()));
+    document.getElementById('bkRangeSel').textContent = `${bkState.start} → ${bkState.end}`;
+    document.getElementById('bkDurLabel').textContent = bkDurationLabel();
+    document.getElementById('bkDurAmt').textContent = `₹${(bkDuration()*getSiteRate()).toLocaleString('en-IN')}`;
+    document.getElementById('bkRangeSummary').style.display = 'block';
+    document.getElementById('bkTimeContinue').removeAttribute('disabled');
+    document.getElementById('bkTimeHint').textContent = `${bkState.start} → ${bkState.end} selected.`;
+  }
+  function renderAvailableTimeRanges(){
+    bkTimePills.innerHTML = '';
+    getAvailableTimeRanges().forEach(range=>{
+      const pill = document.createElement('div');
+      pill.className = 'pill';
+      pill.dataset.start = range.start.getTime();
+      pill.textContent = `${formatBookingTime(range.start)} → ${formatBookingTime(range.end)}`;
+      pill.onclick = ()=>selectBookingRange(range);
+      bkTimePills.appendChild(pill);
     });
+    bkSelectedRange = null;
+    bkState.start = null;
+    bkState.end = null;
+    document.getElementById('bkRangeSummary').style.display = 'none';
+    document.getElementById('bkTimeContinue').setAttribute('disabled', '');
+    document.getElementById('bkTimeHint').textContent = bkTimePills.children.length ? 'Choose an available time range.' : 'No time ranges are available for this duration.';
   }
-  function bkSyncRange(){
-    const startEl = document.getElementById('bkStartTime');
-    const endEl = document.getElementById('bkEndTime');
-    const hintEl = document.getElementById('bkTimeHint');
-    const summary = document.getElementById('bkRangeSummary');
-    const btn = document.getElementById('bkTimeContinue');
-    if(bkRangeStart === null){
-      startEl.textContent = '—';
-      document.getElementById('bkStartChip').classList.add('pick-start');
-      document.getElementById('bkEndChip').classList.remove('pick-end');
-    } else {
-      startEl.textContent = bkState.start;
-      document.getElementById('bkStartChip').classList.remove('pick-start');
-    }
-    document.getElementById('bkEndChip').classList.toggle('pick-end', bkRangeEnd === null && bkRangeStart !== null);
-    endEl.textContent = bkState.end || '—';
-    if(bkRangeStart === null){ hintEl.textContent = 'Tap a start time, then an end time to build your range. Greyed-out slots are booked.'; }
-    else if(bkRangeEnd === null){ hintEl.textContent = 'Now tap the end time of your range.'; }
-    else { hintEl.textContent = `${bkState.start} → ${bkState.end} selected.`; }
-    const ready = bkRangeStart !== null && bkRangeEnd !== null;
-    summary.style.display = ready ? 'block' : 'none';
-    if(ready){
-      document.getElementById('bkRangeSel').textContent = `${bkState.start} → ${bkState.end}`;
-      document.getElementById('bkDurLabel').textContent = bkDurationLabel();
-      document.getElementById('bkDurAmt').textContent = `₹${(bkDuration()*getSiteRate()).toLocaleString('en-IN')}`;
-    }
-    if(ready) btn.removeAttribute('disabled'); else btn.setAttribute('disabled','');
+  function formatBookingTime(dateTime){
+    const time = dateTime.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+    const nextDay = dateTime.getDate() !== bkState.date || dateTime.getMonth() !== calendarMonth || dateTime.getFullYear() !== calendarYear;
+    return nextDay ? `${time}\n(next day)` : time;
   }
-  function bkDuration(){
-    if(bkRangeStart === null || bkRangeEnd === null) return 0;
-    return bkRangeEnd - bkRangeStart;
-  }
+  function bkDuration(){ return bkDurationHours; }
   function bkDurationLabel(){
     const hrs = bkDuration();
     return hrs ? `${hrs} hour${hrs>1?'s':''}` : '—';
   }
-  function renderBookingTimes(selectedDay){
-    bkTimePills.innerHTML = '';
-    const now = new Date();
-    const selectedDate = new Date(calendarYear, calendarMonth, selectedDay);
-    bkTimes.forEach((timeLabel, hour)=>{
-      const slotDate = new Date(calendarYear, calendarMonth, selectedDay, hour);
-      if(selectedDate.getTime() === today.getTime() && slotDate <= now) return;
-      const p = document.createElement('div');
-      const isUnavailable = bkUnavailable.includes(timeLabel);
-      p.className = 'pill' + (isUnavailable ? ' unavail' : '');
-      p.dataset.hour = hour;
-      p.textContent = timeLabel;
-      if(!isUnavailable) p.onclick = ()=>bkPickSlot(hour);
-      bkTimePills.appendChild(p);
-    });
-    bkApplyRangeUI();
-  }
-
   function bkFillSummary(){
     document.getElementById('bkSumDate').textContent = bkState.dateLabel || '—';
     document.getElementById('bkSumStart').textContent = bkState.start || '—';
@@ -1420,8 +1454,8 @@
     fireConfetti('paymentConfettiCanvas');
   }
   function bkResetBooking(){
-    bkState = { date:null, dateLabel:'', start:null, end:null };
-    bkRangeStart = null; bkRangeEnd = null;
+    bkState = { date:null, dateLabel:'', duration:0, start:null, end:null, selectedRange:null };
+    bkDurationHours = 0; bkSelectedRange = null;
     document.getElementById('bkMobile').value = '';
     document.getElementById('bkOtp').value = '';
     document.getElementById('bkOtpBlock').style.display = 'none';
@@ -1430,13 +1464,11 @@
     document.querySelectorAll('#bkCalGrid .rc-day').forEach(dayElement=>dayElement.classList.remove('range-edge'));
     document.getElementById('bkDateHint').textContent = 'Past dates are disabled';
     document.getElementById('bkDateContinue').setAttribute('disabled', '');
-    document.querySelectorAll('#bkTimePills .pill').forEach(p=>p.classList.remove('start','in-range','end','end-option','sel'));
+    document.querySelectorAll('#bkDurationPills .pill, #bkTimePills .pill').forEach(p=>p.classList.remove('sel'));
+    document.getElementById('bkTimePills').innerHTML = '';
+    document.getElementById('bkDurationContinue').setAttribute('disabled', '');
     document.getElementById('bkTimeContinue').setAttribute('disabled', '');
-    document.getElementById('bkStartChip').classList.add('pick-start');
-    document.getElementById('bkEndChip').classList.remove('pick-end');
-    document.getElementById('bkStartTime').textContent = '—';
-    document.getElementById('bkEndTime').textContent = '—';
-    document.getElementById('bkTimeHint').textContent = 'Tap a start time, then an end time to build your range. Greyed-out slots are booked.';
+    document.getElementById('bkTimeHint').textContent = 'Choose an available time range.';
     document.getElementById('bkRangeSummary').style.display = 'none';
     document.getElementById('bkQrImage')?.removeAttribute?.('src');
     document.getElementById('bkQrStatus').textContent = 'Generating QR...';
