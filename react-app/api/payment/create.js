@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
   const amount = money(rate * billableUnits)
   const reference = createReference()
-  const upiId = process.env.PAYMENT_UPI_ID || 'vijaykarthiku7-1@oksbi'
+  const upiId = process.env.PAYMENT_UPI_ID || 'turfon24@okaxis'
   const merchantName = process.env.PAYMENT_UPI_NAME || 'Turfon24'
   const params = new URLSearchParams({ pa: upiId, pn: merchantName, am: amount.toFixed(2), cu: 'INR', tr: reference })
   const expiresAt = new Date(Date.now() + PAYMENT_TTL_MINUTES * 60 * 1000).toISOString()

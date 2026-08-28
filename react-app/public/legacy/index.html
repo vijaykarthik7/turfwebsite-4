@@ -241,10 +241,11 @@
   
   .linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;}
   .comm-panel.open{transform:translateY(0) scale(1); opacity:1; filter:blur(0); pointer-events:all;}
-  .comm-head{padding:12px 14px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; gap:8px;}
-  .comm-head-id{display:flex; align-items:center; gap:10px; min-width:0;}
-  .comm-head-avatar{width:36px; height:36px; border-radius:50%; background:linear-gradient(150deg,var(--emerald-light),var(--neon)); display:flex; align-items:center; justify-content:center; color:#04140D; flex-shrink:0;}
-  .comm-head-txt b{display:block; font-size:12.5px; line-height:1.3;}
+  .comm-head{padding:12px 14px; border-bottom:1px solid var(--border); background:linear-gradient(135deg, #06351f, #06251c, #071714); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; gap:8px;}
+  .comm-head-id{display:flex; align-items:center; justify-content:center; flex:1; min-width:0;}
+  .comm-head-avatar{display:none;}
+  .comm-head-txt{text-align:left;}
+  .comm-head-txt b{display:block; color:var(--white); font-size:12.5px; font-weight:700; line-height:1.3;}
   .comm-head-txt .online{font-size:9.5px; color:var(--neon); display:flex; align-items:center; gap:5px;}
   .comm-head-txt .online::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--neon); box-shadow:0 0 6px var(--neon);}
   .comm-head h4{font-size:12px;}
@@ -301,6 +302,9 @@
   .booking-back{position:absolute; top:16px; left:16px; width:30px; height:30px; padding:0; border:1px solid var(--border); border-radius:50%; display:none; align-items:center; justify-content:center; background:rgba(255,255,255,0.04); color:var(--muted); transition:all .2s ease;}
   .booking-back:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
   .booking-back svg{width:16px; height:16px;}
+  .booking-close{position:absolute; top:16px; right:16px; width:30px; height:30px; padding:0; z-index:2; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.04); color:var(--muted); transition:all .2s ease;}
+  .booking-close:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08); transform:rotate(90deg);}
+  .booking-close svg{width:16px; height:16px;}
   .steps-row{display:flex; justify-content:space-between; margin-bottom:38px; gap:4px;}
   .bstep{display:flex; flex-direction:column; align-items:center; gap:7px; flex:1; position:relative;}
   .bstep-dot{width:27px;height:27px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--black); z-index:1; transition:all .3s ease;}
@@ -319,11 +323,24 @@
   .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
   #bkTimePills{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:10px; width:100%; max-width:100%; box-sizing:border-box;}
   #bkTimePills .pill{width:100%; min-width:0; box-sizing:border-box; text-align:center; white-space:nowrap;}
-  #bkDurPills{display:grid; grid-template-columns:repeat(6, minmax(0, 1fr)); gap:10px;}
-  #bkDurPills .pill{text-align:center; white-space:nowrap; padding-left:4px; padding-right:4px;}
   .pill{padding:9px 16px; border:1px solid var(--border); border-radius:100px; font-size:12.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; transition:all .2s ease;}
   .pill.sel, .pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
   .pill.unavail{opacity:0.28; text-decoration:line-through; pointer-events:none;}
+  .pill.start{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; border-color:var(--neon); box-shadow:0 0 14px rgba(57,255,122,0.4);}
+  .pill.in-range{background:rgba(57,255,122,0.16); color:var(--neon); border-color:rgba(57,255,122,0.5);}
+  .pill.end{background:rgba(0,201,255,0.22); color:var(--blue); border-color:var(--blue); box-shadow:0 0 14px rgba(0,201,255,0.35);}
+  .pill.end-option{border-color:var(--neon); color:var(--neon); animation:endPulse 1.6s ease-in-out infinite;}
+  .pill.end-option:hover{background:rgba(57,255,122,0.08);}
+  @keyframes endPulse{0%,100%{box-shadow:0 0 0 0 rgba(57,255,122,0.30);} 50%{box-shadow:0 0 0 6px rgba(57,255,122,0);}}
+  .bk-range-row{display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; margin-bottom:26px;}
+  .bk-range-chip{background:var(--black); border:1px solid var(--border); border-radius:14px; padding:14px 18px; display:flex; flex-direction:column; gap:5px; text-align:left; transition:border-color .2s ease, box-shadow .2s ease;}
+  .bk-range-chip .bk-range-tag{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);}
+  .bk-range-chip b{font-size:17px; color:var(--white); font-family:'JetBrains Mono',monospace;}
+  .bk-range-chip.pick-start{border-color:var(--neon); box-shadow:0 0 16px rgba(57,255,122,0.18);}
+  .bk-range-chip.pick-start b{color:var(--neon);}
+  .bk-range-chip.pick-end{border-color:var(--blue); box-shadow:0 0 16px rgba(0,201,255,0.18);}
+  .bk-range-chip.pick-end b{color:var(--blue);}
+  .bk-range-arrow{color:var(--neon); font-size:18px; text-align:center;}
   .bk-note{font-size:11.5px; color:var(--muted); margin-top:14px; font-style:italic;}
   .bk-total{display:flex; justify-content:space-between; align-items:baseline; padding:18px 20px; background:var(--black); border:1px solid var(--border); border-radius:12px; margin-bottom:10px;}
   .bk-total .amt{font-family:'JetBrains Mono',monospace; font-size:30px; color:var(--neon); font-weight:600; transition:opacity .15s ease;}
@@ -396,6 +413,15 @@
   .modal-icon{width:52px;height:52px;border-radius:50%; background:rgba(57,255,122,0.12); color:var(--neon); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:24px; position:relative; z-index:2;}
   .modal-box h3{font-size:19px; margin-bottom:10px; position:relative; z-index:2;}
   .modal-box p{font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:24px; position:relative; z-index:2;}
+  .upi-app-box{max-width:360px; padding:32px 28px;}
+  .upi-app-header{margin-bottom:22px;}
+  .upi-app-header h3{font-size:19px; margin-bottom:6px;}
+  .upi-app-header p{font-size:13px; color:var(--muted); margin-bottom:0;}
+  .upi-app-options{display:grid; grid-template-columns:1fr; gap:10px;}
+  .upi-app-btn{display:flex; align-items:center; gap:14px; width:100%; justify-content:flex-start; padding:13px 16px; border-radius:14px; font-size:15px; font-weight:600; color:var(--white); background:var(--charcoal-2); border:1px solid var(--border); transition:all .2s ease;}
+  .upi-app-btn .upi-app-dot{font-size:20px; line-height:1; filter:drop-shadow(0 0 6px rgba(57,255,122,0.25)); flex:0 0 auto;}
+  .upi-app-btn:hover{border-color:var(--neon); color:var(--white); background:rgba(57,255,122,0.08); transform:translateY(-1px);}
+  .upi-app-hint{font-size:11.5px; color:var(--muted); margin-top:16px; text-align:center;}
   #confettiCanvas{position:absolute; inset:0; z-index:1; pointer-events:none;}
 
   .form-modal{max-width:640px; text-align:left; margin:40px auto; animation:formIn .4s cubic-bezier(.2,.8,.2,1);}
@@ -497,8 +523,6 @@
     #book .pill-row{gap:10px; margin-bottom:28px;}
     #book #bkTimePills{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr));}
     #book #bkTimePills .pill{padding-left:4px; padding-right:4px; font-size:12px; text-align:center; white-space:nowrap;}
-    #book #bkDurPills{grid-template-columns:repeat(2, minmax(0, 1fr));}
-    #book #bkDurPills .pill{padding-left:8px; padding-right:8px;}
     #book .bk-note{font-size:13px;}
     #book .bk-total{padding:20px 18px;}
     #book .bk-total .amt{font-size:32px;}
@@ -511,6 +535,10 @@
     footer p{grid-column:1 / -1; grid-row:2; justify-self:center; text-align:center; line-height:1.6;}
     .copyright-text,.designer-credit{display:block;}
     .copyright-separator{display:none;}
+  }
+  @media(max-width:480px){
+    .bk-range-row{grid-template-columns:1fr; gap:8px;}
+    .bk-range-arrow{transform:rotate(90deg);}
   }
 </style>
 </head>
@@ -734,13 +762,13 @@
 
     <div class="booking-shell reveal">
       <button class="booking-back" id="bkBackButton" type="button" aria-label="Go back" title="Go back" onclick="bkGoBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+      <button class="booking-close" id="bkCloseButton" type="button" aria-label="Close booking" title="Exit booking" onclick="bkCloseBooking()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       <div class="steps-row" id="bkStepsRow">
         <div class="bstep active" data-step="1"><div class="bstep-dot">1</div><div class="bstep-label">Verify</div></div>
         <div class="bstep" data-step="2"><div class="bstep-dot">2</div><div class="bstep-label">Date</div></div>
-        <div class="bstep" data-step="3"><div class="bstep-dot">3</div><div class="bstep-label">Time</div></div>
-        <div class="bstep" data-step="4"><div class="bstep-dot">4</div><div class="bstep-label">Duration</div></div>
-        <div class="bstep" data-step="5"><div class="bstep-dot">5</div><div class="bstep-label">Summary</div></div>
-        <div class="bstep" data-step="6"><div class="bstep-dot">6</div><div class="bstep-label">Pay</div></div>
+        <div class="bstep" data-step="3"><div class="bstep-dot">3</div><div class="bstep-label">Time&nbsp;Range</div></div>
+        <div class="bstep" data-step="4"><div class="bstep-dot">4</div><div class="bstep-label">Summary</div></div>
+        <div class="bstep" data-step="5"><div class="bstep-dot">5</div><div class="bstep-label">Pay</div></div>
       </div>
 
       <!-- PANE 1 — PHONE VERIFICATION -->
@@ -769,37 +797,26 @@
         <button class="btn btn-glow magnetic" id="bkDateContinue" style="width:100%; justify-content:center;" disabled onclick="bkGoStep(3)">Continue to time slot →</button>
       </div>
 
-      <!-- PANE 3 — TIME SLOT -->
+      <!-- PANE 3 — TIME RANGE (START + END) -->
       <div id="bkPane3" class="bk-pane" style="display:none;">
-        <label class="field-label">Available time slots</label>
-        <div class="pill-row" id="bkTimePills"></div>
-        <div class="bk-note">Greyed-out slots are already booked and can't be selected.</div>
-        <button class="btn btn-glow magnetic" id="bkTimeContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(4)">Continue to duration →</button>
-      </div>
-
-      <!-- PANE 4 — DURATION -->
-      <div id="bkPane4" class="bk-pane" style="display:none;">
-        <label class="field-label">Booking duration</label>
-        <div class="pill-row" id="bkDurPills">
-          <div class="pill" data-hrs="1">1 Hour</div>
-          <div class="pill sel" data-hrs="2">2 Hours</div>
-          <div class="pill" data-hrs="3">3 Hours</div>
-          <div class="pill" data-hrs="4">4 Hours</div>
-          <div class="pill" data-hrs="5">5 Hours</div>
-          <div class="pill" data-hrs="6">6 Hours</div>
-          <div class="pill" data-hrs="7">7 Hours</div>
-          <div class="pill" data-hrs="8">8 Hours</div>
-          <div class="pill" data-hrs="9">9 Hours</div>
-          <div class="pill" data-hrs="10">10 Hours</div>
-          <div class="pill" data-hrs="11">11 Hours</div>
-          <div class="pill" data-hrs="12">12 Hours</div>
+        <div class="bk-range-row">
+          <div class="bk-range-chip" id="bkStartChip"><span class="bk-range-tag">Start time</span><b id="bkStartTime">—</b></div>
+          <div class="bk-range-arrow">→</div>
+          <div class="bk-range-chip" id="bkEndChip"><span class="bk-range-tag">End time</span><b id="bkEndTime">—</b></div>
         </div>
-        <div class="bk-total"><span style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">Total amount</span><span class="amt" id="bkDurAmt">₹1,400</span></div>
-        <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(5)">Continue to summary →</button>
+        <label class="field-label">Pick your time range</label>
+        <div class="pill-row" id="bkTimePills"></div>
+        <div class="bk-note" id="bkTimeHint">Tap a start time, then an end time to build your range. Greyed-out slots are booked.</div>
+        <div class="bk-summary" id="bkRangeSummary" style="display:none; margin-top:18px; margin-bottom:0;">
+          <div class="bk-row"><span>Selected range</span><b id="bkRangeSel">—</b></div>
+          <div class="bk-row"><span>Duration</span><b id="bkDurLabel">—</b></div>
+          <div class="bk-row total"><span>Total amount</span><b id="bkDurAmt">—</b></div>
+        </div>
+        <button class="btn btn-glow magnetic" id="bkTimeContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(4)">Continue to summary →</button>
       </div>
 
-      <!-- PANE 5 — BOOKING SUMMARY -->
-      <div id="bkPane5" class="bk-pane" style="display:none;">
+      <!-- PANE 4 — BOOKING SUMMARY -->
+      <div id="bkPane4" class="bk-pane" style="display:none;">
         <label class="field-label">Review your booking</label>
         <div class="bk-summary">
           <div class="bk-row"><span>Booking date</span><b id="bkSumDate">—</b></div>
@@ -809,17 +826,17 @@
           <div class="bk-row"><span>Price per hour</span><b data-site-rate>₹800</b></div>
           <div class="bk-row total"><span>Total amount</span><b id="bkSumTotal">—</b></div>
         </div>
-        <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(6)">Confirm & proceed to payment →</button>
+        <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(5)">Confirm & proceed to payment →</button>
       </div>
 
-      <!-- PANE 6 — UPI QR PAYMENT -->
-      <div id="bkPane6" class="bk-pane" style="display:none;">
+      <!-- PANE 5 — UPI QR PAYMENT -->
+      <div id="bkPane5" class="bk-pane" style="display:none;">
         <div class="qr-card">
           <div class="qr-glow-border"></div>
           <label class="field-label">Scan to pay</label>
           <div class="qr-box"><img id="bkQrImage" class="dynamic-qr" alt="Dynamic UPI payment QR code"><span id="bkQrStatus" style="font-size:11px; color:#111; font-family:'JetBrains Mono',monospace;">Generating QR...</span></div>
           <p style="font-size:13px; color:var(--muted); margin-bottom:6px;">Please scan the QR Code using any UPI application to complete your payment.</p>
-          <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>vijaykarthiku7-1@oksbi</p>
+          <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>turfon24@okaxis</p>
           <div style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
             <div style="display:flex; justify-content:space-between;"><span>Date</span><span class="mono" style="color:var(--white);" id="bkPayDate">—</span></div>
             <div style="display:flex; justify-content:space-between;"><span>Start Time</span><span class="mono" style="color:var(--white);" id="bkPayTime">—</span></div>
@@ -827,7 +844,7 @@
             <div style="display:flex; justify-content:space-between;"><span>Duration</span><span class="mono" style="color:var(--white);" id="bkPayDur">—</span></div>
             <div style="display:flex; justify-content:space-between; font-weight:600;"><span>Amount</span><span class="mono" style="color:var(--neon);" id="bkPayAmt">—</span></div>
           </div>
-          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
+          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="openUpiAppPicker(event)">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
           <p class="payment-pending" id="bkPaymentStatus">Payment pending. Scan the QR and complete payment in your UPI app.</p>
           <button class="btn btn-glow" id="bkCompletePaymentButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="bkCompletePayment()">I have completed my payment</button>
         </div>
@@ -922,22 +939,6 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="extendedPaymentModal">
-  <div class="modal-box form-modal" style="text-align:center;">
-    <button class="modal-close" onclick="closeModal('extendedPaymentModal')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
-    <h3>Payment</h3>
-    <p class="fm-sub" id="extPayDates">Booking dates —</p>
-    <p class="fm-sub" id="extPayTime">Preferred time —</p>
-    <div class="qr-box"><img id="extQrImage" class="dynamic-qr" alt="Dynamic UPI payment QR code"><span id="extQrStatus" style="font-size:11px; color:#111; font-family:'JetBrains Mono',monospace;">Generating QR...</span></div>
-    <p style="font-size:13px; color:var(--muted);">Scan to pay using any UPI application.</p>
-    <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>vijaykarthiku7-1@oksbi</p>
-    <p class="mono" style="font-size:22px; color:var(--neon); margin-top:14px;" id="extPayAmount">₹—</p>
-    <p class="payment-pending" id="extPaymentStatus">Payment pending. Your booking is not confirmed until payment is verified.</p>
-    <div class="payment-actions"><a class="btn btn-glow" id="extPayApp" href="#">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
-    <button class="btn btn-glow" id="extCompletePaymentButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="bkCompletePayment()">I have completed my payment</button>
-  </div>
-</div>
-
 <div class="modal-overlay" id="extendedSuccessModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('extendedSuccessModal')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
@@ -946,6 +947,23 @@
     <h3>Request Submitted Successfully</h3>
     <p>Thank you for your enquiry. Our support team has received your request and will contact you shortly regarding your extended booking requirements.</p>
     <button class="btn btn-glow magnetic" onclick="closeModal('extendedSuccessModal')">Done</button>
+  </div>
+</div>
+
+<!-- UPI APP PICKER -->
+<div class="modal-overlay" id="upiAppModal">
+  <div class="modal-box upi-app-box">
+    <button class="modal-close" onclick="closeModal('upiAppModal')" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    <div class="upi-app-header">
+      <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+      <h3>Pay using UPI</h3>
+      <p>Choose your payment app</p>
+    </div>
+    <div class="upi-app-options">
+      <button class="btn btn-outline upi-app-btn" type="button" onclick="payWithUpiApp('gpay')"><span class="upi-app-dot">🟢</span> Google Pay</button>
+      <button class="btn btn-outline upi-app-btn" type="button" onclick="payWithUpiApp('phonepe')"><span class="upi-app-dot">🟣</span> PhonePe</button>
+    </div>
+    <p class="upi-app-hint">Same UPI ID is used for both apps.</p>
   </div>
 </div>
 
@@ -970,7 +988,7 @@
   }
   function readWebsiteSettings(){
     const settings = JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}');
-    applyWebsiteSettings({phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', address:'Cuddalore', hourlyRate:'800', upi:'turfon24@upi', ...settings});
+    applyWebsiteSettings({phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', address:'Cuddalore', hourlyRate:'800', upi:'turfon24@okaxis', ...settings});
   }
   function getSiteRate(){ return Number(JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}').hourlyRate) || 800; }
   readWebsiteSettings();
@@ -1169,7 +1187,6 @@
   }
 
   let paymentSession = null;
-  let extendedPayment = null;
   async function createPaymentSession(type, details){
     const response = await fetch('/api/payment/create', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type, ...details}) });
     if(!response.ok) throw new Error((await response.json().catch(()=>({}))).message || 'Payment setup failed');
@@ -1179,7 +1196,7 @@
     const units = type === 'extended' ? Number(details.days) * 8 : Number(details.hours);
     const amount = Math.round(units * getSiteRate() * 100) / 100;
     const reference = `T24-${Date.now().toString(36).toUpperCase()}`;
-    const upiId = 'vijaykarthiku7-1@oksbi';
+    const upiId = 'turfon24@okaxis';
     const params = new URLSearchParams({pa:upiId, pn:'Turfon24', am:amount.toFixed(2), cu:'INR', tr:reference});
     return {reference, amount, upiId, merchantName:'Turfon24', upiUri:`upi://pay?${params.toString()}`, status:'PAYMENT_PENDING'};
   }
@@ -1203,31 +1220,13 @@
   function formatAmount(amount){ return `₹${Number(amount).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}`; }
   async function submitExtended(){
     if(document.getElementById('extSubmitBtn').hasAttribute('disabled') || !rangeStart || !rangeEnd) return;
-    const days = rangeEnd - rangeStart + 1;
-    try {
-      const session = await requestPaymentSession('extended', {days, startDate:`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(rangeStart).padStart(2,'0')}`, endDate:`${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(rangeEnd).padStart(2,'0')}`});
-      extendedPayment = {session, days};
-      document.getElementById('extPayDates').textContent = `Booking dates: ${calendarMonthShort} ${rangeStart} – ${calendarMonthShort} ${rangeEnd}`;
-      document.getElementById('extPayTime').textContent = `Preferred time: ${document.querySelector('#extTimePills .pill.sel')?.textContent || 'Morning'} · ${days} day${days > 1 ? 's' : ''}`;
-      document.getElementById('extPayAmount').textContent = formatAmount(session.amount);
-      closeModal('extendedModal');
-      openModal('extendedPaymentModal');
-      await showPayment(session, 'extQrImage', 'extQrStatus', 'extPayApp');
-    } catch (error) {
-      document.getElementById('extSubmitBtn').textContent = error.message;
-    }
+    closeModal('extendedModal');
+    openModal('extendedSuccessModal');
   }
 
   // ===== HOURLY BOOKING WIZARD =====
-  let bkState = { date:null, dateLabel:'', time:null, hours:2 };
-
-  function bkEndTime(){
-    if(!bkState.time) return '—';
-    const startIndex = bkTimes.indexOf(bkState.time);
-    if(startIndex < 0) return '—';
-    const endHour = (startIndex + bkState.hours) % 24;
-    return bkTimes[endHour];
-  }
+  let bkState = { date:null, dateLabel:'', start:null, end:null };
+  let bkRangeStart = null, bkRangeEnd = null;
   let bkCurrentStep = 1;
 
   function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
@@ -1238,15 +1237,15 @@
 
   function bkGoStep(n){
     bkCurrentStep = n;
-    for(let i=1;i<=6;i++){ document.getElementById('bkPane'+i).style.display = i===n ? 'block' : 'none'; }
+    for(let i=1;i<=5;i++){ document.getElementById('bkPane'+i).style.display = i===n ? 'block' : 'none'; }
     document.getElementById('bkBackButton').style.display = n > 1 ? 'flex' : 'none';
     document.querySelectorAll('#bkStepsRow .bstep').forEach(s=>{
       const sn = parseInt(s.dataset.step);
       s.classList.toggle('active', sn===n);
       s.classList.toggle('done', sn<n);
     });
-    if(n===5) bkFillSummary();
-    if(n===6) bkFillPayment();
+    if(n===4) bkFillSummary();
+    if(n===5) bkFillPayment();
   }
   function bkGoBack(){
     if(bkCurrentStep > 1) bkGoStep(bkCurrentStep - 1);
@@ -1260,9 +1259,11 @@
     selectedDay.classList.add('range-edge');
     bkState.date = day;
     bkState.dateLabel = `${calendarMonthShort} ${day}, ${calendarYear}`;
-    bkState.time = null;
+    bkRangeStart = null; bkRangeEnd = null;
+    bkState.start = null; bkState.end = null;
     renderBookingTimes(day);
     document.getElementById('bkTimeContinue').setAttribute('disabled', '');
+    bkSyncRange();
     document.getElementById('bkDateHint').textContent = 'Date selected';
     document.getElementById('bkDateContinue').removeAttribute('disabled');
   });
@@ -1271,6 +1272,75 @@
   const bkTimes = ['12:00 AM','01:00 AM','02:00 AM','03:00 AM','04:00 AM','05:00 AM','06:00 AM','07:00 AM','08:00 AM','09:00 AM','10:00 AM','11:00 AM','12:00 PM','01:00 PM','02:00 PM','03:00 PM','04:00 PM','05:00 PM','06:00 PM','07:00 PM','08:00 PM','09:00 PM','10:00 PM','11:00 PM'];
   const bkUnavailable = ['09:00 AM','06:00 PM','09:00 PM'];
   const bkTimePills = document.getElementById('bkTimePills');
+
+  function bkSlotAvailable(hour){ return !bkUnavailable.includes(bkTimes[hour]); }
+  function bkCanEndAt(startHour, endHour){
+    for(let h = startHour + 1; h <= endHour; h++){ if(!bkSlotAvailable(h)) return false; }
+    return true;
+  }
+  function bkPickSlot(hour){
+    if(!bkSlotAvailable(hour)) return;
+    if(bkRangeStart === null || (bkRangeStart !== null && bkRangeEnd !== null)){
+      bkRangeStart = hour; bkRangeEnd = null;
+    } else if(hour > bkRangeStart && bkCanEndAt(bkRangeStart, hour)){
+      bkRangeEnd = hour;
+    } else if(hour <= bkRangeStart){
+      bkRangeStart = hour; bkRangeEnd = null;
+    }
+    bkState.start = bkRangeStart === null ? null : bkTimes[bkRangeStart];
+    bkState.end = bkRangeEnd === null ? null : bkTimes[bkRangeEnd];
+    bkApplyRangeUI();
+    bkSyncRange();
+  }
+  function bkApplyRangeUI(){
+    document.querySelectorAll('#bkTimePills .pill').forEach(p=>{
+      const hour = parseInt(p.dataset.hour);
+      p.classList.remove('start','in-range','end','end-option');
+      if(bkRangeStart !== null && bkRangeEnd === null){
+        if(hour <= bkRangeStart) return;
+        if(bkCanEndAt(bkRangeStart, hour)) p.classList.add('end-option');
+      }
+      if(hour === bkRangeStart) p.classList.add('start');
+      else if(hour === bkRangeEnd) p.classList.add('end');
+      else if(bkRangeStart !== null && bkRangeEnd !== null && hour > bkRangeStart && hour < bkRangeEnd) p.classList.add('in-range');
+    });
+  }
+  function bkSyncRange(){
+    const startEl = document.getElementById('bkStartTime');
+    const endEl = document.getElementById('bkEndTime');
+    const hintEl = document.getElementById('bkTimeHint');
+    const summary = document.getElementById('bkRangeSummary');
+    const btn = document.getElementById('bkTimeContinue');
+    if(bkRangeStart === null){
+      startEl.textContent = '—';
+      document.getElementById('bkStartChip').classList.add('pick-start');
+      document.getElementById('bkEndChip').classList.remove('pick-end');
+    } else {
+      startEl.textContent = bkState.start;
+      document.getElementById('bkStartChip').classList.remove('pick-start');
+    }
+    document.getElementById('bkEndChip').classList.toggle('pick-end', bkRangeEnd === null && bkRangeStart !== null);
+    endEl.textContent = bkState.end || '—';
+    if(bkRangeStart === null){ hintEl.textContent = 'Tap a start time, then an end time to build your range. Greyed-out slots are booked.'; }
+    else if(bkRangeEnd === null){ hintEl.textContent = 'Now tap the end time of your range.'; }
+    else { hintEl.textContent = `${bkState.start} → ${bkState.end} selected.`; }
+    const ready = bkRangeStart !== null && bkRangeEnd !== null;
+    summary.style.display = ready ? 'block' : 'none';
+    if(ready){
+      document.getElementById('bkRangeSel').textContent = `${bkState.start} → ${bkState.end}`;
+      document.getElementById('bkDurLabel').textContent = bkDurationLabel();
+      document.getElementById('bkDurAmt').textContent = `₹${(bkDuration()*getSiteRate()).toLocaleString('en-IN')}`;
+    }
+    if(ready) btn.removeAttribute('disabled'); else btn.setAttribute('disabled','');
+  }
+  function bkDuration(){
+    if(bkRangeStart === null || bkRangeEnd === null) return 0;
+    return bkRangeEnd - bkRangeStart;
+  }
+  function bkDurationLabel(){
+    const hrs = bkDuration();
+    return hrs ? `${hrs} hour${hrs>1?'s':''}` : '—';
+  }
   function renderBookingTimes(selectedDay){
     bkTimePills.innerHTML = '';
     const now = new Date();
@@ -1281,51 +1351,29 @@
       const p = document.createElement('div');
       const isUnavailable = bkUnavailable.includes(timeLabel);
       p.className = 'pill' + (isUnavailable ? ' unavail' : '');
+      p.dataset.hour = hour;
       p.textContent = timeLabel;
-      if(!isUnavailable){
-        p.onclick = ()=>{
-          document.querySelectorAll('#bkTimePills .pill').forEach(x=>x.classList.remove('sel'));
-          p.classList.add('sel');
-          bkState.time = timeLabel;
-          document.getElementById('bkTimeContinue').removeAttribute('disabled');
-        };
-      }
+      if(!isUnavailable) p.onclick = ()=>bkPickSlot(hour);
       bkTimePills.appendChild(p);
     });
-  }
-
-  // duration — live animated total
-  document.getElementById('bkDurPills').addEventListener('click', (e)=>{
-    const p = e.target.closest('.pill'); if(!p) return;
-    document.querySelectorAll('#bkDurPills .pill').forEach(x=>x.classList.remove('sel'));
-    p.classList.add('sel');
-    bkState.hours = parseInt(p.dataset.hrs);
-    bkUpdateDurTotal();
-  });
-  function bkUpdateDurTotal(){
-    const amtEl = document.getElementById('bkDurAmt');
-    amtEl.style.opacity = 0.25;
-    setTimeout(()=>{
-      amtEl.textContent = `₹${(bkState.hours*getSiteRate()).toLocaleString('en-IN')}`;
-      amtEl.style.opacity = 1;
-    }, 120);
+    bkApplyRangeUI();
   }
 
   function bkFillSummary(){
     document.getElementById('bkSumDate').textContent = bkState.dateLabel || '—';
-    document.getElementById('bkSumStart').textContent = bkState.time || '—';
-    document.getElementById('bkSumEnd').textContent = bkEndTime();
-    document.getElementById('bkSumDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
-    document.getElementById('bkSumTotal').textContent = `₹${(bkState.hours*getSiteRate()).toLocaleString('en-IN')}`;
+    document.getElementById('bkSumStart').textContent = bkState.start || '—';
+    document.getElementById('bkSumEnd').textContent = bkState.end || '—';
+    document.getElementById('bkSumDur').textContent = bkDurationLabel();
+    document.getElementById('bkSumTotal').textContent = `₹${(bkDuration()*getSiteRate()).toLocaleString('en-IN')}`;
   }
   async function bkFillPayment(){
     document.getElementById('bkPayDate').textContent = bkState.dateLabel || '—';
-    document.getElementById('bkPayTime').textContent = bkState.time || '—';
-    document.getElementById('bkPayEnd').textContent = bkEndTime();
-    document.getElementById('bkPayDur').textContent = `${bkState.hours} hour${bkState.hours>1?'s':''}`;
+    document.getElementById('bkPayTime').textContent = bkState.start || '—';
+    document.getElementById('bkPayEnd').textContent = bkState.end || '—';
+    document.getElementById('bkPayDur').textContent = bkDurationLabel();
     document.getElementById('bkPayAmt').textContent = 'Preparing…';
     try {
-      const session = await requestPaymentSession('hourly', {hours:bkState.hours, date:bkState.dateLabel, time:bkState.time});
+      const session = await requestPaymentSession('hourly', {hours:bkDuration(), startTime:bkState.start, endTime:bkState.end, duration:bkDuration(), date:bkState.dateLabel});
       document.getElementById('bkPayAmt').textContent = formatAmount(session.amount);
       await showPayment(session, 'bkQrImage', 'bkQrStatus', 'bkPayApp');
     } catch (error) {
@@ -1336,6 +1384,24 @@
     if(!paymentSession) return;
     await navigator.clipboard?.writeText(paymentSession.upiId);
     document.querySelectorAll('.payment-pending').forEach(el=>{ el.textContent='UPI ID copied. Payment remains pending until verified by the payment provider.'; });
+  }
+  function openUpiAppPicker(event){
+    if(event && event.preventDefault) event.preventDefault();
+    if(!paymentSession) return;
+    openModal('upiAppModal');
+  }
+  function payWithUpiApp(app){
+    closeModal('upiAppModal');
+    if(!paymentSession) return;
+    const link = document.getElementById('bkPayApp');
+    if(link) link.href = paymentSession.upiUri;
+    const status = document.getElementById('bkPaymentStatus');
+    if(status){
+      status.textContent = app === 'phonepe'
+        ? 'Open PhonePe and scan the QR code above using your phone.'
+        : 'Payment pending. Scan the QR and complete payment in your UPI app.';
+    }
+    window.location.href = paymentSession.upiUri;
   }
   async function checkPaymentStatus(){
     if(!paymentSession) return;
@@ -1353,19 +1419,49 @@
     openModal('paymentConfirmModal');
     fireConfetti('paymentConfettiCanvas');
   }
-  function bkFinishPayment(){
-    closeModal('paymentConfirmModal');
-    bkState = { date:null, dateLabel:'', time:null, hours:2 };
+  function bkResetBooking(){
+    bkState = { date:null, dateLabel:'', start:null, end:null };
+    bkRangeStart = null; bkRangeEnd = null;
     document.getElementById('bkMobile').value = '';
     document.getElementById('bkOtp').value = '';
     document.getElementById('bkOtpBlock').style.display = 'none';
     document.getElementById('bkOtpStatus').style.display = 'none';
     document.getElementById('bkVerifyContinue').setAttribute('disabled', '');
     document.querySelectorAll('#bkCalGrid .rc-day').forEach(dayElement=>dayElement.classList.remove('range-edge'));
-    document.querySelectorAll('#bkDurPills .pill').forEach(pill=>pill.classList.toggle('sel', pill.dataset.hrs === '2'));
-    bkUpdateDurTotal();
+    document.getElementById('bkDateHint').textContent = 'Past dates are disabled';
+    document.getElementById('bkDateContinue').setAttribute('disabled', '');
+    document.querySelectorAll('#bkTimePills .pill').forEach(p=>p.classList.remove('start','in-range','end','end-option','sel'));
+    document.getElementById('bkTimeContinue').setAttribute('disabled', '');
+    document.getElementById('bkStartChip').classList.add('pick-start');
+    document.getElementById('bkEndChip').classList.remove('pick-end');
+    document.getElementById('bkStartTime').textContent = '—';
+    document.getElementById('bkEndTime').textContent = '—';
+    document.getElementById('bkTimeHint').textContent = 'Tap a start time, then an end time to build your range. Greyed-out slots are booked.';
+    document.getElementById('bkRangeSummary').style.display = 'none';
+    document.getElementById('bkQrImage')?.removeAttribute?.('src');
+    document.getElementById('bkQrStatus').textContent = 'Generating QR...';
+    document.getElementById('bkPayDate').textContent = '—';
+    document.getElementById('bkPayTime').textContent = '—';
+    document.getElementById('bkPayEnd').textContent = '—';
+    document.getElementById('bkPayDur').textContent = '—';
+    document.getElementById('bkPayAmt').textContent = '—';
+    const completeBtn = document.getElementById('bkCompletePaymentButton');
+    if(completeBtn){ completeBtn.disabled = false; completeBtn.textContent = 'I have completed my payment'; }
+    const payStatus = document.getElementById('bkPaymentStatus');
+    if(payStatus) payStatus.textContent = 'Payment pending. Scan the QR and complete payment in your UPI app.';
+    paymentSession = null;
+  }
+  function bkFinishPayment(){
+    closeModal('paymentConfirmModal');
+    bkResetBooking();
     bkGoStep(1);
     document.getElementById('book').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  function bkCloseBooking(){
+    closeModal('paymentConfirmModal');
+    bkResetBooking();
+    bkGoStep(1);
+    document.getElementById('pricing').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   function fireConfetti(canvasId){

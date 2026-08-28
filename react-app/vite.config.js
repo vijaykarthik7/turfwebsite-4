@@ -5,6 +5,7 @@ import crypto from 'node:crypto'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: { host: true },
   plugins: [react(), {
     name: 'local-admin-api',
     configureServer(server) {
@@ -13,7 +14,7 @@ export default defineConfig({
         let body = ''
         for await (const chunk of req) body += chunk
         const { email, password } = JSON.parse(body || '{}')
-        const valid = String(email || '').trim().toLowerCase() === 'ask@turfon24.com' && await bcrypt.compare(String(password || ''), '$2b$12$Cmv2/PFKIXxvn1ZlgkkiL.CNWGFGed2qFbvceK.5nrhSkD0skZ7FC')
+        const valid = String(email || '').trim().toLowerCase() === 'ask@turfon24.com' && await bcrypt.compare(String(password || ''), '$2b$12$Dw7E4DAYnz1IdMDnkRVn/eVY7P3XiWJTPdtHHsTVMin2T/uVVntue')
         if (!valid) { res.statusCode = 401; res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({ message: 'Incorrect email or password.' })) }
         const session = crypto.randomBytes(32).toString('hex')
         res.setHeader('Set-Cookie', `turfon24_admin_session=${session}; Path=/; HttpOnly; SameSite=Lax`)
