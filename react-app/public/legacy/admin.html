@@ -619,7 +619,7 @@
   }
   function requestPasswordReset(){
     const error = document.getElementById('resetRequestError');
-    if (!document.getElementById('resetEmail').value.trim()) { error.textContent = 'Enter a valid email address.'; error.style.display = 'block'; return; }
+    if (document.getElementById('resetEmail').value.trim().toLowerCase() !== ADMIN_EMAIL) { error.textContent = 'Use the admin email address.'; error.style.display = 'block'; return; }
     error.style.display = 'none';
     showResetStage('resetSentStage');
   }
