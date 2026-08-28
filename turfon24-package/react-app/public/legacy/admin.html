@@ -503,7 +503,9 @@
         let message = 'Incorrect email or password.';
         if(response.status === 404) message = 'Login service not found. Make sure the serverless API (api/admin) is deployed.';
         else if(response.status >= 500) message = 'Login is temporarily unavailable. Please try again shortly.';
-        try { const data = await response.json(); if(data && data.message) message = data.message; } catch {}
+        let data = {};
+        try { data = await response.json(); if(data && data.message) message = data.message; } catch {}
+        console.warn('[turfon24 auth] login failed', { status: response.status, code: data.code, message: data.message, hint: 'See /api/admin/diagnose and Vercel Function Logs.' });
         err.textContent = message;
         err.style.display = 'block';
         return;
@@ -532,7 +534,7 @@
   async function requestPasswordReset(){
     const error = document.getElementById('resetRequestError');
     try { const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('resetEmail').value.trim()})}); let data = {}; try { data = await response.json(); } catch {} if(!response.ok) throw new Error(response.status === 404 ? 'Password reset service not found. Make sure the serverless API (api/admin) is deployed.' : (data.message || 'Unable to send the reset email.')); showResetStage('resetSentStage'); }
-    catch (requestError) { if(/Unexpected token|JSON/i.test(requestError.message)) error.textContent = 'Unable to reach the password reset service. Make sure the serverless API (api/admin) is deployed.'; else error.textContent = requestError.message; error.style.display = 'block'; }
+    catch (requestError) { console.warn('[turfon24 auth] forgot-password failed', { status: requestError.status, message: requestError.message, hint: 'See /api/admin/diagnose and Vercel Function Logs.' }); if(/Unexpected token|JSON/i.test(requestError.message)) error.textContent = 'Unable to reach the password reset service. Make sure the serverless API (api/admin) is deployed.'; else error.textContent = requestError.message; error.style.display = 'block'; }
   }
   async function verifyResetToken(){
     const token = new URLSearchParams(window.top.location.search || window.location.search).get('token'); if(!token) return;
