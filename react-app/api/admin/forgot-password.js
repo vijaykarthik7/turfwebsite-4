@@ -1,5 +1,5 @@
-import { getPool, getRequestIp } from '../_lib/db.js'
-import { getMailer, resetUrl } from '../_lib/mail.js'
+import { getPool, getRequestIp, classifyDbError } from '../_lib/db.js'
+import { getMailer, resetUrl, classifyMailError } from '../_lib/mail.js'
 import { GENERIC_RESET_MESSAGE, tokenPair, validEmail } from '../_lib/security.js'
 
 export default async function handler(req, res) {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     }
     return res.status(200).json({ message: GENERIC_RESET_MESSAGE })
   } catch (error) {
-    console.error('forgot-password failed', error.message)
+    console.error('forgot-password failed', classifyDbError(error), classifyMailError(error), error.message)
     return res.status(503).json({ message: 'Unable to send the reset email right now. Please try again later.' })
   }
 }

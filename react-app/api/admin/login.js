@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import crypto from 'node:crypto'
-import { getPool } from '../_lib/db.js'
+import { getPool, classifyDbError } from '../_lib/db.js'
 
 function cookie(name, value, maxAge) { return `${name}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${process.env.NODE_ENV === 'production' ? '; Secure' : ''}` }
 
@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     res.setHeader('Set-Cookie', cookie('turfon24_admin_session', rawSession, 60 * 60 * 8))
     return res.status(200).json({ ok: true })
   } catch (error) {
-    console.error('admin login failed', error.message)
-    return res.status(503).json({ message: 'Login is temporarily unavailable.' })
+    const code = classifyDbError(error)
+    console.error('admin login failed', code, error.message)
+    return res.status(503).json({ code, message: 'Login is temporarily unavailable.' })
   }
 }
