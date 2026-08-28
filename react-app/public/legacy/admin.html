@@ -617,11 +617,20 @@
     const reset = document.getElementById('passwordReset');
     if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
   }
-  function requestPasswordReset(){
+  async function requestPasswordReset(){
     const error = document.getElementById('resetRequestError');
     if (document.getElementById('resetEmail').value.trim().toLowerCase() !== ADMIN_EMAIL) { error.textContent = 'Use the admin email address.'; error.style.display = 'block'; return; }
-    error.style.display = 'none';
-    showResetStage('resetSentStage');
+    try {
+      const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:ADMIN_EMAIL})});
+      let data = {};
+      try { data = await response.json(); } catch {}
+      if (!response.ok) throw new Error(data.message || 'Unable to send the reset email.');
+      error.style.display = 'none';
+      showResetStage('resetSentStage');
+    } catch (requestError) {
+      error.textContent = requestError.message;
+      error.style.display = 'block';
+    }
   }
   async function verifyResetToken(){
     const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
