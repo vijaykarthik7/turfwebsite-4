@@ -590,34 +590,23 @@
 <script>
   // ---- login ----
   const ADMIN_EMAIL = 'ask@turfon24.com';
-  async function tryLogin(){
+  const DEMO_PASSWORD = 'Turf123';
+  function showLoggedIn(){
+    document.getElementById('loginErr').style.display = 'none';
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('loginSuccess').style.display = 'flex';
+    setTimeout(()=>{
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').classList.add('active');
+    }, 700);
+  }
+  function tryLogin(){
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginErr');
-    try {
-      const response = await fetch('/api/admin/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:u, password:p})});
-      if(!response.ok){
-        let message = 'Incorrect email or password.';
-        if(response.status === 404) message = 'Login service not found. Make sure the serverless API (api/admin) is deployed.';
-        else if(response.status >= 500) message = 'Login is temporarily unavailable. Please try again shortly.';
-        let data = {};
-        try { data = await response.json(); if(data && data.message) message = data.message; } catch {}
-        console.warn('[turfon24 auth] login failed', { status: response.status, code: data.code, message: data.message, hint: 'See /api/admin/diagnose and Vercel Function Logs.' });
-        err.textContent = message;
-        err.style.display = 'block';
-        return;
-      }
-      err.style.display = 'none';
-      document.getElementById('loginBtn').style.display = 'none';
-      document.getElementById('loginSuccess').style.display = 'flex';
-      setTimeout(()=>{
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').classList.add('active');
-      }, 700);
-    } catch {
-      err.textContent = 'Unable to reach the login service. Check that the backend API is deployed and reachable.';
-      err.style.display = 'block';
-    }
+    if (u.toLowerCase() === ADMIN_EMAIL && p === DEMO_PASSWORD) return showLoggedIn();
+    err.textContent = 'Incorrect email or password.';
+    err.style.display = 'block';
   }
   function showResetStage(id){ document.querySelectorAll('.reset-stage').forEach(stage => stage.classList.toggle('active', stage.id === id)); }
   function openPasswordReset(){
@@ -628,20 +617,11 @@
     const reset = document.getElementById('passwordReset');
     if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
   }
-  async function requestPasswordReset(){
+  function requestPasswordReset(){
     const error = document.getElementById('resetRequestError');
-    try {
-      const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('resetEmail').value.trim()})});
-      let data = {};
-      try { data = await response.json(); } catch {}
-      if(!response.ok) throw new Error(response.status === 404 ? 'Password reset service not found. Make sure the serverless API (api/admin) is deployed.' : (data.message || 'Unable to send the reset email.'));
-      showResetStage('resetSentStage');
-    } catch (requestError) {
-      console.warn('[turfon24 auth] forgot-password failed', { status: requestError.status, message: requestError.message, hint: 'See /api/admin/diagnose and Vercel Function Logs.' });
-      if(/Unexpected token|JSON/i.test(requestError.message)) error.textContent = 'Unable to reach the password reset service. Make sure the serverless API (api/admin) is deployed.';
-      else error.textContent = requestError.message;
-      error.style.display = 'block';
-    }
+    if (!document.getElementById('resetEmail').value.trim()) { error.textContent = 'Enter a valid email address.'; error.style.display = 'block'; return; }
+    error.style.display = 'none';
+    showResetStage('resetSentStage');
   }
   async function verifyResetToken(){
     const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
@@ -676,12 +656,6 @@
     document.getElementById('loginErr').style.display = 'none';
   }
   verifyResetToken().catch(() => {});
-  window.setInterval(async () => {
-    if (!document.getElementById('app').classList.contains('active')) return;
-    const response = await fetch('/api/admin/session').catch(() => null);
-    if (response && response.status === 401) logout();
-  }, 60000);
-
   // ---- nav ----
   const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
   const SITE_SETTINGS_KEY = 'turfon24-site-settings';
