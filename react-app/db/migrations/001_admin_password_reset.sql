@@ -29,4 +29,4 @@ CREATE INDEX IF NOT EXISTS password_reset_tokens_hash_idx ON password_reset_toke
 
 INSERT INTO admin_users (email, password_hash)
 VALUES ('ask@turfon24.com', '$2b$12$Dw7E4DAYnz1IdMDnkRVn/eVY7P3XiWJTPdtHHsTVMin2T/uVVntue')
-ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, active = TRUE, updated_at = NOW();
+ON CONFLICT (email) DO NOTHING;

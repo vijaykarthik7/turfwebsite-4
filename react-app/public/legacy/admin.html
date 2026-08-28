@@ -596,7 +596,15 @@
     const err = document.getElementById('loginErr');
     try {
       const response = await fetch('/api/admin/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:u, password:p})});
-      if(!response.ok) throw new Error('login failed');
+      if(!response.ok){
+        let message = 'Incorrect email or password.';
+        if(response.status === 404) message = 'Login service not found. Make sure the serverless API (api/admin) is deployed.';
+        else if(response.status >= 500) message = 'Login is temporarily unavailable. Please try again shortly.';
+        try { const data = await response.json(); if(data && data.message) message = data.message; } catch {}
+        err.textContent = message;
+        err.style.display = 'block';
+        return;
+      }
       err.style.display = 'none';
       document.getElementById('loginBtn').style.display = 'none';
       document.getElementById('loginSuccess').style.display = 'flex';
@@ -605,6 +613,7 @@
         document.getElementById('app').classList.add('active');
       }, 700);
     } catch {
+      err.textContent = 'Unable to reach the login service. Check that the backend API is deployed and reachable.';
       err.style.display = 'block';
     }
   }
@@ -621,10 +630,15 @@
     const error = document.getElementById('resetRequestError');
     try {
       const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:document.getElementById('resetEmail').value.trim()})});
-      const data = await response.json();
-      if(!response.ok) throw new Error(data.message || 'Unable to send the reset email.');
+      let data = {};
+      try { data = await response.json(); } catch {}
+      if(!response.ok) throw new Error(response.status === 404 ? 'Password reset service not found. Make sure the serverless API (api/admin) is deployed.' : (data.message || 'Unable to send the reset email.'));
       showResetStage('resetSentStage');
-    } catch (requestError) { error.textContent = requestError.message; error.style.display = 'block'; }
+    } catch (requestError) {
+      if(/Unexpected token|JSON/i.test(requestError.message)) error.textContent = 'Unable to reach the password reset service. Make sure the serverless API (api/admin) is deployed.';
+      else error.textContent = requestError.message;
+      error.style.display = 'block';
+    }
   }
   async function verifyResetToken(){
     const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
