@@ -1,0 +1,310 @@
+.countdown-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #030607;
+  color: #f2f4f2;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  isolation: isolate;
+}
+
+/* --- Background layers (fixed so they cover the viewport while the page scrolls) --- */
+.countdown__bg,
+.countdown__scrim,
+.countdown__mist,
+.countdown__glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.countdown__bg {
+  z-index: 0;
+  background-image: url('/logo-assets/Countdown.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.countdown__scrim {
+  z-index: 1;
+  /* Subtle darkening only — keeps the pitch/goal/floodlights/mist visible */
+  background: linear-gradient(180deg, rgba(3, 6, 7, 0.50) 0%, rgba(3, 6, 7, 0.12) 42%, rgba(3, 6, 7, 0.10) 58%, rgba(3, 6, 7, 0.58) 100%);
+}
+
+/* Subtle animated mist/fog drift */
+.countdown__mist {
+  z-index: 1;
+  opacity: 0.5;
+  background:
+    radial-gradient(55% 42% at 28% 62%, rgba(225, 240, 235, 0.10), transparent 70%),
+    radial-gradient(50% 40% at 74% 38%, rgba(215, 235, 228, 0.09), transparent 70%),
+    radial-gradient(60% 45% at 50% 78%, rgba(225, 242, 236, 0.08), transparent 72%);
+  filter: blur(6px);
+  animation: countdown-mist 36s ease-in-out infinite alternate;
+}
+
+/* Subtle floodlight/glow pulse near the top */
+.countdown__glow {
+  top: -20%;
+  left: 50%;
+  right: auto;
+  width: 90%;
+  height: 50%;
+  z-index: 1;
+  background: radial-gradient(ellipse at 50% 100%, rgba(57, 255, 122, 0.14), transparent 70%);
+  animation: countdown-glow 7s ease-in-out infinite;
+}
+
+/* --- Top bar: logo (left) + Home button --- */
+.countdown__topbar {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-right, 0px)) 0 calc(24px + env(safe-area-inset-left, 0px));
+}
+
+.countdown__logo {
+  display: block;
+  width: clamp(150px, 20vw, 220px);
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+}
+
+/* Home button — transparent dark glass pill */
+.countdown__home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(3, 6, 7, 0.45);
+  color: #ffffff;
+  font: 500 14px 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 180ms ease, border-color 180ms ease, transform 120ms ease;
+}
+.countdown__home-arrow {
+  line-height: 1;
+  font-size: 18px;
+}
+.countdown__home:hover {
+  background: rgba(3, 6, 7, 0.68);
+  border-color: rgba(57, 255, 122, 0.6);
+}
+.countdown__home:focus-visible {
+  outline: 2px solid #39ff7a;
+  outline-offset: 2px;
+}
+.countdown__home:active {
+  transform: scale(0.96);
+}
+
+/* --- Main hero --- */
+.countdown__content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  padding: 28px 20px;
+}
+
+/* overflow-safe vertical centering */
+.countdown__inner {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 940px;
+  box-sizing: border-box;
+}
+
+.countdown__eyebrow {
+  margin: 0 0 clamp(14px, 2.4vh, 26px);
+  color: #39ff7a;
+  font: 600 clamp(12px, 2vw, 15px) 'JetBrains Mono', monospace;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-shadow: 0 0 16px rgba(57, 255, 122, 0.5);
+}
+
+.countdown__title {
+  margin: 0;
+  color: #ffffff;
+  font: 700 clamp(34px, 6.5vw, 76px)/1.04 'Space Grotesk', 'Inter', sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-shadow: 0 3px 30px rgba(0, 0, 0, 0.6);
+}
+
+.countdown__tagline {
+  margin: clamp(14px, 2.6vh, 26px) 0 0;
+  color: rgba(245, 250, 248, 0.94);
+  font: 500 clamp(10px, 1.6vw, 14px) 'JetBrains Mono', monospace;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7);
+}
+
+.countdown__grand-label {
+  margin: clamp(26px, 5vh, 48px) 0 10px;
+  color: rgba(233, 243, 239, 0.85);
+  font: 500 clamp(10px, 1.5vw, 13px) 'JetBrains Mono', monospace;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+.countdown__date {
+  margin: 0;
+  color: #39ff7a;
+  font: 700 clamp(22px, 4.2vw, 44px)/1.1 'Space Grotesk', 'Inter', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: 0 0 26px rgba(57, 255, 122, 0.5);
+}
+
+.countdown__desc {
+  margin: 14px 0 0;
+  color: rgba(240, 246, 244, 0.86);
+  font: 400 clamp(12px, 1.7vw, 16px) /1.7 'Inter', system-ui, sans-serif;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+}
+
+/* --- Countdown cards --- */
+.countdown__timer {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 2.4vw, 24px);
+  width: 100%;
+  max-width: 720px;
+  margin-top: clamp(24px, 5vh, 46px);
+}
+
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Glass card */
+.countdown__card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  border: 1px solid rgba(57, 255, 122, 0.32);
+  border-radius: 16px;
+  background: rgba(3, 6, 7, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.countdown__card:hover {
+  border-color: rgba(57, 255, 122, 0.55);
+  box-shadow: 0 8px 34px rgba(0, 0, 0, 0.45), 0 0 22px rgba(57, 255, 122, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.countdown__num {
+  color: #ffffff;
+  font: 700 clamp(34px, 6vw, 66px)/1 'Space Grotesk', 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.6), 0 0 24px rgba(57, 255, 122, 0.22);
+  animation: countdown-tick 320ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+.countdown__label {
+  color: rgba(233, 243, 239, 0.85);
+  font: 500 clamp(9px, 1.5vw, 13px) 'JetBrains Mono', monospace;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Live state */
+.countdown__live {
+  margin: 0;
+  color: #39ff7a;
+  font: 700 clamp(40px, 10vw, 96px)/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 30px rgba(57, 255, 122, 0.6);
+  animation: countdown-tick 500ms cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+@keyframes countdown-mist {
+  from { transform: translate3d(-2.5%, 0, 0); }
+  to { transform: translate3d(2.5%, 0, 0); }
+}
+
+@keyframes countdown-glow {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes countdown-tick {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .countdown__mist,
+  .countdown__glow,
+  .countdown__num { animation: none; }
+}
+
+/* --- Tablet --- */
+@media (max-width: 760px) {
+  .countdown__topbar { padding: calc(16px + env(safe-area-inset-top, 0px)) calc(18px + env(safe-area-inset-right, 0px)) 0 calc(18px + env(safe-area-inset-left, 0px)); }
+}
+
+/* --- Mobile / narrow --- */
+@media (max-width: 560px) {
+  .countdown__topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .countdown__logo { width: 150px; }
+  .countdown__content { padding: 24px 18px; }
+  .countdown__title { font-size: clamp(28px, 8vw, 40px); }
+  .countdown__grand-label { margin-top: 22px; }
+}
+
+/* 2 x 2 countdown grid on mobile, below 400px */
+@media (max-width: 400px) {
+  .countdown__timer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; max-width: 300px; }
+  .countdown__num { font-size: clamp(28px, 13vw, 44px); }
+}

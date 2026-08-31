@@ -455,6 +455,8 @@
   .fm-field textarea{resize:vertical; min-height:70px;}
   .fm-field.required-error label{color:#ff5c6c;}
   .fm-field.required-error input, .fm-field.required-error textarea{border-color:#ff5c6c; box-shadow:0 0 0 2px rgba(255,92,108,0.16);}
+  .fm-err{display:none; color:#ef4444; font-size:10.5px; line-height:1.4; margin-top:5px; text-align:left; font-family:'Inter',sans-serif;}
+  .fm-field.required-error .fm-err{display:block;}
   .otp-inline{display:flex; gap:8px;}
   .otp-inline input{flex:1;}
   .otp-inline .btn{padding:10px 16px; font-size:12.5px; white-space:nowrap;}
@@ -962,14 +964,15 @@
     <div class="fm-sub">Tell us your dates and requirements — our team will follow up with a custom quote.</div>
 
     <div class="fm-row">
-      <div class="fm-field"><label>Name</label><input type="text" id="extName" placeholder="Your full name"></div>
-      <div class="fm-field"><label>Mobile number</label>
+      <div class="fm-field"><label>Name</label><input type="text" id="extName" placeholder="Your full name"><div class="fm-err">Please enter your name.</div></div>
+      <div class="fm-field" id="extMobileField"><label>Mobile number</label>
         <div class="otp-inline"><input type="tel" id="extMobile" placeholder="98xxx xxxxx"><button class="btn btn-outline magnetic" onclick="sendExtOtp()">Send OTP</button></div>
+        <div class="fm-err">Please verify your mobile number.</div>
       </div>
     </div>
 
     <div id="extOtpBlock" style="display:none; margin-bottom:16px;">
-      <div class="fm-field"><label>Enter OTP</label>
+      <div class="fm-field" id="extOtpField"><label>Enter OTP</label>
         <div class="otp-inline"><input type="text" id="extOtp" maxlength="6" placeholder="6-digit code"><button class="btn btn-outline magnetic" onclick="verifyExtOtp()">Verify OTP</button></div>
       </div>
       <div class="otp-status" id="extOtpStatus" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg> Number verified</div>
@@ -1192,7 +1195,51 @@
   function verifyExtOtp(){
     document.getElementById('extOtpStatus').style.display='flex';
     document.getElementById('extSubmitBtn').removeAttribute('disabled');
+    setExtendedFieldError('extMobileField', '', false);
+    setExtendedFieldError('extOtpField', '', false);
   }
+
+  function setExtendedFieldError(idOrField, message, on){
+    const field = typeof idOrField === 'string' ? document.getElementById(idOrField) : idOrField;
+    if(!field) return;
+    const wrap = field.classList.contains('fm-field') ? field : field.closest('.fm-field');
+    if(!wrap) return;
+    if(on){
+      wrap.classList.add('required-error');
+      if(message){
+        const m = wrap.querySelector('.fm-err');
+        if(m) m.textContent = message;
+      }
+    } else {
+      wrap.classList.remove('required-error');
+    }
+  }
+  function extMobileVerified(){
+    const btn = document.getElementById('extSubmitBtn');
+    return !!(btn && !btn.hasAttribute('disabled'));
+  }
+  function clearExtendedErrors(){
+    ['extName','extMobileField','extOtpField'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) setExtendedFieldError(el, '', false);
+    });
+  }
+  function validateExtendedReminder(){
+    const name = document.getElementById('extName');
+    const nameEmpty = !name || !name.value.trim();
+    setExtendedFieldError('extName', 'Please enter your name.', nameEmpty);
+    const mobileOk = extMobileVerified();
+    setExtendedFieldError('extMobileField', 'Please verify your mobile number.', !mobileOk);
+    setExtendedFieldError('extOtpField', '', !mobileOk);
+  }
+  (function initExtendedReminder(){
+    const extNameInput = document.getElementById('extName');
+    if(extNameInput){
+      extNameInput.addEventListener('input', () => {
+        if(extNameInput.value.trim()) setExtendedFieldError('extName', '', false);
+      });
+    }
+  })();
 
   // Both booking calendars use the visitor's local date and current month.
   const today = new Date();
@@ -1381,6 +1428,7 @@
       }
     }
     renderRangeCalendar();
+    validateExtendedReminder();
   }
   renderRangeCalendar();
 
@@ -1395,6 +1443,7 @@
     document.getElementById('extOtpBlock').style.display = 'none';
     document.getElementById('extOtpStatus').style.display = 'none';
     document.getElementById('extSubmitBtn').setAttribute('disabled', '');
+    clearExtendedErrors();
     renderRangeCalendar();
   }
 
@@ -1431,7 +1480,10 @@
   }
   function formatAmount(amount){ return `₹${Number(amount).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}`; }
   async function submitExtended(){
-    if(document.getElementById('extSubmitBtn').hasAttribute('disabled') || !rangeStart || !rangeEnd) return;
+    if(!rangeStart || !rangeEnd) return;
+    validateExtendedReminder();
+    const name = document.getElementById('extName');
+    if((!name || !name.value.trim()) || !extMobileVerified()) return;
     closeModal('extendedModal');
     openModal('extendedSuccessModal');
   }

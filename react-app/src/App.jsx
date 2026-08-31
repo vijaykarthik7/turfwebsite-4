@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import taglineLogo from './assets/Tagline.png'
 import LoadingRadar from './components/ui/loading-radar'
+import Countdown from './components/Countdown'
 import './App.css'
 
 window.renderPaymentQr = (image, status, uri) => QRCode.toDataURL(uri, { width: 320, margin: 2, errorCorrectionLevel: 'M' }).then((dataUrl) => {
@@ -11,24 +12,47 @@ window.renderPaymentQr = (image, status, uri) => QRCode.toDataURL(uri, { width: 
 })
 
 function App() {
-  const isAdmin = window.location.pathname.startsWith('/admin')
-  const showLegacy = true
-  const [isLoading, setIsLoading] = useState(!isAdmin)
-  const pageTitle = isAdmin ? 'TurfOn24 Admin' : (!showLegacy ? 'TurfOn24 — Opening Soon' : 'TurfOn24')
-  const pageUrl = `${import.meta.env.BASE_URL}legacy/${isAdmin ? 'admin' : 'index'}.html`
+  const getRoute = () => {
+    const path = window.location.pathname
+    if (path.startsWith('/admin')) return 'admin'
+    if (path.startsWith('/countdown')) return 'countdown'
+    return 'home'
+  }
+  const [route, setRoute] = useState(getRoute)
+  const [isLoading, setIsLoading] = useState(route !== 'admin')
+  const pageTitle = route === 'admin' ? 'TurfOn24 Admin' : (route === 'countdown' ? 'TurfOn24 — Coming Soon' : 'TurfOn24')
+  const adminUrl = `${import.meta.env.BASE_URL}legacy/admin.html`
+  const homeUrl = `${import.meta.env.BASE_URL}legacy/index.html`
 
   useEffect(() => {
-    if (isAdmin || !showLegacy) return undefined
+    const onPop = () => setRoute(getRoute())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  useEffect(() => {
+    setIsLoading(route !== 'admin')
+  }, [route])
+
+  const goHome = () => {
+    if (getRoute() !== 'home') {
+      window.history.pushState(null, '', '/')
+      setRoute('home')
+    }
+  }
+
+  useEffect(() => {
+    if (route === 'admin') return undefined
     const loadingTimer = window.setTimeout(() => setIsLoading(false), 1800)
     return () => window.clearTimeout(loadingTimer)
-  }, [isAdmin, showLegacy])
+  }, [route])
 
   useEffect(() => {
     document.title = pageTitle
   }, [pageTitle])
 
   useEffect(() => {
-    if (!isAdmin) return undefined
+    if (route !== 'admin') return undefined
     const handleProfilePictureUpdate = (event) => {
       if (event.data?.type !== 'turfon24-profile-picture') return
       const avatar = document.querySelector('.legacy-page')?.contentDocument?.querySelector('.admin-profile-avatar')
@@ -36,7 +60,7 @@ function App() {
     }
     window.addEventListener('message', handleProfilePictureUpdate)
     return () => window.removeEventListener('message', handleProfilePictureUpdate)
-  }, [isAdmin])
+  }, [route])
 
   const replaceNavigationLogo = (event) => {
     const pageDocument = event.currentTarget.contentDocument
@@ -88,23 +112,52 @@ function App() {
     }
   }
 
+  const loadingScreen = (
+    <div className={`loading-screen${isLoading ? '' : ' loading-screen--hidden'}`}>
+      <video
+        className="loading-screen__video"
+        src="/logo-assets/Video.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+        tabIndex="-1"
+      />
+      <LoadingRadar />
+      <div className="loading-screen__brand">
+        <img className="loading-screen__tagline" src={taglineLogo} alt="TurfOn24" />
+      </div>
+    </div>
+  )
+
   return (
     <main className="legacy-shell">
-      {!isAdmin && (
-        <div className={`loading-screen${isLoading ? '' : ' loading-screen--hidden'}`}>
-          <LoadingRadar />
-          <div className="loading-screen__brand">
-            <img className="loading-screen__tagline" src={taglineLogo} alt="TurfOn24" />
-          </div>
-        </div>
+      {route === 'admin' ? (
+        <iframe
+          key={adminUrl}
+          className="legacy-page"
+          src={adminUrl}
+          title={pageTitle}
+          onLoad={replaceNavigationLogo}
+        />
+      ) : route === 'countdown' ? (
+        <>
+          {loadingScreen}
+          <Countdown onHome={goHome} />
+        </>
+      ) : (
+        <>
+          {loadingScreen}
+          <iframe
+            key={homeUrl}
+            className="legacy-page"
+            src={homeUrl}
+            title={pageTitle}
+            onLoad={replaceNavigationLogo}
+          />
+        </>
       )}
-      <iframe
-        key={pageUrl}
-        className="legacy-page"
-        src={pageUrl}
-        title={pageTitle}
-        onLoad={replaceNavigationLogo}
-      />
     </main>
   )
 }
