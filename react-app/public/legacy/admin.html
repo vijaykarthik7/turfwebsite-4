@@ -199,8 +199,11 @@
   /* Reduced toolbar input text */
   .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:12.5px; min-width:200px;}
   /* Reduced date filter text */
-  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark; touch-action:manipulation;}
-  .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0.85;}
+  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark; touch-action:manipulation; appearance:none; -webkit-appearance:none;}
+  .date-wrap{position:relative; display:inline-flex; align-items:center; min-width:0; max-width:100%;}
+  .date-wrap .date-ph{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; pointer-events:none; white-space:nowrap; max-width:calc(100% - 52px); overflow:hidden; text-overflow:ellipsis; display:none; z-index:2;}
+  .date-wrap .date-filter{position:relative; z-index:1; width:100%;}
+  .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0.85; position:relative; z-index:3;}
   .date-filter::-webkit-date-and-time-value{color:var(--white);}
   /* Reduced filter pill text */
   .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
@@ -327,8 +330,9 @@
     .login-card{position:relative; z-index:2;}
     .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
     table{min-width:640px;}
-    .date-filter{min-width:0; max-width:100%; min-height:44px; font-size:16px;}
+    .date-filter{min-width:0; max-width:100%; min-height:44px; font-size:16px; appearance:none; -webkit-appearance:none; background:var(--charcoal);}
     .date-filter::-webkit-calendar-picker-indicator{width:24px; height:24px; opacity:1;}
+    .date-wrap.empty .date-ph{display:block;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -460,7 +464,7 @@
     <div class="page" id="page-bookings">
       <div class="toolbar">
         <input id="bookingSearch" type="text" placeholder="Search by name, mobile, booking ID...">
-        <input id="bookingDate" class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date">
+        <span class="date-wrap"><span class="date-ph">Pick date</span><input id="bookingDate" class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date"></span>
         <div class="filt-pill sel" data-booking-status="all">All</div><div class="filt-pill" data-booking-status="pending">Pending</div><div class="filt-pill" data-booking-status="confirmed">Confirmed</div><div class="filt-pill" data-booking-status="cancelled">Cancelled</div>
         <div class="spacer"></div>
         <button class="btn btn-ghost" id="bookingExport"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
@@ -478,7 +482,7 @@
     <div class="page" id="page-enquiries">
       <div class="toolbar">
         <input id="enquirySearch" type="text" placeholder="Search enquiries...">
-        <input id="enquiryDate" class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date">
+        <span class="date-wrap"><span class="date-ph">Pick date</span><input id="enquiryDate" class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date"></span>
         <div class="filt-pill sel" data-enquiry-status="all">All</div><div class="filt-pill" data-enquiry-status="new">New</div><div class="filt-pill" data-enquiry-status="contacted">Contacted</div><div class="filt-pill" data-enquiry-status="closed">Closed</div>
         <button class="btn btn-ghost" id="enquiryExport" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
       </div>
@@ -498,7 +502,7 @@
           <button class="filt-pill sel" type="button" role="tab" aria-selected="true" data-history="hourly">Hourly bookings</button>
           <button class="filt-pill" type="button" role="tab" aria-selected="false" data-history="extended">Extended bookings</button>
         </div>
-        <input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date">
+        <span class="date-wrap"><span class="date-ph">Pick date</span><input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date"></span>
         <button class="btn btn-ghost" id="customerHistoryExport" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
       </div>
       <div class="table-wrap">
@@ -531,7 +535,7 @@
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
         <input type="text" id="whatsappSearch" placeholder="Search by name, phone...">
-        <input class="date-filter" type="date" id="whatsappDate" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date">
+        <span class="date-wrap"><span class="date-ph">Pick date</span><input class="date-filter" type="date" id="whatsappDate" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date"></span>
         <div class="filt-pill sel" data-wa-status="all">All</div><div class="filt-pill" data-wa-status="new">New</div><div class="filt-pill" data-wa-status="pending">Contacted</div><div class="filt-pill" data-wa-status="cancelled">Archived</div>
         <button class="btn btn-ghost" id="whatsappExport" style="margin-left:auto;" title="Download WhatsApp enquiries as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
@@ -548,7 +552,7 @@
     <div class="page" id="page-chatbot">
       <div class="toolbar">
         <input type="text" id="chatSearch" placeholder="Search by visitor name, phone...">
-        <input class="date-filter" type="date" id="chatDate" aria-label="Filter AI chats by date" title="Filter AI chats by date">
+        <span class="date-wrap"><span class="date-ph">Pick date</span><input class="date-filter" type="date" id="chatDate" aria-label="Filter AI chats by date" title="Filter AI chats by date"></span>
         <div class="filt-pill sel" data-chat-status="all">All</div><div class="filt-pill" data-chat-status="new">New</div><div class="filt-pill" data-chat-status="resolved">Resolved</div>
         <button class="btn btn-ghost" id="chatbotExport" style="margin-left:auto;" title="Download chatbot conversations as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
@@ -728,6 +732,10 @@
   }
   restoreAdminSession();
   verifyResetToken().catch(() => {});
+  // ---- date-filter placeholder state (mobile "Pick date") ----
+  function syncDatePlaceholder(){ document.querySelectorAll('.date-wrap').forEach(w=>w.classList.toggle('empty', !w.querySelector('.date-filter').value)); }
+  document.querySelectorAll('.date-filter').forEach(el=>el.addEventListener('change', syncDatePlaceholder));
+  syncDatePlaceholder();
   // ---- nav ----
   const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
   const SITE_SETTINGS_KEY = 'turfon24-site-settings';
@@ -1042,9 +1050,7 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     document.querySelectorAll('[data-wa-status]').forEach(item=>item.classList.toggle('sel', item === button));
     renderWhatsApp();
   }));
-  ['whatsappSearch','whatsappDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'whatsappDate' ? 'change' : 'input', renderWhatsApp));
-  document.getElementById('whatsappExport').addEventListener('click', ()=>{
-    const rows = waRows();
+  ['whatsappSearch','whatsappDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'whatsappDate' ? 'change' : 'input', renderWhatsApp));  document.getElementById('whatsappExport').addEventListener('click', ()=>{    const rows = waRows();
     if(!rows.length){ showToast('No data available to export'); return; }
     exportCsv(`turfon24-whatsapp-enquiries-${new Date().toISOString().slice(0,10)}.csv`, [{key:'name',label:'Name'},{key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'message',label:'Message'},{key:'received',label:'Received'},{key:'status',label:'Status'}], rows.map(w=>({name:w[0],phone:w[1],email:w[2],message:w[3],received:w[4],status:waStatusLbl[w[5]]})));
   });
