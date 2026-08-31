@@ -78,6 +78,16 @@
   .chk input{accent-color:var(--neon); width:14px; height:14px;}
   .forgot{color:var(--neon); text-decoration:none;}
   .forgot:hover{opacity:0.75;}
+  .password-reset{display:none; position:fixed; inset:0; z-index:20; align-items:center; justify-content:center; padding:20px; background:rgba(3,6,7,0.82);}
+  .password-reset.open{display:flex;}
+  .password-reset-card{position:relative; width:min(360px,100%); padding:28px; background:var(--charcoal); border:1px solid var(--border); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .password-reset-card h3{margin-bottom:8px;}
+  .password-reset-card p{color:var(--muted); font-size:12px; line-height:1.5; margin-bottom:20px;}
+  .password-reset-error{display:none; color:var(--red); font-size:12px; margin-bottom:12px;}
+  .reset-stage{display:none;}
+  .reset-stage.active{display:block;}
+  .reset-back{display:block; margin:16px auto 0; border:0; background:none; color:var(--muted); cursor:pointer; font-size:12.5px;}
+  .btn-outline{background:transparent; border:1px solid var(--border); color:var(--white); width:100%;}
   /* Reduced button text */
   .btn{font-family:'Inter',sans-serif; font-weight:600; font-size:13px; padding:12px 20px; border-radius:11px; border:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:transform .15s ease, box-shadow .25s ease;}
   .btn-glow{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; box-shadow:0 0 22px rgba(57,255,122,0.35); width:100%;}
@@ -299,6 +309,10 @@
     .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
     .history-switch{width:100%;}
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
+    /* Admin Calendar — mobile-only: give date number and count badge separate in-flow areas so they never overlap */
+    .cal-grid2{gap:5px;}
+    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
+    .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -342,11 +356,48 @@
       <div class="login-err" id="loginErr">Incorrect email or password.</div>
       <div class="row-between">
         <label class="chk"><input type="checkbox" checked> Remember me</label>
-        <a href="#" class="forgot" onclick="return false;">Forgot password?</a>
+        <a href="#" class="forgot" onclick="openPasswordReset(); return false;">Forgot password?</a>
       </div>
       <button class="btn btn-glow magnetic" id="loginBtn" onclick="tryLogin()">Log in</button>
       <div class="login-success" id="loginSuccess"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg>Welcome back — loading dashboard...</div>
       
+    </div>
+  </div>
+</div>
+
+<div class="password-reset" id="passwordReset" aria-hidden="true">
+  <div class="password-reset-card">
+    <button type="button" class="modal-close" onclick="closePasswordReset()" aria-label="Close">✕</button>
+    <div class="reset-stage active" id="resetRequestStage">
+      <h3>Forgot password</h3>
+      <p>Enter the admin email and we'll send you a verification link.</p>
+      <div class="fgroup"><label for="resetEmail">Admin email</label><input id="resetEmail" type="email" required autocomplete="email"></div>
+      <div class="password-reset-error" id="resetRequestError"></div>
+      <button class="btn btn-glow" type="button" onclick="requestPasswordReset()">Send verification email</button>
+      <button class="reset-back" type="button" onclick="closePasswordReset()">Back to login</button>
+    </div>
+    <div class="reset-stage" id="resetSentStage">
+      <h3>Check your email</h3>
+      <p>If an account is registered with that email, we've sent a password reset link. The link expires in 30 minutes and can only be used once.</p>
+      <div class="password-reset-error" id="resetSentError"></div>
+      <button class="btn btn-outline" type="button" onclick="requestPasswordReset()">Resend email</button>
+      <button class="reset-back" type="button" onclick="closePasswordReset()">Back to login</button>
+    </div>
+    <div class="reset-stage" id="resetPasswordStage">
+      <h3>Reset password</h3>
+      <p>Create a new password for your admin account.</p>
+      <form onsubmit="resetAdminPassword(event)">
+        <div class="fgroup"><label for="resetPassword">New password</label><input id="resetPassword" type="password" minlength="12" required autocomplete="new-password"></div>
+        <div class="fgroup"><label for="resetPasswordConfirm">Confirm password</label><input id="resetPasswordConfirm" type="password" minlength="12" required autocomplete="new-password"></div>
+        <div class="password-reset-error" id="passwordResetError"></div>
+        <button class="btn btn-glow" type="submit">Save new password</button>
+      </form>
+      <button class="reset-back" type="button" onclick="closePasswordReset()">Back to login</button>
+    </div>
+    <div class="reset-stage" id="resetSuccessStage">
+      <h3>Password updated successfully</h3>
+      <p>Your admin password has been changed. Please log in again with your new password.</p>
+      <button class="btn btn-glow" type="button" onclick="closePasswordReset()">Back to login</button>
     </div>
   </div>
 </div>
@@ -579,11 +630,15 @@
 
 <script>
   // ---- login ----
+  const ADMIN_EMAIL = 'ask@turfon24.com';
+  const ADMIN_PASSWORD = 'Turfon24@139';
+  const ADMIN_PASSWORD_KEY = 'turfon24-admin-password';
   function tryLogin(){
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginErr');
-    if(u === 'ask@turfon24.com' && p === 'Turfon24@139'){
+    const savedPassword = (function(){ try { return localStorage.getItem(ADMIN_PASSWORD_KEY); } catch (e) { return null; } })();
+    if(u === ADMIN_EMAIL && p === (savedPassword || ADMIN_PASSWORD)){
       err.style.display = 'none';
       document.getElementById('loginBtn').style.display = 'none';
       document.getElementById('loginSuccess').style.display = 'flex';
@@ -595,10 +650,97 @@
       err.style.display = 'block';
     }
   }
+  function showResetStage(id){ document.querySelectorAll('.reset-stage').forEach(stage => stage.classList.toggle('active', stage.id === id)); }
+  function openPasswordReset(){
+    const reset = document.getElementById('passwordReset');
+    if (reset) { reset.classList.add('open'); reset.setAttribute('aria-hidden', 'false'); showResetStage('resetRequestStage'); const el = document.getElementById('resetEmail'); if (el) el.focus(); }
+  }
+  function closePasswordReset(){
+    const reset = document.getElementById('passwordReset');
+    if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
+  }
+  function resetErrorMessage(code, fallback){
+    const map = {
+      DB_CONFIG_MISSING: 'Email service is not fully configured (database connection missing). Contact the administrator.',
+      DB_UNREACHABLE: 'The database could not be reached. Contact the administrator.',
+      DB_MISSING_TABLE: 'The database is missing the password-reset tables. Contact the administrator.',
+      DB_AUTH_ERROR: 'The database credentials are invalid. Contact the administrator.',
+      DB_MISSING_DATABASE: 'The database could not be found. Contact the administrator.',
+      MAIL_CONFIG_MISSING: 'The email/SMTP service is not fully configured. Contact the administrator.',
+      MAIL_UNREACHABLE: 'The email server could not be reached. Check the SMTP host/port settings.',
+      MAIL_AUTH_ERROR: 'The email server rejected the SMTP credentials. Check SMTP user/password.',
+      MAIL_SSL_ERROR: 'The email server has a TLS/SSL issue. Contact the administrator.',
+      MAIL_INVALID_RECIPIENT: 'The reset email recipient is invalid. Contact the administrator.'
+    };
+    if (code && map[code]) return map[code];
+    return fallback || 'Unable to send the reset email.';
+  }
+  async function requestPasswordReset(){
+    const email = document.getElementById('resetEmail').value.trim();
+    const error = document.getElementById('resetRequestError');
+    if (!email) { error.textContent = 'Enter the admin email address.'; error.style.display = 'block'; return; }
+    try {
+      const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email})});
+      let data = {};
+      try { data = await response.json(); } catch {}
+      if (!response.ok) throw Object.assign(new Error('Unable to send the reset email.'), { code: data.code, message: data.message });
+      error.style.display = 'none';
+      const sentError = document.getElementById('resetSentError');
+      if (sentError) sentError.style.display = 'none';
+      showResetStage('resetSentStage');
+    } catch (requestError) {
+      error.textContent = resetErrorMessage(requestError.code, requestError.message || 'Unable to send the reset email.');
+      error.style.display = 'block';
+    }
+  }
+  async function verifyResetToken(){
+    const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
+    if(!token) return;
+    const reset = document.getElementById('passwordReset');
+    if (reset) reset.classList.add('open');
+    try {
+      const response = await fetch('/api/admin/verify-reset-token?token=' + encodeURIComponent(token));
+      const data = await response.json();
+      if (data.valid) showResetStage('resetPasswordStage');
+      else {
+        showResetStage('resetRequestStage');
+        const error = document.getElementById('resetRequestError');
+        error.textContent = data.reason === 'expired' ? 'This password reset link has expired. Please request a new reset link.' : data.reason === 'used' ? 'This password reset link has already been used. Please request a new reset link.' : 'Invalid password reset link.';
+        error.style.display = 'block';
+      }
+    } catch (verifyError) {
+      showResetStage('resetRequestStage');
+      const error = document.getElementById('resetRequestError');
+      error.textContent = 'Unable to verify the reset link. Please request a new one.';
+      error.style.display = 'block';
+    }
+  }
+  async function resetAdminPassword(event){
+    event.preventDefault();
+    const password = document.getElementById('resetPassword').value;
+    const confirmation = document.getElementById('resetPasswordConfirm').value;
+    const error = document.getElementById('passwordResetError');
+    if (password !== confirmation) { error.textContent = 'Passwords do not match.'; error.style.display = 'block'; return; }
+    const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
+    if(!token) { error.textContent = 'Invalid password reset link.'; error.style.display = 'block'; return; }
+    try {
+      const response = await fetch('/api/admin/reset-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token, newPassword:password})});
+      let data = {};
+      try { data = await response.json(); } catch {}
+      if(!response.ok){ error.textContent = data.message || 'Unable to reset the password.'; error.style.display = 'block'; return; }
+      try { localStorage.setItem(ADMIN_PASSWORD_KEY, password); } catch (e) {}
+      error.style.display = 'none';
+      showResetStage('resetSuccessStage');
+    } catch (requestError) {
+      error.textContent = requestError.message || 'Unable to reset the password.';
+      error.style.display = 'block';
+    }
+  }
   function togglePw(){
     const pw = document.getElementById('loginPass');
     pw.type = pw.type === 'password' ? 'text' : 'password';
   }
+  verifyResetToken().catch(() => {});
   function logout(){
     document.getElementById('app').classList.remove('active');
     document.getElementById('loginScreen').style.display = 'grid';

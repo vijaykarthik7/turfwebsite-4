@@ -17,11 +17,16 @@ export default async function handler(req, res) {
       await pool.query('UPDATE password_reset_tokens SET used_at = NOW() WHERE admin_id = $1 AND used_at IS NULL', [admin.rows[0].id])
       await pool.query(`INSERT INTO password_reset_tokens (admin_id, token_hash, expires_at, request_ip, user_agent) VALUES ($1, $2, NOW() + INTERVAL '30 minutes', $3, $4)`, [admin.rows[0].id, tokenHash, ip, req.headers['user-agent'] || null])
       const url = resetUrl(rawToken)
-      await getMailer().sendMail({ from: process.env.MAIL_FROM, to: admin.rows[0].email, subject: 'Turfon24 Admin Password Reset', text: `We received a request to reset your Turfon24 admin password.\n\nReset your password here: ${url}\n\nThis link expires in 30 minutes and can only be used once. If you did not request this, ignore this email.`, html: `<p>We received a request to reset your Turfon24 admin password.</p><p><a href="${url}">Reset admin password</a></p><p>This link expires in 30 minutes and can only be used once.</p><p>If you did not request this, you can safely ignore this email.</p><p>Turfon24</p>` })
+      const recipient = (process.env.RESET_DEST_EMAIL || '').trim() || admin.rows[0].email
+      await getMailer().sendMail({ from: process.env.MAIL_FROM, to: recipient, subject: 'Turfon24 Admin Password Reset', text: `We received a request to reset your Turfon24 admin password.\n\nReset your password here: ${url}\n\nThis link expires in 30 minutes and can only be used once. If you did not request this, ignore this email.`, html: `<p>We received a request to reset your Turfon24 admin password.</p><p><a href="${url}">Reset admin password</a></p><p>This link expires in 30 minutes and can only be used once.</p><p>If you did not request this, you can safely ignore this email.</p><p>Turfon24</p>` })
     }
     return res.status(200).json({ message: GENERIC_RESET_MESSAGE })
   } catch (error) {
-    console.error('forgot-password failed', classifyDbError(error), classifyMailError(error), error.message)
-    return res.status(503).json({ message: 'Unable to send the reset email right now. Please try again later.' })
+    const dbCode = classifyDbError(error)
+    const mailCode = classifyMailError(error)
+    let code = dbCode
+    if (mailCode !== 'MAIL_OTHER') code = mailCode
+    console.error('forgot-password failed', JSON.stringify({ db: dbCode, mail: mailCode, message: error.message }))
+    return res.status(503).json({ code, message: 'Unable to send the reset email right now. Please try again later.' })
   }
 }

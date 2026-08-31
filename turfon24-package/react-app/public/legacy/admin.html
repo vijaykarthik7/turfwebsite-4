@@ -340,6 +340,10 @@
     .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
     .history-switch{width:100%;}
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
+    /* Admin Calendar — mobile-only: give date number and count badge separate in-flow areas so they never overlap */
+    .cal-grid2{gap:5px;}
+    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
+    .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -637,6 +641,7 @@
   // ---- login ----
   const ADMIN_EMAIL = 'ask@turfon24.com';
   const DEMO_PASSWORD = 'Turf123';
+  const ADMIN_PASSWORD_KEY = 'turfon24-admin-password';
   // Session persistence. sessionStorage keeps the admin logged in across page
   // refreshes within the current tab/session, but clears when the browser
   // (tab/page session) is closed — so reopening the admin requires login again.
@@ -676,7 +681,8 @@
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     const err = document.getElementById('loginErr');
-    if (u.toLowerCase() === ADMIN_EMAIL && p === DEMO_PASSWORD) return showLoggedIn();
+    const savedPassword = (function(){ try { return localStorage.getItem(ADMIN_PASSWORD_KEY); } catch (e) { return null; } })();
+    if (u.toLowerCase() === ADMIN_EMAIL && p === (savedPassword || DEMO_PASSWORD)) return showLoggedIn();
     err.textContent = 'Incorrect email or password.';
     err.style.display = 'block';
   }
@@ -689,6 +695,22 @@
     const reset = document.getElementById('passwordReset');
     if (reset) { reset.classList.remove('open'); reset.setAttribute('aria-hidden', 'true'); }
   }
+  function resetErrorMessage(code, fallback){
+    const map = {
+      DB_CONFIG_MISSING: 'Email service is not fully configured (database connection missing). Contact the administrator.',
+      DB_UNREACHABLE: 'The database could not be reached. Contact the administrator.',
+      DB_MISSING_TABLE: 'The database is missing the password-reset tables. Contact the administrator.',
+      DB_AUTH_ERROR: 'The database credentials are invalid. Contact the administrator.',
+      DB_MISSING_DATABASE: 'The database could not be found. Contact the administrator.',
+      MAIL_CONFIG_MISSING: 'The email/SMTP service is not fully configured. Contact the administrator.',
+      MAIL_UNREACHABLE: 'The email server could not be reached. Check the SMTP host/port settings.',
+      MAIL_AUTH_ERROR: 'The email server rejected the SMTP credentials. Check SMTP user/password.',
+      MAIL_SSL_ERROR: 'The email server has a TLS/SSL issue. Contact the administrator.',
+      MAIL_INVALID_RECIPIENT: 'The reset email recipient is invalid. Contact the administrator.'
+    };
+    if (code && map[code]) return map[code];
+    return fallback || 'Unable to send the reset email.';
+  }
   async function requestPasswordReset(){
     const error = document.getElementById('resetRequestError');
     if (document.getElementById('resetEmail').value.trim().toLowerCase() !== ADMIN_EMAIL) { error.textContent = 'Use the admin email address.'; error.style.display = 'block'; return; }
@@ -696,11 +718,11 @@
       const response = await fetch('/api/admin/forgot-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:ADMIN_EMAIL})});
       let data = {};
       try { data = await response.json(); } catch {}
-      if (!response.ok) throw new Error(data.message || 'Unable to send the reset email.');
+      if (!response.ok) throw Object.assign(new Error('Unable to send the reset email.'), { code: data.code, message: data.message });
       error.style.display = 'none';
       showResetStage('resetSentStage');
     } catch (requestError) {
-      error.textContent = requestError.message;
+      error.textContent = resetErrorMessage(requestError.code, requestError.message || 'Unable to send the reset email.');
       error.style.display = 'block';
     }
   }
@@ -720,9 +742,12 @@
     const error = document.getElementById('passwordResetError');
     if (password !== confirmation) { error.textContent = 'Passwords do not match.'; error.style.display = 'block'; return; }
     const token = new URLSearchParams(window.top.location.search || window.location.search).get('token');
+    if(!token){ error.textContent = 'Invalid password reset link.'; error.style.display = 'block'; return; }
     const response = await fetch('/api/admin/reset-password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token, newPassword:password})});
     const data = await response.json();
     if(!response.ok){ error.textContent = data.message; error.style.display = 'block'; return; }
+    try { localStorage.setItem(ADMIN_PASSWORD_KEY, password); } catch (e) {}
+    error.style.display = 'none';
     showResetStage('resetSuccessStage');
   }
   function togglePw(){
