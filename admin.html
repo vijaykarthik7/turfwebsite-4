@@ -174,15 +174,18 @@
   /* toolbar */
   .toolbar{display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;}
   /* Reduced toolbar input text */
-  .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:12.5px; min-width:200px;}
-  /* Reduced date filter text — real-mobile fix */
-  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark; appearance:none; -webkit-appearance:none; touch-action:manipulation; min-width:0; max-width:100%; width:auto; box-sizing:border-box;}
-  .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0.85; position:relative; z-index:3;}
+  .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:12.5px; min-width:200px; flex:1 1 200px; box-sizing:border-box;}
+  /* Date filter — real-mobile fix */
+  .date-wrap{position:relative; display:inline-flex; align-items:center; min-width:0; max-width:100%; flex:0 1 auto;}
+  .date-wrap .date-ph{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; pointer-events:none; white-space:nowrap; max-width:calc(100% - 52px); overflow:hidden; text-overflow:ellipsis; display:none; z-index:2; font-family:'Inter',sans-serif;}
+  .date-wrap .date-filter{position:relative; z-index:1; width:100%;}
+  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark; appearance:none; -webkit-appearance:none; touch-action:manipulation; min-width:160px; max-width:100%; flex:0 1 auto; box-sizing:border-box;}
+  .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0.85; position:relative; z-index:3; width:auto; height:auto;}
   .date-filter::-webkit-date-and-time-value{color:var(--white); text-align:left;}
   /* Reduced filter pill text */
-  .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
+  .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease; flex-shrink:0;}
   .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
-  .history-switch{display:inline-flex; gap:4px; padding:4px; background:var(--charcoal); border:1px solid var(--border); border-radius:10px;}
+  .history-switch{display:inline-flex; gap:4px; padding:4px; background:var(--charcoal); border:1px solid var(--border); border-radius:10px; flex-shrink:0;}
   .history-switch .filt-pill{border:0; padding:7px 14px; background:transparent; color:var(--muted);}
   .history-switch .filt-pill.sel{background:rgba(57,255,122,0.12);}
   .toolbar .spacer{flex:1;}
@@ -286,8 +289,16 @@
     .login-card{position:relative; z-index:2;}
     .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
     table{min-width:640px;}
-    .date-filter{min-width:0; max-width:100%; min-height:44px; font-size:16px; appearance:none; -webkit-appearance:none; background:var(--charcoal); color:var(--white); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color-scheme:dark;}
-    .date-filter::-webkit-calendar-picker-indicator{width:24px; height:24px; opacity:1; cursor:pointer;}
+    .toolbar{gap:8px;}
+    .toolbar input[type="text"]{width:100%; min-width:0; flex:1 1 100%; font-size:16px; min-height:44px;}
+    .date-wrap{width:100%;}
+    .date-filter{width:100%; min-width:0; flex:1 1 100%; min-height:44px; font-size:16px; appearance:none; -webkit-appearance:none; background:var(--charcoal); color:var(--white); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color-scheme:dark; box-sizing:border-box;}
+    .date-filter::-webkit-calendar-picker-indicator{width:22px; height:22px; opacity:1; cursor:pointer; filter:invert(0.8) sepia(1) saturate(4) hue-rotate(70deg);}
+    .date-wrap.empty .date-ph{display:block;}
+    .filt-pill{font-size:10.5px; padding:6px 10px;}
+    .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
+    .history-switch{width:100%;}
+    .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -409,7 +420,7 @@
     <div class="page" id="page-bookings">
       <div class="toolbar">
         <input type="text" placeholder="Search by name, mobile, booking ID...">
-        <input class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date">
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">Pending</div><div class="filt-pill">Confirmed</div><div class="filt-pill">Cancelled</div>
         <div class="spacer"></div>
         <button class="btn btn-ghost" onclick="showToast('Bookings exported to CSV')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
@@ -427,7 +438,7 @@
     <div class="page" id="page-enquiries">
       <div class="toolbar">
         <input type="text" placeholder="Search enquiries...">
-        <input class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date">
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Closed</div>
       </div>
       <div class="table-wrap">
@@ -446,7 +457,7 @@
           <button class="filt-pill sel" type="button" role="tab" aria-selected="true" data-history="hourly">Hourly bookings</button>
           <button class="filt-pill" type="button" role="tab" aria-selected="false" data-history="extended">Extended bookings</button>
         </div>
-        <input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date">
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date"></span>
       </div>
       <div class="table-wrap">
         <table>
@@ -478,7 +489,7 @@
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
         <input type="text" placeholder="Search by name, phone...">
-        <input class="date-filter" type="date" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date">
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Archived</div>
       </div>
       <div class="table-wrap">
@@ -494,7 +505,7 @@
     <div class="page" id="page-chatbot">
       <div class="toolbar">
         <input type="text" placeholder="Search by visitor name, phone...">
-        <input class="date-filter" type="date" aria-label="Filter AI chats by date" title="Filter AI chats by date">
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter AI chats by date" title="Filter AI chats by date"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Resolved</div>
       </div>
       <div class="table-wrap">
@@ -863,6 +874,8 @@
 
   document.querySelectorAll('.date-filter').forEach(filter=>{
     filter.addEventListener('change', ()=>{
+      const wrap = filter.closest('.date-wrap');
+      if(wrap) wrap.classList.toggle('empty', !filter.value);
       const rows = filter.closest('.page').querySelectorAll('tbody tr');
       rows.forEach(row=>{
         const value = filter.value;
@@ -871,6 +884,7 @@
       });
     });
   });
+  document.querySelectorAll('.date-wrap').forEach(w=>w.classList.add('empty'));
 
   // ---- customers table ----
   const customerHistory = {
@@ -906,6 +920,7 @@
     activeHistoryType = button.dataset.history;
     document.querySelectorAll('[data-history]').forEach(item=>{ item.classList.toggle('sel', item === button); item.setAttribute('aria-selected', String(item === button)); });
     historyDate.value = '';
+    historyDate.closest('.date-wrap').classList.add('empty');
     renderCustomerHistory();
   }));
   historyDate.addEventListener('change', renderCustomerHistory);
