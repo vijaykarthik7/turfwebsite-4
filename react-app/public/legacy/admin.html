@@ -55,6 +55,20 @@
   /* Reduced login input text */
   .fl-field input{width:100%; background:transparent; border:none; border-bottom:1px solid var(--border); color:var(--white); padding:10px 0 10px 0; font-size:13.5px; transition:border-color .2s ease;}
   .fl-field input:focus{outline:none; border-color:var(--neon);}
+  .fl-field input{-webkit-appearance:none; appearance:none;}
+  .fl-field input:-webkit-autofill,
+  .fl-field input:-webkit-autofill:hover,
+  .fl-field input:-webkit-autofill:focus,
+  .fl-field input:-webkit-autofill:active{
+    -webkit-box-shadow:0 0 0 1000px var(--black) inset !important;
+    box-shadow:0 0 0 1000px var(--black) inset !important;
+    -webkit-text-fill-color:var(--white);
+    caret-color:var(--white);
+    border-bottom-color:var(--border);
+    font-size:13.5px;
+    transition:background-color 9999s ease-in-out 0s;
+  }
+  .fl-field input:-webkit-autofill:focus{border-bottom-color:var(--neon);}
   /* Reduced login floating label */
   .fl-field label{position:absolute; left:0; top:11px; color:var(--muted); font-size:13px; pointer-events:none; transition:all .2s ease;}
   /* Reduced login focused label */
@@ -185,7 +199,9 @@
   /* Reduced toolbar input text */
   .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:12.5px; min-width:200px;}
   /* Reduced date filter text */
-  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark;}
+  .date-filter{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 12px; color:var(--white); font-size:12.5px; color-scheme:dark; touch-action:manipulation;}
+  .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0.85;}
+  .date-filter::-webkit-date-and-time-value{color:var(--white);}
   /* Reduced filter pill text */
   .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
   .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
@@ -228,6 +244,7 @@
   .empty-state h3{color:var(--white); font-size:16px; margin-bottom:6px;}
   /* Reduced empty state body */
   .empty-state p{font-size:12px; max-width:340px; margin:0 auto;}
+  .tbl-empty{text-align:center; padding:30px 16px; font-size:12px; color:var(--muted);}
 
   /* settings/profile form */
   .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
@@ -247,6 +264,18 @@
   .cal-grid2{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
   .cal-cell{aspect-ratio:1; border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative;}
   .cal-cell .cnt{position:absolute; bottom:6px; right:6px; background:rgba(57,255,122,0.15); color:var(--neon); font-size:9px; padding:2px 5px; border-radius:100px;}
+  .cal-cell.has-bookings{border-color:var(--neon); cursor:pointer;}
+  .cal-cell.has-bookings:hover{background:rgba(57,255,122,0.06);}
+  .cal-date-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);}
+  .cal-date-head strong{color:var(--white); font-size:14px;}
+  .cal-date-head .cnt{background:rgba(57,255,122,0.15); color:var(--neon); font-size:10px; padding:3px 9px; border-radius:100px; font-family:'JetBrains Mono',monospace; white-space:nowrap;}
+  .cal-book-list{max-height:52vh; overflow-y:auto; margin-right:-6px; padding-right:6px;}
+  .cal-book-card{border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:12px; background:rgba(255,255,255,0.02);}
+  .cal-book-card:last-child{margin-bottom:0;}
+  .cal-book-card .who{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .cal-book-card .who .num{width:22px;height:22px;border-radius:50%;background:rgba(57,255,122,0.12);color:var(--neon);font-size:10.5px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+  .cal-book-card .who b{color:var(--white); font-size:12.5px;}
+  .cal-book-card .detail-row{padding:8px 0;}
 
   /* charts */
   .chart-row{display:grid; grid-template-columns:1.3fr 1fr; gap:18px;}
@@ -298,6 +327,8 @@
     .login-card{position:relative; z-index:2;}
     .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
     table{min-width:640px;}
+    .date-filter{min-width:0; max-width:100%; min-height:44px; font-size:16px;}
+    .date-filter::-webkit-calendar-picker-indicator{width:24px; height:24px; opacity:1;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -499,9 +530,10 @@
     <!-- WHATSAPP ENQUIRIES -->
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
-        <input type="text" placeholder="Search by name, phone...">
-        <input class="date-filter" type="date" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date">
-        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Archived</div>
+        <input type="text" id="whatsappSearch" placeholder="Search by name, phone...">
+        <input class="date-filter" type="date" id="whatsappDate" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date">
+        <div class="filt-pill sel" data-wa-status="all">All</div><div class="filt-pill" data-wa-status="new">New</div><div class="filt-pill" data-wa-status="pending">Contacted</div><div class="filt-pill" data-wa-status="cancelled">Archived</div>
+        <button class="btn btn-ghost" id="whatsappExport" style="margin-left:auto;" title="Download WhatsApp enquiries as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -515,9 +547,10 @@
     <!-- CHATBOT CONVERSATIONS -->
     <div class="page" id="page-chatbot">
       <div class="toolbar">
-        <input type="text" placeholder="Search by visitor name, phone...">
-        <input class="date-filter" type="date" aria-label="Filter AI chats by date" title="Filter AI chats by date">
-        <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Resolved</div>
+        <input type="text" id="chatSearch" placeholder="Search by visitor name, phone...">
+        <input class="date-filter" type="date" id="chatDate" aria-label="Filter AI chats by date" title="Filter AI chats by date">
+        <div class="filt-pill sel" data-chat-status="all">All</div><div class="filt-pill" data-chat-status="new">New</div><div class="filt-pill" data-chat-status="resolved">Resolved</div>
+        <button class="btn btn-ghost" id="chatbotExport" style="margin-left:auto;" title="Download chatbot conversations as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -971,16 +1004,51 @@
     ['Aditya Rao','99887 66554','aditya.r@example.com','Is the turf covered in case of rain?','4 hrs ago','confirmed','2026-08-25'],
     ['Priya Nair','90011 22334','priya.n@example.com','Looking to book for a corporate tournament.','Yesterday','cancelled','2026-08-24'],
   ];
-  const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cancelled:'Archived'};
-  document.getElementById('whatsappBody').innerHTML = waEnquiries.map(w=>`
+const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cancelled:'Archived'};
+  let waStatus = 'all';
+  function waSetStatus(i, status){
+    if(!waEnquiries[i]) return;
+    waEnquiries[i][5] = status;
+    showToast(status === 'cancelled' ? 'Enquiry archived' : 'Marked as contacted');
+    renderWhatsApp();
+  }
+  function waRows(){
+    const search = (document.getElementById('whatsappSearch').value || '').trim().toLowerCase();
+    const date = document.getElementById('whatsappDate').value;
+    return waEnquiries.filter(w=>{
+      const matchesStatus = waStatus === 'all' || normalizeStatus(w[5]) === waStatus;
+      const matchesSearch = !search || w.slice(0, 3).join(' ').toLowerCase().includes(search);
+      return matchesStatus && matchesSearch && (!date || w[6] === date);
+    });
+  }
+  function renderWhatsApp(){
+    const rows = waRows();
+    document.getElementById('whatsappBody').innerHTML = rows.length ? rows.map(w=>{
+      const i = waEnquiries.indexOf(w);
+      return `
     <tr data-date="${w[6]}"><td>${w[0]}</td><td class="mono">${w[1]}</td><td>${w[2]}</td><td style="white-space:normal; max-width:220px;">${w[3]}</td><td>${w[4]}</td>
     <td><span class="badge ${w[5]}">${waStatusLbl[w[5]]}</span></td>
     <td><div class="row-actions">
       <button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-      <button onclick="showToast('Marked as contacted')" title="Mark as contacted"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
+      <button onclick="waSetStatus(${i},'pending')" title="Mark as contacted"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
       <button onclick="showToast('Opening reply...')" title="Reply"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg></button>
-      <button class="danger" onclick="showToast('Enquiry archived')" title="Archive"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg></button>
-    </div></td></tr>`).join('');
+      <button class="danger" onclick="waSetStatus(${i},'cancelled')" title="Archive"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg></button>
+    </div></td></tr>`;
+    }).join('') : `<tr><td colspan="7" class="tbl-empty">${waStatus === 'all' ? 'No WhatsApp enquiries found' : 'No ' + waStatusLbl[waStatus] + ' enquiries found'}</td></tr>`;
+    document.querySelector('#page-whatsapp .table-foot > span').textContent = `Showing ${rows.length} of ${waEnquiries.length} WhatsApp enquiries`;
+  }
+  document.querySelectorAll('[data-wa-status]').forEach(button=>button.addEventListener('click', ()=>{
+    waStatus = button.dataset.waStatus;
+    document.querySelectorAll('[data-wa-status]').forEach(item=>item.classList.toggle('sel', item === button));
+    renderWhatsApp();
+  }));
+  ['whatsappSearch','whatsappDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'whatsappDate' ? 'change' : 'input', renderWhatsApp));
+  document.getElementById('whatsappExport').addEventListener('click', ()=>{
+    const rows = waRows();
+    if(!rows.length){ showToast('No data available to export'); return; }
+    exportCsv(`turfon24-whatsapp-enquiries-${new Date().toISOString().slice(0,10)}.csv`, [{key:'name',label:'Name'},{key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'message',label:'Message'},{key:'received',label:'Received'},{key:'status',label:'Status'}], rows.map(w=>({name:w[0],phone:w[1],email:w[2],message:w[3],received:w[4],status:waStatusLbl[w[5]]})));
+  });
+  renderWhatsApp();
 
   // ---- Chatbot conversations table ----
   const chatConvos = [
@@ -989,14 +1057,49 @@
     ['Vikram Singh','96543 21098','vikram.s@example.com','Multi-day booking, Location','Yesterday','resolved','2026-08-25'],
     ['Ayesha Khan','95432 10987','ayesha.k@example.com','Payment methods','2 days ago','resolved','2026-08-24'],
   ];
-  document.getElementById('chatbotBody').innerHTML = chatConvos.map(c=>`
+  let chatStatus = 'all';
+  function chatSetStatus(i, status){
+    if(!chatConvos[i]) return;
+    chatConvos[i][5] = status;
+    showToast('Marked as resolved');
+    renderChatbot();
+  }
+  function chatRows(){
+    const search = (document.getElementById('chatSearch').value || '').trim().toLowerCase();
+    const date = document.getElementById('chatDate').value;
+    return chatConvos.filter(c=>{
+      const matchesStatus = chatStatus === 'all' || normalizeStatus(c[5]) === chatStatus;
+      const matchesSearch = !search || c.slice(0, 3).join(' ').toLowerCase().includes(search);
+      return matchesStatus && matchesSearch && (!date || c[6] === date);
+    });
+  }
+  function renderChatbot(){
+    const rows = chatRows();
+    document.getElementById('chatbotBody').innerHTML = rows.length ? rows.map(c=>{
+      const i = chatConvos.indexOf(c);
+      return `
     <tr data-date="${c[6]}"><td>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td><td style="white-space:normal; max-width:200px;">${c[3]}</td><td>${c[4]}</td>
-    <td><span class="badge ${c[5]==='new'?'pending':'confirmed'}">${c[5]==='new'?'New':'Resolved'}</span></td>
+    <td><span class="badge ${c[5] === 'new' ? 'pending' : 'confirmed'}">${c[5] === 'new' ? 'New' : 'Resolved'}</span></td>
     <td><div class="row-actions">
       <button onclick="showToast('Opening conversation...')" title="Continue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v13H8l-4 4Z"/></svg></button>
-      <button onclick="showToast('Marked as resolved')" title="Mark resolved"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
+      <button onclick="chatSetStatus(${i},'resolved')" title="Mark resolved"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
       <button onclick="showToast('Conversation exported')" title="Export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
-    </div></td></tr>`).join('');
+    </div></td></tr>`;
+    }).join('') : `<tr><td colspan="7" class="tbl-empty">${chatStatus === 'all' ? 'No chatbot conversations found' : 'No ' + (chatStatus === 'new' ? 'New' : 'Resolved') + ' conversations found'}</td></tr>`;
+    document.querySelector('#page-chatbot .table-foot > span').textContent = `Showing ${rows.length} of ${chatConvos.length} chatbot conversations`;
+  }
+  document.querySelectorAll('[data-chat-status]').forEach(button=>button.addEventListener('click', ()=>{
+    chatStatus = button.dataset.chatStatus;
+    document.querySelectorAll('[data-chat-status]').forEach(item=>item.classList.toggle('sel', item === button));
+    renderChatbot();
+  }));
+  ['chatSearch','chatDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'chatDate' ? 'change' : 'input', renderChatbot));
+  document.getElementById('chatbotExport').addEventListener('click', ()=>{
+    const rows = chatRows();
+    if(!rows.length){ showToast('No data available to export'); return; }
+    exportCsv(`turfon24-chatbot-conversations-${new Date().toISOString().slice(0,10)}.csv`, [{key:'name',label:'Visitor Name'},{key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'questions',label:'Questions Asked'},{key:'timestamp',label:'Timestamp'},{key:'status',label:'Status'}], rows.map(c=>({name:c[0],phone:c[1],email:c[2],questions:c[3],timestamp:c[4],status:c[5] === 'new' ? 'New' : 'Resolved'})));
+  });
+  renderChatbot();
 
   // ---- customers table ----
   function normalizeStatus(value){ return String(value || '').trim().toLowerCase(); }
@@ -1124,13 +1227,57 @@
   });
 
   // ---- calendar ----
+  const calTitleEl = document.querySelector('#page-calendar .panel h3');
+  const calTitleMatch = calTitleEl ? calTitleEl.textContent.trim().match(/^([A-Za-z]+) (\d{4})/) : null;
+  const calMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const calYear = calTitleMatch ? Number(calTitleMatch[2]) : new Date().getFullYear();
+  const calMonth = calTitleMatch ? calMonths.indexOf(calTitleMatch[1]) : new Date().getMonth();
+  const calDays = new Date(calYear, calMonth + 1, 0).getDate();
+  const calDateKey = day => `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  function timeToMin(t){
+    const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(String(t || '').trim());
+    if(!m) return 0;
+    let h = Number(m[1]) % 12;
+    if(m[3].toUpperCase() === 'PM') h += 12;
+    return h * 60 + Number(m[2]);
+  }
+  function openCalendarDate(dateKey){
+    const list = bookings.filter(b => b[9] === dateKey).sort((a, b) => timeToMin(a[4]) - timeToMin(b[4]));
+    const label = new Date(dateKey + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const countLabel = `${list.length} ${list.length === 1 ? 'Booking' : 'Bookings'}`;
+    document.getElementById('detailBody').innerHTML = `
+      <div class="cal-date-head"><strong>${label}</strong><span class="cnt">${countLabel}</span></div>
+      <div class="cal-book-list">
+      ${list.map((b, idx) => `
+        <div class="cal-book-card">
+          <div class="who"><span class="num">${idx + 1}</span><b>${b[1]}</b></div>
+          <div class="detail-row"><span>Booking ID</span><span class="mono">${b[0]}</span></div>
+          <div class="detail-row"><span>Phone</span><span class="mono">${b[2]}</span></div>
+          <div class="detail-row"><span>Time</span><span>${b[4]}</span></div>
+          <div class="detail-row"><span>Duration</span><span>${b[5]}</span></div>
+          <div class="detail-row"><span>Amount</span><span class="mono">${b[6]}</span></div>
+          <div class="detail-row"><span>Booking status</span><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></div>
+        </div>`).join('')}
+      </div>`;
+    openModal('detailModal');
+  }
   const calGrid = document.getElementById('calGrid2');
-  for(let i=1;i<=31;i++){
-    const d = document.createElement('div');
-    d.className='cal-cell';
-    const count = (i*7)%9;
-    d.innerHTML = i + (count>0 ? `<span class="cnt">${count}</span>` : '');
-    calGrid.appendChild(d);
+  const bookingsByDate = {};
+  bookings.forEach(b => { (bookingsByDate[b[9]] = bookingsByDate[b[9]] || []).push(b); });
+  for(let i = 1; i <= calDays; i++){
+    const key = calDateKey(i);
+    const dayBookings = bookingsByDate[key] || [];
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    if(dayBookings.length){
+      cell.classList.add('has-bookings');
+      cell.dataset.date = key;
+      cell.innerHTML = i + `<span class="cnt">${dayBookings.length}</span>`;
+      cell.addEventListener('click', () => openCalendarDate(key));
+    } else {
+      cell.textContent = String(i);
+    }
+    calGrid.appendChild(cell);
   }
 
   // ---- charts (self-contained SVG, no external lib) ----
