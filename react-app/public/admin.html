@@ -188,11 +188,12 @@
   .toolbar input[type="text"]{background:var(--charcoal); border:1px solid var(--border); border-radius:10px; padding:9px 14px; color:var(--white); font-size:12.5px; min-width:200px; flex:1 1 200px; box-sizing:border-box;}
   /* Date filter — real-mobile fix */
   .date-wrap{position:relative; display:inline-flex; align-items:center; min-width:170px; max-width:100%; flex:0 1 auto; box-sizing:border-box; background:var(--charcoal); border:1px solid var(--border); border-radius:10px; color:var(--white); font-size:12.5px; cursor:pointer;}
-  .date-wrap .date-ph{display:block; position:relative; z-index:1; left:0; top:0; transform:none; width:100%; box-sizing:border-box; color:var(--white); font-size:inherit; pointer-events:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:9px 40px 9px 12px; font-family:'Inter',sans-serif;}
+  .date-wrap .date-ph{display:block; position:relative; z-index:1; left:0; top:0; transform:none; width:100%; box-sizing:border-box; color:var(--white); font-size:inherit; pointer-events:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:9px 40px 9px 12px; font-family:'Inter',sans-serif; line-height:1.2;}
   .date-wrap .date-ph.placeholder{color:var(--muted);}
   .date-wrap::after{content:""; position:absolute; right:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; z-index:1; pointer-events:none; background:currentColor; -webkit-mask:var(--cal-icon) no-repeat center/contain; mask:var(--cal-icon) no-repeat center/contain; color:var(--muted);}
-  .date-wrap .date-filter{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:2; margin:0; padding:0; border:none; background:transparent; font-size:16px;}
+  .date-wrap .date-filter{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:2; margin:0; padding:0; border:none; background:transparent; font-size:16px; min-height:0; appearance:none; -webkit-appearance:none;}
   .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0;}
+  .date-wrap .date-picker{position:absolute; left:-9999px; top:0; width:1px; height:1px; opacity:0; pointer-events:none; margin:0; padding:0; border:none;}
   /* Reduced filter pill text */
   .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease; flex-shrink:0;}
   .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
@@ -301,10 +302,11 @@
     .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch;}
     table{min-width:640px;}
     .toolbar{gap:8px;}
-    .toolbar input[type="text"]{width:100%; min-width:0; flex:1 1 100%; font-size:16px; min-height:44px;}
-    .date-wrap{width:100%; flex:1 1 100%; min-width:0; min-height:44px;}
-    .date-wrap .date-ph{padding:12px 44px 12px 14px; font-size:16px;}
-    .date-wrap::after{width:20px; height:20px;}
+    .toolbar input[type="text"]{width:100%; min-width:0; flex:1 1 100%; font-size:12.8px !important; min-height:36px !important; max-height:36px !important; height:36px !important; line-height:1.2; padding-top:8px; padding-bottom:8px; box-sizing:border-box;}
+    .date-wrap{width:auto !important; flex:0 0 auto !important; min-width:120px !important; max-width:160px !important; min-height:32px !important; max-height:32px !important; height:32px !important; border-radius:10px; align-items:center !important; display:flex; overflow:hidden !important;}
+    .date-wrap .date-ph{display:flex; align-items:center; height:32px !important; max-height:32px !important; min-height:32px !important; padding:0 22px 0 10px !important; font-size:12px !important; line-height:32px !important; min-height:0;}
+    .date-wrap .date-filter{display:block; width:100%; height:32px !important; max-height:32px !important; min-height:32px !important; font-size:16px; border:none;}
+    .date-wrap::after{width:12px !important; height:12px !important; right:8px;}
     .filt-pill{font-size:10.5px; padding:6px 10px;}
     .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
     .history-switch{width:100%;}
@@ -470,7 +472,7 @@
     <div class="page" id="page-bookings">
       <div class="toolbar">
         <input type="text" placeholder="Search by name, mobile, booking ID...">
-        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter bookings by date" title="Filter bookings by date"></span>
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly aria-label="Filter bookings by date" title="Filter bookings by date"><input class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">Pending</div><div class="filt-pill">Confirmed</div><div class="filt-pill">Cancelled</div>
         <div class="spacer"></div>
         <button class="btn btn-ghost" onclick="showToast('Bookings exported to CSV')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
@@ -488,7 +490,7 @@
     <div class="page" id="page-enquiries">
       <div class="toolbar">
         <input type="text" placeholder="Search enquiries...">
-        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter extended bookings by date" title="Filter extended bookings by date"></span>
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly aria-label="Filter extended bookings by date" title="Filter extended bookings by date"><input class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Closed</div>
       </div>
       <div class="table-wrap">
@@ -507,7 +509,7 @@
           <button class="filt-pill sel" type="button" role="tab" aria-selected="true" data-history="hourly">Hourly bookings</button>
           <button class="filt-pill" type="button" role="tab" aria-selected="false" data-history="extended">Extended bookings</button>
         </div>
-        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" id="customerHistoryDate" type="date" aria-label="Filter customer history by booking date" title="Filter customer history by booking date"></span>
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" id="customerHistoryDate" type="text" readonly aria-label="Filter customer history by booking date" title="Filter customer history by booking date"><input id="customerHistoryDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
       </div>
       <div class="table-wrap">
         <table>
@@ -539,7 +541,7 @@
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
         <input type="text" placeholder="Search by name, phone...">
-        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date"></span>
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date"><input class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Contacted</div><div class="filt-pill">Archived</div>
       </div>
       <div class="table-wrap">
@@ -555,7 +557,7 @@
     <div class="page" id="page-chatbot">
       <div class="toolbar">
         <input type="text" placeholder="Search by visitor name, phone...">
-        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="date" aria-label="Filter AI chats by date" title="Filter AI chats by date"></span>
+        <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly aria-label="Filter AI chats by date" title="Filter AI chats by date"><input class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel">All</div><div class="filt-pill">New</div><div class="filt-pill">Resolved</div>
       </div>
       <div class="table-wrap">
@@ -710,6 +712,7 @@
     }
     syncSidebarProfile();
     renderProfileForm();
+    if (typeof renderStats === 'function') renderStats();
   }
 
   function tryLogin(){
@@ -732,6 +735,7 @@
         if (app) app.classList.add('active');
         syncSidebarProfile();
         renderProfileForm();
+        if (typeof renderStats === 'function') renderStats();
       }, 700);
     } else {
       if (err) err.style.display = 'block';
@@ -1087,13 +1091,19 @@
     today: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
     pend: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>',
     pay: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    wallet: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h11A2.5 2.5 0 0 1 19 7.5V17A2 2 0 0 1 17 19H5a2 2 0 0 1-2-2V7.5Z"/><path d="M16 12h4v4h-4a2 2 0 0 1 0-4Z"/><path d="M3 9.5h15"/></svg>',
     enq: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg>',
     done: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12.5l5 5L20 6"/></svg>',
     cancel: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg>',
     cust: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/></svg>',
   };
+  const formatStatValue = (value, isCurrency = false) => {
+    const num = Number(value) || 0;
+    return isCurrency ? `₹${num.toLocaleString('en-IN')}` : num.toLocaleString('en-IN');
+  };
   const stats = [
-    {icon:'total', num:412, label:'Total bookings', trend:[8,10,9,12,11,14,13], up:true, pct:'+12%'},
+    {icon:'total', num:0, label:'Total bookings', trend:[8,10,9,12,11,14,13], up:true, pct:'+12%'},
+    {icon:'wallet', currency:true, num:0, label:'Payment Received', trend:[6,8,7,9,8,10,10], up:true, pct:'+12%', page:'bookings'},
     {icon:'today', num:9, label:"Today's bookings", trend:[3,5,4,6,5,7,9], up:true, pct:'+8%'},
     {icon:'pend', num:6, label:'Pending confirmations', trend:[9,8,7,8,6,5,6], up:false, pct:'-5%'},
     {icon:'pay', num:4, label:'Pending payment verification', trend:[6,5,6,4,5,3,4], up:false, pct:'-3%'},
@@ -1110,33 +1120,51 @@
     const color = up ? '#39FF7A' : '#FF6B6B';
     return `<svg viewBox="0 0 100 28" preserveAspectRatio="none" width="72" height="28"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
-  const statGrid = document.getElementById('statGrid');
-  stats.forEach(s=>{
-    const el = document.createElement('div');
-    el.className='stat-card';
-    el.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div class="ic">${statIcons[s.icon]}</div>
-        <span style="font-size:10.5px; font-weight:600; color:${s.up?'#39FF7A':'#FF6B6B'};">${s.pct}</span>
-      </div>
-      <div class="num" data-target="${s.num}">0</div>
-      <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
-        <div class="lbl">${s.label}</div>
-        <div style="flex-shrink:0;">${sparkline(s.trend, s.up)}</div>
-      </div>`;
-    if(s.page){ el.addEventListener('click', ()=> document.querySelector('.nav-item[data-page="'+s.page+'"]').click()); }
-    statGrid.appendChild(el);
-  });
-  document.querySelectorAll('.stat-card .num').forEach(el=>{
-    const target = parseInt(el.dataset.target);
-    const t0 = performance.now(), dur=1100;
-    function step(now){
-      const p = Math.min((now-t0)/dur,1);
-      el.textContent = Math.round(target*p).toLocaleString('en-IN');
-      if(p<1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  });
+  function renderStats(){
+    const paymentTotal = bookings.filter(b => String(b[7] || '').toLowerCase() === 'verified')
+      .reduce((sum, b) => {
+        const rawAmount = String(b[6] || '');
+        const numericAmount = Number(rawAmount.replace(/[^\d.]/g, ''));
+        return sum + (Number.isFinite(numericAmount) ? numericAmount : 0);
+      }, 0);
+    stats[0].num = bookings.length;
+    stats[1].num = paymentTotal;
+
+    const statGrid = document.getElementById('statGrid');
+    statGrid.innerHTML = '';
+    stats.forEach(s=>{
+      const el = document.createElement('div');
+      el.className='stat-card';
+      el.setAttribute('title', s.label === 'Payment Received' ? 'Total payments received' : '');
+      el.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="ic">${statIcons[s.icon]}</div>
+          <span style="font-size:10.5px; font-weight:600; color:${s.up?'#39FF7A':'#FF6B6B'};">${s.pct}</span>
+        </div>
+        <div class="num" data-target="${s.num}" data-currency="${Boolean(s.currency)}">0</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <div class="lbl">${s.label}</div>
+            ${s.label === 'Payment Received' ? '<div style="font-size:10px; color:var(--muted);">Total payments received</div>' : ''}
+          </div>
+          <div style="flex-shrink:0;">${sparkline(s.trend, s.up)}</div>
+        </div>`;
+      if(s.page){ el.addEventListener('click', ()=> document.querySelector('.nav-item[data-page="'+s.page+'"]').click()); }
+      statGrid.appendChild(el);
+    });
+    document.querySelectorAll('.stat-card .num').forEach(el=>{
+      const target = Number(el.dataset.target) || 0;
+      const isCurrency = el.dataset.currency === 'true';
+      const t0 = performance.now(), dur=1100;
+      function step(now){
+        const p = Math.min((now-t0)/dur,1);
+        const value = Math.round(target*p);
+        el.textContent = formatStatValue(value, isCurrency);
+        if(p<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
 
   // ---- activity ----
   const activity = [
@@ -1161,6 +1189,7 @@
   ];
   const bstatusLbl = {confirmed:'Confirmed', pending:'Pending', cancelled:'Cancelled'};
   const pstatusLbl = {verified:'Verified', pending:'Pending'};
+  renderStats();
   document.getElementById('bookingsBody').innerHTML = bookings.map(b=>`
     <tr data-date="${b[9]}">
       <td class="mono">${b[0]}</td><td>${b[1]}</td><td class="mono">${b[2]}</td><td>${b[3]}</td><td>${b[4]}</td><td>${b[5]}</td><td class="mono">${b[6]}</td>
@@ -1254,6 +1283,36 @@
       ph.classList.toggle('placeholder', !val);
     });
   }
+  // ---- shared custom date picker (real-mobile-safe) ----
+  document.querySelectorAll('.date-wrap').forEach(function(wrap){
+    const input = wrap.querySelector('.date-filter');
+    const ph = wrap.querySelector('.date-ph');
+    const native = wrap.querySelector('.date-picker');
+    if(!input || !ph) return;
+    function openPicker(){
+      if(!native) return;
+      native.value = input.value || '';
+      try{
+        if(typeof native.showPicker === 'function'){ native.showPicker(); return; }
+      }catch(e){}
+      try{ native.focus(); native.click(); }catch(e){}
+    }
+    function applyNativeValue(){
+      native.value = native.value || '';
+      input.value = native.value;
+      ph.textContent = formatDisplayDate(native.value);
+      ph.classList.toggle('placeholder', !native.value);
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+    input.addEventListener('click', openPicker);
+    input.addEventListener('keydown', function(ev){
+      if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'ArrowDown'){ ev.preventDefault(); openPicker(); }
+    });
+    if(native){
+      native.addEventListener('input', applyNativeValue);
+      native.addEventListener('change', applyNativeValue);
+    }
+  });
   document.querySelectorAll('.date-filter').forEach(filter=>{
     filter.addEventListener('change', ()=>{
       syncDateDisplay();

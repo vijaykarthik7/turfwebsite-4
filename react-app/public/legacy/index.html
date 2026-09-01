@@ -328,8 +328,9 @@
   #bkDurationPills .pill{width:100%; min-width:0; box-sizing:border-box; text-align:center; padding:11px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   #bkTimePills{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; width:100%; max-width:100%; box-sizing:border-box;}
   #bkTimePills .pill{width:100%; min-width:0; min-height:44px; box-sizing:border-box; text-align:center; white-space:pre-line; overflow-wrap:anywhere; line-height:1.35;}
-  .pill{padding:9px 16px; border:1px solid var(--border); border-radius:100px; font-size:12.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; transition:all .2s ease;}
-  .pill.sel, .pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
+  .pill{padding:9px 16px; border:1px solid var(--border); border-radius:100px; font-size:12.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; transition:all .2s ease; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+  .pill.sel{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
+  @media (hover:hover){ .pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);} }
   .pill.unavail{opacity:0.28; text-decoration:line-through; pointer-events:none;}
   .pill.start{background:linear-gradient(135deg,var(--emerald-light),var(--neon)); color:#04140D; border-color:var(--neon); box-shadow:0 0 14px rgba(57,255,122,0.4);}
   .pill.in-range{background:rgba(57,255,122,0.16); color:var(--neon); border-color:rgba(57,255,122,0.5);}
@@ -449,6 +450,7 @@
   .fm-row{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;}
   .fm-field label{font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; display:block;}
   .fm-field input, .fm-field textarea{width:100%; background:var(--black); border:1px solid var(--border); border-radius:10px; color:var(--white); padding:8px 10px; font-family:'Inter',sans-serif; font-size:11.5px; cursor:auto; transition:border-color .25s ease, box-shadow .25s ease;}
+  .fm-field input:-webkit-autofill, .fm-field input:-webkit-autofill:hover, .fm-field input:-webkit-autofill:focus, .fm-field input:-webkit-autofill:active, .fm-field input:autofill, .otp-inline input:-webkit-autofill, .otp-inline input:-webkit-autofill:hover, .otp-inline input:-webkit-autofill:focus, .otp-inline input:autofill{ -webkit-text-fill-color:var(--white); -webkit-box-shadow:0 0 0 1000px var(--black) inset; box-shadow:0 0 0 1000px var(--black) inset; transition:background-color 9999s ease-in-out 0s; caret-color:var(--white); }
   .comm-body > p{font-size:11px !important; line-height:1.45;}
   .comm-body .btn{font-size:12px;}
   .fm-field input:focus, .fm-field textarea:focus{outline:none; border-color:var(--neon); box-shadow:0 0 0 3px rgba(57,255,122,0.12);}
@@ -1382,6 +1384,8 @@
           else if(date > rangeStart && date < rangeEnd) dayElement.classList.add('in-range');
         } else if(rangeStart && date.getTime() === rangeStart.getTime()){
           dayElement.classList.add('range-edge');
+        } else if(rangeEnd && date.getTime() === rangeEnd.getTime()){
+          dayElement.classList.add('range-edge');
         }
       } else {
         dayElement.classList.add('disabled');
@@ -1416,7 +1420,12 @@
     renderRangeCalendar();
   }
   function pickRangeDay(date){
-    if(rangeStart === null || (rangeStart && rangeEnd)){ rangeStart = date; rangeEnd = null; }
+    if(rangeStart && rangeEnd){
+      if(date.getTime() === rangeStart.getTime()){ rangeStart = null; }
+      else if(date.getTime() === rangeEnd.getTime()){ rangeEnd = null; }
+      else { rangeStart = date; rangeEnd = null; }
+    }
+    else if(rangeStart === null){ rangeStart = date; }
     else if(date > rangeStart){ rangeEnd = date; }
     else { rangeStart = date; rangeEnd = null; }
     if(rangeStart){
