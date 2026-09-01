@@ -183,13 +183,8 @@
   }
 }
 
-.legacy-shell { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #030607; }
+.legacy-shell { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; background: radial-gradient(110% 90% at 50% 30%, #0c2218 0%, #062019 45%, #030607 75%); }
 .legacy-page { display: block; position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.loading-screen { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #030607; overflow: hidden; transition: opacity 420ms ease, visibility 420ms ease; }
-.loading-screen__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
-.loading-screen__brand { position: relative; z-index: 1; width: min(300px, 76vw); }
-.loading-screen__tagline { display: block; width: 100%; height: auto; }
-.loading-screen--hidden { visibility: hidden; opacity: 0; pointer-events: none; }
 .launch-page { position: relative; display: flex; flex-direction: column; min-height: 100svh; width: 100%; max-width: 100%; overflow: hidden; isolation: isolate; color: #f2f4f2; background: #030607; font-family: 'Inter', sans-serif; }
 .launch-header { display: flex; align-items: center; justify-content: space-between; width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 24px 0; }
 .launch-logo { display: block; width: min(210px, 54vw); max-width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 0 18px rgba(57,255,122,.16)); }

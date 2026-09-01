@@ -242,10 +242,6 @@
   .row-actions button.danger:hover{border-color:var(--red); color:var(--red);}
   /* Reduced table footer text */
   .table-foot{display:flex; justify-content:space-between; align-items:center; padding:14px 18px; font-size:11.5px; color:var(--muted); border-top:1px solid var(--border);}
-  .page-nums{display:flex; gap:5px;}
-  /* Reduced page number text */
-  .page-nums span{width:26px;height:26px;border-radius:7px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:10.5px;}
-  .page-nums span.on{background:var(--neon); color:#04140D; font-weight:700;}
 
   /* empty state */
   .empty-state{text-align:center; padding:70px 20px; color:var(--muted);}
@@ -492,7 +488,7 @@
           <thead><tr><th>Booking ID</th><th>Customer</th><th>Mobile</th><th>Date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="bookingsBody"></tbody>
         </table>
-        <div class="table-foot"><span>Showing 1–8 of 42 bookings</span><div class="page-nums"><span class="on">1</span><span>2</span><span>3</span><span>›</span></div></div>
+        <div class="table-foot"><span>Showing all bookings</span></div>
       </div>
     </div>
 
@@ -537,7 +533,7 @@
           <thead><tr><th>Enquiry ID</th><th>Customer</th><th>Mobile</th><th>Start</th><th>End</th><th>Days</th><th>Preferred</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="enquiriesBody"></tbody>
         </table>
-        <div class="table-foot"><span>Showing 1–5 of 5 enquiries</span></div>
+        <div class="table-foot"><span>Showing all enquiries</span></div>
       </div>
     </div>
 
@@ -1060,14 +1056,23 @@
     function openStat(page, opts){
       const nav=document.querySelector('.nav-item[data-page="'+page+'"]');
       if(nav) nav.click();
+      if(page === 'bookings'){
+        bookingStatus = 'all';
+        payFilter = 'all';
+        document.querySelectorAll('[data-booking-status]').forEach(it=>it.classList.toggle('sel', it.dataset.bookingStatus === 'all'));
+      }
       if(opts && opts.statusKey){
         const pill=document.querySelector('[data-'+opts.statusKey+'="'+opts.statusValue+'"]');
         if(pill) pill.click();
+      }
+      if(opts && opts.payStatus && page === 'bookings'){
+        payFilter = normalizeStatus(opts.payStatus);
       }
       if(opts && opts.dateId){
         const inp=document.getElementById(opts.dateId);
         if(inp){ inp.value = opts.dateValue || ''; inp.dispatchEvent(new Event('change')); }
       }
+      if(page === 'bookings') renderBookings();
     }
     const cat = v => normalizeStatus(v);
     const pendingConfirm = bookings.filter(b=>cat(b[8])==='pending');
@@ -1118,7 +1123,7 @@
       {icon:'wallet', currency:true, num:statCounts.paid, label:'Payment Received', trend:tCumul, ...trendLabel(tVerif), go:()=>openStat('payments')},
       {icon:'today', num:statCounts.today, label:"Today's bookings", trend:tToday, up:false, pct:'', go:()=>openStat('bookings',{dateId:'bookingDate',dateValue:todayKey})},
       {icon:'pend', num:statCounts.pendingConf, label:'Pending confirmations', trend:tPendConf, ...trendLabel(tPendConf), go:()=>openStat('bookings',{statusKey:'booking-status',statusValue:'pending'})},
-      {icon:'pay', num:statCounts.pendingPay, label:'Pending payment verification', trend:tPendPay, ...trendLabel(tPendPay), go:()=>openStat('bookings',{statusKey:'booking-status',statusValue:'all'})},
+      {icon:'pay', num:statCounts.pendingPay, label:'Pending payment verification', trend:tPendPay, ...trendLabel(tPendPay), go:()=>openStat('bookings',{payStatus:'pending'})},
       {icon:'enq', num:statCounts.enq, label:'Extended booking enquiries', trend:tEnq, ...trendLabel(tEnq), go:()=>openStat('enquiries',{statusKey:'enquiry-status',statusValue:'all'})},
       {icon:'done', num:statCounts.completed, label:'Completed bookings', trend:tDone, ...trendLabel(tDone), go:()=>openStat('bookings',{statusKey:'booking-status',statusValue:'confirmed'})},
       {icon:'cancel', num:statCounts.cancelled, label:'Cancelled bookings', trend:tCancel, ...trendLabel(tCancel), go:()=>openStat('bookings',{statusKey:'booking-status',statusValue:'cancelled'})},
@@ -1248,7 +1253,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       <button class="danger" onclick="waSetStatus(${i},'cancelled')" title="Archive"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg></button>
     </div></td></tr>`;
     }).join('') : `<tr><td colspan="7" class="tbl-empty">${waStatus === 'all' ? 'No WhatsApp enquiries found' : 'No ' + waStatusLbl[waStatus] + ' enquiries found'}</td></tr>`;
-    document.querySelector('#page-whatsapp .table-foot > span').textContent = `Showing ${rows.length} of ${waEnquiries.length} WhatsApp enquiries`;
   }
   document.querySelectorAll('[data-wa-status]').forEach(button=>button.addEventListener('click', ()=>{
     waStatus = button.dataset.waStatus;
@@ -1297,7 +1301,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       <button onclick="showToast('Conversation exported')" title="Export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
     </div></td></tr>`;
     }).join('') : `<tr><td colspan="7" class="tbl-empty">${chatStatus === 'all' ? 'No chatbot conversations found' : 'No ' + (chatStatus === 'new' ? 'New' : 'Resolved') + ' conversations found'}</td></tr>`;
-    document.querySelector('#page-chatbot .table-foot > span').textContent = `Showing ${rows.length} of ${chatConvos.length} chatbot conversations`;
   }
   document.querySelectorAll('[data-chat-status]').forEach(button=>button.addEventListener('click', ()=>{
     chatStatus = button.dataset.chatStatus;
@@ -1323,22 +1326,23 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     setTimeout(()=>URL.revokeObjectURL(url), 0);
   }
   let bookingStatus = 'all';
+  let payFilter = 'all';
   let enquiryStatus = 'all';
   function bookingRows(){
     const search = document.getElementById('bookingSearch').value.trim().toLowerCase();
     const date = document.getElementById('bookingDate').value;
     return bookings.filter(row=>{
       const matchesSearch = !search || row.slice(0, 3).join(' ').toLowerCase().includes(search);
-      return matchesSearch && (!date || row[9] === date) && (bookingStatus === 'all' || normalizeStatus(row[8]) === bookingStatus);
+      return matchesSearch && (!date || row[9] === date) && (bookingStatus === 'all' || normalizeStatus(row[8]) === bookingStatus) && (payFilter === 'all' || normalizeStatus(row[7]) === payFilter);
     });
   }
   function renderBookings(){
     const rows = bookingRows();
     document.getElementById('bookingsBody').innerHTML = rows.map(b=>`<tr><td class="mono">${b[0]}</td><td>${b[1]}</td><td class="mono">${b[2]}</td><td>${b[3]}</td><td>${b[4]}</td><td>${b[5]}</td><td class="mono">${b[6]}</td><td><span class="badge ${b[7]}">${pstatusLbl[b[7]]}</span></td><td><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></td><td><div class="row-actions"><button onclick='openBookingDetail(${JSON.stringify(b)})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('');
-    document.querySelector('#page-bookings .table-foot > span').textContent = `Showing ${rows.length} of ${bookings.length} bookings`;
   }
   document.querySelectorAll('[data-booking-status]').forEach(button=>button.addEventListener('click', ()=>{
     bookingStatus = button.dataset.bookingStatus;
+    payFilter = 'all';
     document.querySelectorAll('[data-booking-status]').forEach(item=>item.classList.toggle('sel', item === button));
     renderBookings();
   }));
@@ -1357,7 +1361,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
   function renderEnquiries(){
     const rows = enquiryRows();
     document.getElementById('enquiriesBody').innerHTML = rows.map(e=>`<tr><td class="mono">${e[0]}</td><td>${e[1]}</td><td class="mono">${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td><td>${e[5]}</td><td>${e[6]}</td><td><span class="badge ${enqBadge[e[7]] || 'pending'}">${e[7]}</span></td><td><div class="row-actions"><button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td></tr>`).join('');
-    document.querySelector('#page-enquiries .table-foot > span').textContent = `Showing ${rows.length} of ${enquiries.length} enquiries`;
   }
   document.querySelectorAll('[data-enquiry-status]').forEach(button=>button.addEventListener('click', ()=>{
     enquiryStatus = button.dataset.enquiryStatus;
@@ -1399,7 +1402,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       <td><div class="row-actions">
         <button onclick='openBookingDetail(${JSON.stringify(bookings.filter(function(b){return b[0]===p.id;})[0])})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div></td></tr>`).join('') : `<tr><td colspan="10" class="tbl-empty">No received payments found</td></tr>`;
-    document.querySelector('#page-payments .table-foot > span').textContent = `Showing ${rows.length} of ${payments.length} received payments`;
     const totalAmount = rows.reduce((sum,p)=>sum + Number(String(p.amount).replace(/[₹,]/g,'')), 0);
     document.getElementById('paymentsTotalCount').textContent = String(rows.length);
     document.getElementById('paymentsTotalAmount').textContent = '₹' + totalAmount.toLocaleString('en-IN');

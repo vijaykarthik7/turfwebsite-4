@@ -6,22 +6,46 @@ const TARGET = new Date('2026-09-13T00:00:00').getTime()
 function differenceText(target) {
   const diff = target - Date.now()
   const total = Math.max(0, Math.floor(diff / 1000))
+  const d = Math.floor(total / 86400)
+  const h = Math.floor((total % 86400) / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
   return {
-    days: String(Math.floor(total / 86400)).padStart(2, '0'),
-    hours: String(Math.floor((total % 86400) / 3600)).padStart(2, '0'),
-    minutes: String(Math.floor((total % 3600) / 60)).padStart(2, '0'),
-    seconds: String(total % 60).padStart(2, '0'),
+    days: String(d).padStart(2, '0'),
+    hours: String(h).padStart(2, '0'),
+    minutes: String(m).padStart(2, '0'),
+    seconds: String(s).padStart(2, '0'),
     done: total === 0,
+    fracs: {
+      days: (total % 86400) / 86400,
+      hours: h / 24,
+      minutes: m / 60,
+      seconds: s / 60,
+    },
   }
 }
 
-function Unit({ value, label }) {
+const RING_R = 45
+const RING_C = 2 * Math.PI * RING_R
+
+function Unit({ value, label, frac }) {
   return (
     <div className="countdown__unit">
-      <div className="countdown__card">
+      <svg className="countdown__ring" viewBox="0 0 100 100" aria-hidden="true">
+        <circle className="countdown__ring-base" cx="50" cy="50" r={RING_R} />
+        <circle
+          className="countdown__ring-progress"
+          cx="50"
+          cy="50"
+          r={RING_R}
+          strokeDasharray={`${RING_C} ${RING_C}`}
+          strokeDashoffset={RING_C * (1 - Math.min(1, Math.max(0, frac)))}
+        />
+      </svg>
+      <span className="countdown__core">
         <span className="countdown__num" key={value}>{value}</span>
-      </div>
-      <span className="countdown__label">{label}</span>
+        <span className="countdown__label">{label}</span>
+      </span>
     </div>
   )
 }
@@ -45,13 +69,6 @@ export default function Countdown({ onHome }) {
       <div className="countdown__glow" aria-hidden="true" />
 
       <header className="countdown__topbar">
-        <img
-          className="countdown__logo"
-          src="/logo-assets/Turfon24_Horizontal_Logo_with_Tagline.png"
-          alt="TurfOn24"
-          width="420"
-          height="132"
-        />
         {onHome && (
           <button type="button" className="countdown__home" onClick={onHome} aria-label="Go to home">
             <span className="countdown__home-arrow" aria-hidden="true">&larr;</span>
@@ -62,6 +79,12 @@ export default function Countdown({ onHome }) {
 
       <div className="countdown__content">
         <div className="countdown__inner">
+          <img
+            className="countdown__tagline-img"
+            src="/logo-assets/Tagline.png"
+            alt="Your Turf. Your Time. Your Game."
+          />
+
           <p className="countdown__eyebrow">&#8226; Opening Soon</p>
 
           {parts.done ? (
@@ -83,10 +106,10 @@ export default function Countdown({ onHome }) {
               </p>
 
               <div className="countdown__timer" role="timer" aria-live="off">
-                <Unit value={parts.days} label="Days" />
-                <Unit value={parts.hours} label="Hours" />
-                <Unit value={parts.minutes} label="Minutes" />
-                <Unit value={parts.seconds} label="Seconds" />
+                <Unit value={parts.days} label="Days" frac={parts.fracs.days} />
+                <Unit value={parts.hours} label="Hours" frac={parts.fracs.hours} />
+                <Unit value={parts.minutes} label="Minutes" frac={parts.fracs.minutes} />
+                <Unit value={parts.seconds} label="Seconds" frac={parts.fracs.seconds} />
               </div>
             </>
           )}

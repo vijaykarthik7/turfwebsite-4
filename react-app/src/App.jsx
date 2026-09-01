@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
 import taglineLogo from './assets/Tagline.png'
-import LoadingRadar from './components/ui/loading-radar'
 import Countdown from './components/Countdown'
 import './App.css'
 
@@ -19,7 +18,6 @@ function App() {
     return 'home'
   }
   const [route, setRoute] = useState(getRoute)
-  const [isLoading, setIsLoading] = useState(route !== 'admin')
   const pageTitle = route === 'admin' ? 'TurfOn24 Admin' : (route === 'countdown' ? 'TurfOn24 — Coming Soon' : 'TurfOn24')
   const adminUrl = `${import.meta.env.BASE_URL}legacy/admin.html`
   const homeUrl = `${import.meta.env.BASE_URL}legacy/index.html`
@@ -30,22 +28,12 @@ function App() {
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  useEffect(() => {
-    setIsLoading(route !== 'admin')
-  }, [route])
-
   const goHome = () => {
     if (getRoute() !== 'home') {
       window.history.pushState(null, '', '/')
       setRoute('home')
     }
   }
-
-  useEffect(() => {
-    if (route === 'admin') return undefined
-    const loadingTimer = window.setTimeout(() => setIsLoading(false), 1800)
-    return () => window.clearTimeout(loadingTimer)
-  }, [route])
 
   useEffect(() => {
     document.title = pageTitle
@@ -112,25 +100,6 @@ function App() {
     }
   }
 
-  const loadingScreen = (
-    <div className={`loading-screen${isLoading ? '' : ' loading-screen--hidden'}`}>
-      <video
-        className="loading-screen__video"
-        src="/logo-assets/Video.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        aria-hidden="true"
-        tabIndex="-1"
-      />
-      <LoadingRadar />
-      <div className="loading-screen__brand">
-        <img className="loading-screen__tagline" src={taglineLogo} alt="TurfOn24" />
-      </div>
-    </div>
-  )
-
   return (
     <main className="legacy-shell">
       {route === 'admin' ? (
@@ -142,21 +111,15 @@ function App() {
           onLoad={replaceNavigationLogo}
         />
       ) : route === 'countdown' ? (
-        <>
-          {loadingScreen}
-          <Countdown onHome={goHome} />
-        </>
+        <Countdown onHome={goHome} />
       ) : (
-        <>
-          {loadingScreen}
-          <iframe
-            key={homeUrl}
-            className="legacy-page"
-            src={homeUrl}
-            title={pageTitle}
-            onLoad={replaceNavigationLogo}
-          />
-        </>
+        <iframe
+          key={homeUrl}
+          className="legacy-page"
+          src={homeUrl}
+          title={pageTitle}
+          onLoad={replaceNavigationLogo}
+        />
       )}
     </main>
   )
