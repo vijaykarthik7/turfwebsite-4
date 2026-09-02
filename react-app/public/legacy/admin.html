@@ -312,14 +312,7 @@
   .detail-row:last-child{border-bottom:none;}
   .detail-row span:first-child{color:var(--muted);}
 
-  /* ===== daily analytics modal (stat card graphs) ===== */
-  .analytics-overlay{position:fixed; inset:0; background:rgba(6,9,10,0.82); backdrop-filter:blur(8px); z-index:160; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease; padding:20px;}
-  .analytics-overlay.open{opacity:1; pointer-events:all;}
-  .analytics-box{position:relative; width:min(880px,100%); max-height:88vh; background:var(--charcoal); border:1px solid var(--border); border-radius:18px; padding:26px; display:flex; flex-direction:column; gap:2px; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,0.55); animation:analyticsIn .32s cubic-bezier(.2,.8,.2,1);}
-  @keyframes analyticsIn{from{opacity:0; transform:translateY(16px) scale(.985);} to{opacity:1; transform:translateY(0) scale(1);}}
-  .analytics-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding-right:40px;}
-  .analytics-head h3{font-size:17px;}
-  .analytics-head p{color:var(--muted); font-size:12px; margin-top:4px;}
+  /* ===== daily analytics (stat card graphs) ===== */
   .range-pills{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 4px;}
   .range-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease; background:transparent;}
   .range-pill.sel, .range-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
@@ -353,6 +346,17 @@
   .ad-row .w{color:var(--white); font-family:'JetBrains Mono',monospace; font-weight:600;}
   .ad-row .w.green{color:var(--neon);}
   .ad-row .w.zero{color:var(--muted);}
+
+  /* ===== analytics page (stat card graphs) ===== */
+  #page-analytics{position:relative;}
+  .analytics-page-head{margin-bottom:18px;}
+  .analytics-page-head h3{font-size:20px; margin-top:12px;}
+  .analytics-page-head p{color:var(--muted); font-size:12.5px; margin-top:4px;}
+  .analytics-back{display:inline-flex; align-items:center; gap:7px; color:var(--neon); font-size:12.5px; font-weight:600; text-decoration:none; padding:8px 14px; border:1px solid var(--border); border-radius:9px; transition:all .2s ease; background:rgba(57,255,122,0.04);}
+  .analytics-back:hover{border-color:var(--neon); background:rgba(57,255,122,0.1);}
+  .analytics-selector{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:4px;}
+  .analytics-selector .metric-pill{padding:7px 13px; border:1px solid var(--border); border-radius:100px; font-size:11px; color:var(--muted); cursor:pointer; transition:all .2s ease; background:transparent; font-family:'Inter',sans-serif;}
+  .analytics-selector .metric-pill.sel, .analytics-selector .metric-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
 
   @media(max-width:1000px){
     .sidebar{position:fixed; left:0; height:100vh; transform:translateX(-100%); transition:transform .3s ease; z-index:100;}
@@ -388,14 +392,9 @@
     .cal-grid2{gap:5px;}
     .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
     .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
-    .analytics-box{padding:18px; max-height:92vh;}
     .analytics-summary{grid-template-columns:1fr 1fr;}
-    .analytics-head h3{font-size:15px;}
+    .analytics-page-head h3{font-size:17px;}
     .range-pill{font-size:11px; padding:7px 11px;}
-  }
-  @media(max-width:480px){
-    .analytics-overlay{padding:8px;}
-    .analytics-box{border-radius:14px; padding:16px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -465,11 +464,11 @@
     <div class="side-head"><div class="mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><span>TURFON24</span></div>
     <div class="side-nav" id="sideNav">
       <div class="nav-item active" data-page="dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span class="nav-label">Dashboard</span></div>
+      <div class="nav-item" data-page="analytics"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="nav-label">Analytics</span></div>
       <div class="nav-item" data-page="bookings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="nav-label">Bookings</span><span class="nav-notice" title="New booking"></span></div>
       <div class="nav-item" data-page="enquiries"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Extended Enquiries</span></div>
       <div class="nav-item" data-page="customers"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6"/><circle cx="18" cy="9" r="2.6"/><path d="M15.5 14c2.8.3 4.5 2 4.5 6"/></svg><span class="nav-label">Customers</span></div>
       <div class="nav-item" data-page="calendar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="nav-label">Calendar</span></div>
-      <div class="nav-item" data-page="reports"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="nav-label">Reports</span></div>
       <div class="nav-item" data-page="payments"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 9h5M17 9h5"/></svg><span class="nav-label">Payment Received</span></div>
       <div class="nav-item" data-page="whatsapp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg><span class="nav-label">WhatsApp Enquiries</span></div>
       <div class="nav-item" data-page="chatbot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Chatbot Conversations</span><span class="nav-notice" title="New chat conversation"></span></div>
@@ -522,6 +521,31 @@
         <h3>Recent activity</h3>
         <div id="activityList"></div>
       </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div class="analytics-page-head">
+        <a class="analytics-back" href="#" onclick="goToDashboard(); return false;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Dashboard</a>
+        <h3>Analytics</h3>
+        <p>Monitor bookings, payments, customers and enquiries.</p>
+      </div>
+      <div class="panel">
+        <div class="analytics-selector" id="analyticsSelector" role="tablist" aria-label="Select metric"></div>
+        <div class="range-pills" id="rangePills" role="tablist" aria-label="Select date range">
+          <button type="button" class="range-pill sel" role="tab" aria-selected="true" data-range="7">Last 7 Days</button>
+          <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="30">Last 30 Days</button>
+          <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="90">Last 3 Months</button>
+        </div>
+        <div class="chart-scroll" id="analyticsChart"></div>
+        <div class="analytics-summary" id="analyticsSummary"></div>
+        <div class="analytics-detail" id="analyticsDetail" aria-live="polite"></div>
+        <div class="analytics-foot">
+          <span class="analytics-note" id="analyticsNote"></span>
+          <button type="button" class="analytics-link" id="analyticsViewPage" onclick="toggleAnalyticsDetail()">View daily details</button>
+        </div>
+      </div>
+      <div class="chart-tip" id="chartTip" aria-hidden="true"></div>
     </div>
 
     <!-- BOOKINGS -->
@@ -615,14 +639,6 @@
     </div>
 
     <!-- REPORTS -->
-    <div class="page" id="page-reports">
-      <div class="chart-row">
-        <div class="panel"><h3>Bookings this week</h3><svg viewBox="0 0 400 180" width="100%" height="180"></svg><div id="barChart"></div></div>
-        <div class="panel"><h3>Payment status split</h3><div id="donutChart"></div></div>
-      </div>
-      <div class="panel"><h3>Revenue — last 6 weeks</h3><div id="lineChart"></div></div>
-    </div>
-
     <!-- WHATSAPP ENQUIRIES -->
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
@@ -698,11 +714,11 @@
     <input class="cp-input" id="cpInput" placeholder="Type a command or search...">
     <div id="cpList">
       <div class="cp-item" onclick="cpGo('dashboard')">Go to Dashboard</div>
+      <div class="cp-item" onclick="cpGo('analytics')">Go to Analytics</div>
       <div class="cp-item" onclick="cpGo('bookings')">Go to Bookings</div>
       <div class="cp-item" onclick="cpGo('payments')">Go to Payment Received</div>
       <div class="cp-item" onclick="cpGo('enquiries')">Go to Extended Enquiries</div>
       <div class="cp-item" onclick="cpGo('customers')">Go to Customers</div>
-      <div class="cp-item" onclick="cpGo('reports')">Go to Reports</div>
       <div class="cp-item" onclick="cpGo('settings')">Go to Website Settings</div>
     </div>
   </div>
@@ -718,30 +734,6 @@
 </div>
 
 <!-- DAILY ANALYTICS MODAL -->
-<div class="analytics-overlay" id="analyticsModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Daily analytics">
-  <div class="analytics-box">
-    <button type="button" class="modal-close" onclick="closeAnalytics()" aria-label="Close graph">✕</button>
-    <div class="analytics-head">
-      <div>
-        <h3 id="analyticsTitle">Analytics</h3>
-        <p id="analyticsSubtitle">Daily performance</p>
-      </div>
-    </div>
-    <div class="range-pills" id="rangePills" role="tablist" aria-label="Select date range">
-      <button type="button" class="range-pill sel" role="tab" aria-selected="true" data-range="7">Last 7 Days</button>
-      <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="30">Last 30 Days</button>
-      <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="90">Last 3 Months</button>
-    </div>
-    <div class="chart-scroll" id="analyticsChart"></div>
-    <div class="analytics-summary" id="analyticsSummary"></div>
-    <div class="analytics-detail" id="analyticsDetail" aria-live="polite"></div>
-    <div class="analytics-foot">
-      <span class="analytics-note" id="analyticsNote"></span>
-      <button type="button" class="analytics-link" id="analyticsViewPage" onclick="toggleAnalyticsDetail()">View daily details</button>
-    </div>
-  </div>
-  <div class="chart-tip" id="chartTip" aria-hidden="true"></div>
-</div>
 
 <div class="toast-stack" id="toastStack"></div>
 
@@ -927,7 +919,7 @@
   document.querySelectorAll('.date-filter').forEach(el=>el.addEventListener('change', syncDateDisplay));
   syncDateDisplay();
   // ---- nav ----
-  const pageTitles = {dashboard:'Dashboard', bookings:'Bookings', payments:'Payment Received', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', reports:'Reports', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
+  const pageTitles = {dashboard:'Dashboard', analytics:'Analytics', bookings:'Bookings', payments:'Payment Received', enquiries:'Extended Enquiries', customers:'Customers', calendar:'Calendar', whatsapp:'WhatsApp Enquiries', chatbot:'Chatbot Conversations', settings:'Website Settings', profile:'Profile'};
   const SITE_SETTINGS_KEY = 'turfon24-site-settings';
   const defaultSiteSettings = { businessName:'TurfOn24', hourlyRate:'800', phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', upi:'turfon24@okaxis', address:'Cuddaloore' };
   function loadWebsiteSettings(){
@@ -1568,8 +1560,10 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
 
   // ---- daily analytics modal (stat card graphs) ----
   const analyticsMetrics = {
+    turf:       { title:'Turf Available Analytics', label:'Slots available', subtitle:'Turf availability derived from daily booking load', rows:()=>bookings, date:r=>r[9], availability:true },
     total:      { title:'Total Bookings Analytics', label:'Bookings', subtitle:'Bookings created per day', rows:()=>bookings, date:r=>r[9] },
     paid:       { title:'Payment Received Analytics', label:'Payment Received', subtitle:'Payments received per day', rows:()=>bookings.filter(b=>normalizeStatus(b[7])==='verified'), date:r=>r[9], value:r=>Number(String(r[6]).replace(/[₹,]/g,'')), currency:true },
+    today:      { title:"Today's Bookings Analytics", label:'Bookings', subtitle:'Bookings grouped per day for the selected range', rows:()=>bookings, date:r=>r[9] },
     today:      { title:"Today's Bookings Analytics", label:'Bookings', subtitle:'Bookings grouped per day for the selected range', rows:()=>bookings, date:r=>r[9] },
     pendingConf:{ title:'Pending Confirmations Analytics', label:'Pending confirmations', subtitle:'Pending confirmations per day', rows:()=>bookings.filter(b=>normalizeStatus(b[8])==='pending'), date:r=>r[9] },
     pendingPay: { title:'Pending Payment Verification Analytics', label:'Pending payments', subtitle:'Pending payment verification records per day', rows:()=>bookings.filter(b=>normalizeStatus(b[7])==='pending'), date:r=>r[9] },
@@ -1652,7 +1646,7 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
   }
   function showAnalyticsTip(event, rect, currency){
     const tip = document.getElementById('chartTip');
-    const overlay = document.getElementById('analyticsModal');
+    const overlay = document.getElementById('page-analytics');
     const or = overlay.getBoundingClientRect();
     const barRect = rect.getBoundingClientRect();
     const cx = event.type === 'focus' ? barRect.left + barRect.width/2 : event.clientX;
@@ -1743,7 +1737,12 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       const days = analyticsState.range === '30' ? 30 : 7;
       start = addDaysIso(end, -(days - 1));
     }
-    const points = buildDailySeries(start, end, rows, metric.date, { value: metric.value, firstSeen: metric.firstSeen });
+    let points;
+    if(metric.availability){
+      points = buildAvailabilitySeries(start, end, rows, metric.date);
+    } else {
+      points = buildDailySeries(start, end, rows, metric.date, { value: metric.value, firstSeen: metric.firstSeen });
+    }
     analyticsState.points = points;
     renderAnalyticsChart(points, metric.currency, metric.label);
     renderAnalyticsSummary(points, metric.currency);
@@ -1754,6 +1753,21 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     document.getElementById('analyticsDetail').classList.remove('show');
     document.getElementById('analyticsViewPage').textContent = 'View daily details';
   }
+  function buildAvailabilitySeries(start, end, rows, dateFn){
+    const map = {};
+    let cursor = start;
+    let maxCount = 0;
+    while(cursor <= end){ map[cursor] = 0; cursor = addDaysIso(cursor, 1); }
+    rows.forEach(r=>{
+      const d = isoDay(dateFn(r));
+      if(d && d>=start && d<=end){ map[d] += 1; }
+    });
+    for(const k in map){ if(map[k] > maxCount) maxCount = map[k]; }
+    const points = [];
+    cursor = start;
+    while(cursor <= end){ points.push({ date:cursor, value: maxCount - map[cursor] }); cursor = addDaysIso(cursor, 1); }
+    return points;
+  }
   function setAnalyticsRange(range){
     analyticsState.range = range;
     document.querySelectorAll('#rangePills .range-pill').forEach(p=>{
@@ -1763,24 +1777,53 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     });
     renderAnalytics();
   }
+  function buildAnalyticsSelector(){
+    const container = document.getElementById('analyticsSelector');
+    if(!container) return;
+    const keys = Object.keys(analyticsMetrics);
+    const labels = {
+      turf:'Turf Available', total:'Total Bookings', paid:'Payment Received', today:'Today\'s Bookings',
+      pendingConf:'Pending Confirmations', pendingPay:'Pending Payment Verification', enq:'Extended Booking Enquiries',
+      completed:'Completed Bookings', cancelled:'Cancelled Bookings', customers:'Total Customers', wa:'WhatsApp Enquiries', chat:'Chatbot Conversations'
+    };
+    container.innerHTML = keys.map(k=>'<button type="button" class="metric-pill" data-metric="' + k + '" role="tab" aria-selected="false">' + (labels[k] || k) + '</button>').join('');
+    container.querySelectorAll('.metric-pill').forEach(btn=>btn.addEventListener('click', ()=>selectAnalyticsMetric(btn.dataset.metric)));
+  }
+  function setActiveMetricPill(metricKey){
+    document.querySelectorAll('#analyticsSelector .metric-pill').forEach(btn=>{
+      const active = btn.dataset.metric === metricKey;
+      btn.classList.toggle('sel', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+  }
+  function selectAnalyticsMetric(metricKey){
+    const metric = analyticsMetrics[metricKey];
+    if(!metric) return;
+    const rows = metric.rows();
+    analyticsState = { metric, range:'7', anchor: seriesAnchor(rows, metric.date), points: null };
+    setActiveMetricPill(metricKey);
+    setAnalyticsRange('7');
+  }
   function openAnalytics(stat){
     const metric = analyticsMetrics[stat.metric];
     if(!metric){
       if(stat.go) stat.go();
       return;
     }
-    const rows = metric.rows();
-    analyticsState = { metric, range:'7', anchor: seriesAnchor(rows, metric.date), points: null };
-    document.getElementById('analyticsTitle').textContent = metric.title;
-    document.getElementById('analyticsSubtitle').textContent = metric.subtitle;
-    const modal = document.getElementById('analyticsModal');
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden','false');
-    setAnalyticsRange('7');
+    openAnalyticsPage(stat.metric);
+  }
+  function openAnalyticsPage(fromMetric){
+    const nav = document.querySelector('.nav-item[data-page="analytics"]');
+    if(nav) nav.click();
+    const key = fromMetric && analyticsMetrics[fromMetric] ? fromMetric : 'total';
+    try { if(window.location.hash !== '#page-analytics?metric=' + key) window.location.hash = '#page-analytics?metric=' + key; } catch(e){}
+    selectAnalyticsMetric(key);
+  }
+  function goToDashboard(){
+    const nav = document.querySelector('.nav-item[data-page="dashboard"]');
+    if(nav) nav.click();
   }
   function closeAnalytics(){
-    document.getElementById('analyticsModal').classList.remove('open');
-    document.getElementById('analyticsModal').setAttribute('aria-hidden','true');
     document.getElementById('analyticsDetail').classList.remove('show');
     document.getElementById('analyticsViewPage').textContent = 'View daily details';
     hideAnalyticsTip();
@@ -1813,7 +1856,17 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     el.scrollTop = 0;
   }
   document.querySelectorAll('#rangePills .range-pill').forEach(p=>p.addEventListener('click', ()=>setAnalyticsRange(p.dataset.range)));
-  document.getElementById('analyticsModal').addEventListener('click', e=>{ if(e.target.id === 'analyticsModal') closeAnalytics(); });
+  buildAnalyticsSelector();
+  selectAnalyticsMetric('total');
+  function applyAnalyticsHashMetric(){
+    const q = window.location.hash.indexOf('?');
+    if(q === -1) return;
+    const params = new URLSearchParams(window.location.hash.slice(q + 1));
+    const mk = params.get('metric');
+    if(mk && analyticsMetrics[mk]) selectAnalyticsMetric(mk);
+  }
+  window.addEventListener('hashchange', ()=>{ if(window.location.hash.indexOf('page-analytics') !== -1) applyAnalyticsHashMetric(); });
+  if(window.location.hash.indexOf('page-analytics') !== -1) applyAnalyticsHashMetric();
 
   // ---- calendar ----
   const calTitleEl = document.querySelector('#page-calendar .panel h3');
@@ -1868,39 +1921,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     }
     calGrid.appendChild(cell);
   }
-
-  // ---- charts (self-contained SVG, no external lib) ----
-  const barData = [5,8,6,10,7,12,9];
-  const barDays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const barMax = Math.max(...barData);
-  const barSvg = document.querySelector('#page-reports svg');
-  let bars = '';
-  barData.forEach((v,i)=>{
-    const h = (v/barMax)*130;
-    const x = 20 + i*52;
-    bars += `<rect class="bar" x="${x}" y="${160-h}" width="30" height="${h}" rx="5"/><text x="${x+15}" y="175" fill="#8FA39B" font-size="9.5" text-anchor="middle" font-family="JetBrains Mono, monospace">${barDays[i]}</text>`;
-  });
-  barSvg.innerHTML = bars;
-
-  const revData = [32000,38500,29000,44200,41000,52300];
-  const revMax = Math.max(...revData);
-  let pts = revData.map((v,i)=>`${i*70},${120-(v/revMax)*100}`).join(' ');
-  document.getElementById('lineChart').innerHTML = `
-    <svg viewBox="0 0 350 140" width="100%" height="140">
-      <polyline points="${pts}" fill="none" stroke="#39FF7A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      ${revData.map((v,i)=>`<circle cx="${i*70}" cy="${120-(v/revMax)*100}" r="4" fill="#39FF7A"/>`).join('')}
-    </svg>`;
-
-  document.getElementById('donutChart').innerHTML = `
-    <svg viewBox="0 0 120 120" width="140" height="140" style="margin:0 auto; display:block;">
-      <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="16"/>
-      <circle cx="60" cy="60" r="45" fill="none" stroke="#39FF7A" stroke-width="16" stroke-dasharray="212 283" transform="rotate(-90 60 60)"/>
-      <circle cx="60" cy="60" r="45" fill="none" stroke="#F5B841" stroke-width="16" stroke-dasharray="42 283" stroke-dashoffset="-212" transform="rotate(-90 60 60)"/>
-    </svg>
-    <div style="display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:10.5px; color:#8FA39B;">
-      <span><span style="color:#39FF7A;">●</span> Verified 75%</span>
-      <span><span style="color:#F5B841;">●</span> Pending 15%</span>
-    </div>`;
 
   // ---- login visual particles ----
   const lvBox = document.getElementById('lvParticles');

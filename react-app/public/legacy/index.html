@@ -24,7 +24,10 @@
 
   #gridCanvas{position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:0.55;}
   .wrap{position:relative; z-index:1; width:100%; max-width:100%; overflow-x:clip;}
-  section{padding:88px 8vw; position:relative;}
+   section{padding:72px 8vw; position:relative;}
+   #gallery{padding-bottom:52px;}
+   #facilities{padding-top:52px;}
+   #pricing, #book{padding-left:6vw; padding-right:6vw;}
   .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--neon); margin-bottom:18px;}
   .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);}
   h2.section-title{font-size:clamp(30px,4vw,46px); font-weight:600; letter-spacing:-0.02em; margin-bottom:16px;}
@@ -239,6 +242,59 @@
     .fac-marker .fac-mark-bg{font-size:52px;}
     .fac-marker .fac-mark-inner{padding-left:76px;}
   }
+  /* ===== NEW FACILITIES SHOWCASE (added below the existing facilities board) ===== */
+  .fn-showcase{padding:96px 8vw; position:relative;}
+  .fn-showcase::before{content:""; position:absolute; inset:0; background:radial-gradient(80% 60% at 50% 0%, rgba(57,255,122,0.05), transparent 60%); pointer-events:none;}
+  .fn-header{text-align:center; max-width:640px; margin:0 auto 52px;}
+  .fn-heading{font-size:clamp(28px,3.6vw,42px); font-weight:600; letter-spacing:-0.02em; margin:0 0 16px;}
+  .fn-heading .g{color:var(--neon);}
+  .fn-sub{color:var(--muted); font-size:15.5px; line-height:1.65; margin:0;}
+  .fn-grid{display:grid; grid-template-columns:1.35fr 1fr; gap:24px; align-items:stretch;}
+  .fn-featured{position:relative; border-radius:26px; overflow:hidden; border:1px solid rgba(57,255,122,0.18); background:linear-gradient(150deg, rgba(18,27,23,.9) 0%, rgba(7,13,11,.96) 100%); display:flex; flex-direction:column; min-height:520px;}
+  .fn-featured-media{position:relative; flex:1 1 auto; min-height:280px; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .fn-featured-media::before{content:""; position:absolute; inset:0; background:radial-gradient(120% 110% at 50% 20%, rgba(57,255,122,0.16), transparent 55%);}
+  .fn-featured-media::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(7,13,11,.9), transparent 55%);}
+  .fn-showcase-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:0; z-index:0; transition:opacity 0.3s ease;}
+  .fn-card.active{border-color:rgba(57,255,122,0.55); box-shadow:0 18px 42px rgba(0,0,0,0.4), 0 0 28px rgba(57,255,122,0.18);}
+  .fn-card.active .fn-card-icon{background:rgba(57,255,122,0.16); box-shadow:0 0 18px rgba(57,255,122,0.32);}
+  .fn-feat-glow{position:absolute; inset:0; display:grid; place-items:center;}
+  .fn-feat-glow svg{width:min(56%,290px); height:auto; color:var(--neon); opacity:.5; filter:drop-shadow(0 0 26px rgba(57,255,122,0.35));}
+  .fn-feat-ring{position:absolute; width:min(72%,380px); aspect-ratio:1; border-radius:50%; border:1px dashed rgba(57,255,122,0.35); animation:fnRingSpin 22s linear infinite;}
+  .fn-feat-ring.r2{width:min(52%,270px); border-style:solid; border-color:rgba(57,255,122,0.16); animation-duration:14s; animation-direction:reverse;}
+  @keyframes fnRingSpin{to{transform:rotate(360deg);}}
+  .fn-featured-copy{position:relative; z-index:2; padding:34px 34px 38px;}
+  .fn-featured-copy h3{font-size:25px; font-weight:600; letter-spacing:-0.01em; margin:0 0 12px;}
+  .fn-featured-copy p{color:var(--muted); font-size:14.5px; line-height:1.7; max-width:540px; margin:0;}
+  .fn-feat-chip{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); border:1px solid rgba(57,255,122,0.3); background:rgba(57,255,122,0.06); border-radius:100px; padding:6px 14px; margin-bottom:18px;}
+  .fn-cards{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-content:start;}
+  .fn-card{position:relative; background:linear-gradient(150deg, rgba(18,27,23,.88) 0%, rgba(7,13,11,.95) 100%); border:1px solid rgba(57,255,122,0.14); border-radius:20px; padding:24px 22px; display:flex; flex-direction:column; transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease; overflow:hidden;}
+  .fn-card::before{content:""; position:absolute; inset:0; border-radius:20px; background:radial-gradient(120% 90% at 15% 0%, rgba(57,255,122,0.08), transparent 55%); opacity:0; transition:opacity .3s ease; pointer-events:none;}
+  .fn-card:hover{transform:translateY(-6px); border-color:rgba(57,255,122,0.4); box-shadow:0 18px 42px rgba(0,0,0,0.4), 0 0 24px rgba(57,255,122,0.1);}
+  .fn-card:hover::before{opacity:1;}
+  .fn-card-icon{width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:rgba(57,255,122,0.08); border:1px solid rgba(57,255,122,0.24); color:var(--neon); flex-shrink:0; filter:drop-shadow(0 0 10px rgba(57,255,122,0.22)); margin-bottom:16px; transition:background .3s ease, box-shadow .3s ease;}
+  .fn-card:hover .fn-card-icon{background:rgba(57,255,122,0.16); box-shadow:0 0 18px rgba(57,255,122,0.32);}
+  .fn-card h4{font-size:15.5px; font-weight:600; letter-spacing:-0.01em; margin:0 0 7px; position:relative; z-index:1;}
+  .fn-card p{font-size:12.5px; color:var(--muted); line-height:1.6; margin:0; position:relative; z-index:1;}
+  .fn-rent-list{list-style:none; margin:4px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; position:relative; z-index:1;}
+  .fn-rent-list li{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--white); line-height:1.4; font-weight:500;}
+  .fn-rent-list li::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon); flex-shrink:0;}
+  .fn-reveal{animation:revealIn 0.9s cubic-bezier(.2,.7,.2,1) both;}
+  .fn-reveal.in{opacity:1; transform:translateY(0) scale(1); filter:blur(0);}
+  @media(max-width:1100px){
+    .fn-grid{grid-template-columns:1fr; gap:20px;}
+    .fn-featured{min-height:440px;}
+    .fn-cards{grid-template-columns:1fr 1fr; gap:16px;}
+  }
+  @media(max-width:760px){
+    .fn-cards{grid-template-columns:1fr;}
+  }
+  @media(max-width:620px){
+    .fn-showcase{padding:72px 6vw;}
+    .fn-featured{min-height:0;}
+    .fn-featured-copy{padding:26px 22px 30px;}
+    .fn-featured-copy h3{font-size:21px;}
+    .fn-feat-glow svg{width:min(60%,240px);}
+  }
   /* ===== FACILITIES — responsive match programme (mobile & tablet) ===== */
   .fac-mobile{display:none; margin:0 5vw;}
   .fac-mh{position:relative; display:flex; flex-direction:column; align-items:flex-start; border:1px solid rgba(57,255,122,0.2); border-radius:18px 18px 0 0; background:linear-gradient(150deg, rgba(18,27,23,.92), rgba(7,13,11,.96)); padding:26px 24px 22px; overflow:hidden;}
@@ -306,20 +362,20 @@
   .enquiry-link{color:var(--neon); text-decoration:underline; text-underline-offset:3px; cursor:pointer; transition:opacity .2s ease;}
 
   /* ===== FLOATING COMMUNICATION WIDGET — "ON Assistant" ===== */
-  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:80; width:54px; height:54px;}
+  .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:9999; width:54px; height:54px;}
   .comm-fab-wrap::before{content:""; position:absolute; inset:-18px; border-radius:50%; background:radial-gradient(circle, rgba(57,255,122,0.30) 0%, rgba(57,255,122,0.12) 45%, transparent 70%); pointer-events:none;}
   .comm-fab-ring{display:block; position:absolute; inset:-3px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 20px rgba(57,255,122,0.5), inset 0 0 8px rgba(57,255,122,0.3); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
   @keyframes fabRingPulse{0%,100%{opacity:.65; transform:scale(.98);} 50%{opacity:1; transform:scale(1.04);}}
   .comm-fab-ring::before{content:""; position:absolute; top:-2px; left:50%; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon);}
-  .comm-fab{position:absolute; inset:0; border-radius:50%; background:transparent; padding:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:none; transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
-  .comm-fab img{width:26px; height:26px; object-fit:contain; mix-blend-mode:screen;}
+  .comm-fab{position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 50% 32%, #123b28 0%, #06221a 55%, #02110c 100%); border:1px solid rgba(57,255,122,0.85); padding:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(57,255,122,0.45), inset 0 0 12px rgba(57,255,122,0.25); transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
+  .comm-fab img{width:26px; height:26px; object-fit:contain; position:relative; z-index:1;}
   @keyframes fabFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);}}
   .comm-fab:hover{transform:scale(1.08);}
   .comm-fab-wrap .cdot{position:absolute; top:-1px; right:-1px; width:10px; height:10px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
   .comm-click-ring{position:absolute; inset:-4px; border-radius:50%; border:1px solid var(--neon); opacity:0; pointer-events:none;}
   .comm-click-ring.go{animation:clickRingGo .6s ease-out;}
   @keyframes clickRingGo{0%{opacity:0.8; transform:scale(1);} 100%{opacity:0; transform:scale(1.8);}}
-  .comm-panel{position:fixed; right:24px; bottom:92px; z-index:80; width:340px; max-width:calc(100vw - 40px); max-height:min(500px, 70vh); background:rgba(15,22,19,0.75); border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(143,163,155,0.18); backdrop-filter:blur(18px); transform:translateY(16px) scale(0.92); opacity:0; filter:blur(4px); pointer-events:none; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease; display:flex; flex-direction:column;}
+  .comm-panel{position:fixed; right:24px; bottom:92px; z-index:9999; width:340px; max-width:calc(100vw - 40px); max-height:min(500px, 70vh); background:rgba(15,22,19,0.75); border-radius:20px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(143,163,155,0.18); backdrop-filter:blur(18px); transform:translateY(16px) scale(0.92); opacity:0; filter:blur(4px); pointer-events:none; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease; display:flex; flex-direction:column;}
   .comm-panel::before{content:""; position:absolute; inset:0; border-radius:22px; padding:1px; background:linear-gradient(340deg, rgba(143,163,155,0.4), rgba(143,163,155,0.12) 45%, transparent 72%); 
   
   
@@ -458,6 +514,48 @@
   .bk-slot-remove:hover{color:var(--neon);}
   .bk-slot-head{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); padding-bottom:4px;}
   .bk-slot-head b{display:none;}
+  .bk-slot-tabs{display:flex; flex-wrap:nowrap; align-items:center; gap:20px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:rgba(57,255,122,0.35) transparent; margin-bottom:16px; padding-bottom:4px;}
+  .bk-slot-tabs::-webkit-scrollbar{height:6px;}
+  .bk-slot-tabs::-webkit-scrollbar-thumb{background:rgba(57,255,122,0.25); border-radius:8px;}
+  .bk-slot-tabs::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);}
+  .bk-slot-tab{flex:1 1 0; min-width:0; padding:10px 18px; border:1px solid var(--border); border-radius:12px; background:var(--black); color:var(--muted); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; cursor:pointer; transition:all .2s ease; text-align:center;}
+  .bk-slot-tab:hover{border-color:var(--neon); color:var(--neon);}
+  .bk-slot-tab.active{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.1); box-shadow:0 0 14px rgba(57,255,122,0.18);}
+  .bk-sum-date-row{margin-bottom:8px;}
+
+  /* ---- multi-slot booking ---- */
+  .ms-toggle-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px;}
+  .ms-toggle{display:inline-flex; align-items:center; gap:12px; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;}
+  .ms-toggle input{position:absolute; opacity:0; width:0; height:0; pointer-events:none;}
+  .ms-track{width:46px; height:25px; border-radius:100px; background:#143326; border:1px solid var(--border); position:relative; transition:all .3s ease; flex-shrink:0;}
+  .ms-track::after{content:""; position:absolute; top:2px; left:2px; width:19px; height:19px; border-radius:50%; background:var(--muted); transition:all .3s ease;}
+  .ms-toggle input:checked + .ms-track{border-color:var(--neon); background:rgba(57,255,122,0.14); box-shadow:0 0 14px rgba(57,255,122,0.25);}
+  .ms-toggle input:checked + .ms-track::after{left:23px; background:var(--neon);}
+  .ms-toggle .ms-label{font-size:13px; color:var(--white); font-weight:500; letter-spacing:0.01em;}
+  .ms-toggle:hover .ms-track{border-color:var(--neon);}
+  .ms-hint{font-size:11.5px; color:var(--muted); font-style:italic;}
+  .ms-count-row{display:flex; align-items:center; gap:16px; margin-bottom:10px;}
+  .ms-step{width:46px; height:46px; border-radius:12px; border:1px solid var(--border); background:var(--black); color:var(--white); font-size:22px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s ease; font-family:'Inter',sans-serif;}
+  .ms-step:hover:not(:disabled){border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.08);}
+  .ms-step:disabled{opacity:.35; cursor:not-allowed;}
+  .ms-count{min-width:60px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:30px; color:var(--neon); font-weight:600;}
+  .ms-slot-dur-group{margin-bottom:22px;}
+  .ms-slot-dur-group:last-child{margin-bottom:6px;}
+  .ms-slot-dur-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px;}
+  .ms-slot-dur-head .ms-slot-num{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); font-weight:600;}
+  .ms-slot-dur-head .ms-slot-dur-val{font-size:11.5px; color:var(--muted);}
+  .ms-dur-pills{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:8px; margin-bottom:4px;}
+  .ms-dur-pills .pill{width:100%; min-width:0; box-sizing:border-box; text-align:center; padding:10px 4px; font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bk-slot-card{border:1px solid var(--border); background:var(--black); border-radius:16px; padding:18px 18px 6px; margin-bottom:18px; transition:border-color .2s ease, box-shadow .2s ease;}
+  .bk-slot-card.has-sel{border-color:rgba(57,255,122,0.45); box-shadow:0 0 20px rgba(57,255,122,0.08);}
+  .bk-slot-card-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;}
+  .bk-slot-num{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); font-weight:600;}
+  .bk-slot-dur{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); border:1px solid var(--border); border-radius:100px; padding:4px 10px;}
+  .bk-slot-chosen{font-size:12.5px; color:var(--white); margin:2px 0 12px; font-family:'JetBrains Mono',monospace; min-height:18px; white-space:pre-line;}
+  .bk-slot-selected{color:var(--neon);}
+  .bk-slot-pills{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin-bottom:12px;}
+  .bk-slot-pills .pill{width:100%; min-width:0; min-height:38px; box-sizing:border-box; text-align:center; white-space:pre-line; line-height:1.3; font-size:12px; display:flex; align-items:center; justify-content:center;}
+  .bk-slot-empty{grid-column:1 / -1; font-size:12px; color:var(--muted); font-style:italic; padding:8px 2px;}
   .qr-card{border:1px solid var(--border); border-radius:20px; padding:32px; text-align:center; position:relative; overflow:hidden; background:var(--black); animation:qrReveal .5s cubic-bezier(.2,.8,.2,1);}
   @keyframes qrReveal{from{opacity:0; transform:scale(0.92);} to{opacity:1; transform:scale(1);}}
   .qr-glow-border{position:absolute; inset:0; border-radius:20px; padding:1px; background:linear-gradient(120deg,var(--neon),var(--blue),var(--neon)); background-size:200% 200%; animation:borderflow 4s linear infinite; -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;}
@@ -469,6 +567,11 @@
   .payment-pending{font-size:12px; color:var(--muted); line-height:1.5; margin-top:14px;}
   .qr-box .scan-line{position:absolute; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--neon),transparent); animation:scanLine 2.2s ease-in-out infinite;}
   @keyframes scanLine{0%{top:0;} 50%{top:96%;} 100%{top:0;}}
+  .bk-pay-slot{border:1px solid var(--border); border-radius:12px; background:rgba(255,255,255,0.02); padding:14px 16px; margin-bottom:12px;}
+  .bk-pay-slot:last-child{margin-bottom:0;}
+  .bk-pay-slot-head{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); font-weight:600; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--border);}
+  .bk-pay-slot-row{display:flex; justify-content:space-between; align-items:center; gap:12px; font-size:13px; color:var(--muted); padding:5px 0;}
+  .bk-pay-slot-row b{color:var(--white); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500; text-align:right; min-width:0; overflow-wrap:anywhere;}
 
   /* ===== CONTACT ===== */
   .contact-stage{position:relative; text-align:center;}
@@ -610,6 +713,24 @@
     .booking-shell .rc-nav{width:44px; height:44px;}
   }
 
+  /* booking Date-step calendar — compact sizing (scoped to the hourly booking shell only) */
+  .booking-shell .rc-cal{padding:10px 12px 12px; margin:4px 0 14px;}
+  .booking-shell .rc-head{margin-bottom:7px; gap:10px;}
+  .booking-shell .rc-nav{width:26px; height:26px; border-radius:8px;}
+  .booking-shell .rc-nav-group{gap:8px;}
+  .booking-shell .rc-nav-group > span{font-size:10.5px;}
+  .booking-shell .rc-grid{gap:3px;}
+  .booking-shell .rc-grid .rc-h{padding-bottom:3px; font-size:9.5px;}
+  .booking-shell .rc-day{border-radius:6px; font-size:11px;}
+  @media(max-width:600px){
+    .booking-shell .rc-nav{width:34px; height:34px;}
+    .booking-shell .rc-grid{gap:4px;}
+    .booking-shell .rc-day{font-size:12px;}
+  }
+  @media(max-width:900px){
+    .booking-shell .rc-cal{padding:10px 14px 12px;}
+  }
+
   @media(max-width:900px){
     a,button,.pin,.pill,.dg-item,.rc-day,.enquiry-link{cursor:pointer;}
     nav{padding:12px 6vw;}
@@ -633,7 +754,10 @@
     .editorial-row, .editorial-row.rev{grid-template-columns:1fr; direction:ltr;}
     .pricing-cols{grid-template-columns:1fr;}
     .contact-grid{grid-template-columns:1fr 1fr;}
-    section{padding:64px 3vw;}
+    section{padding:56px 3vw;}
+    #gallery{padding-bottom:40px;}
+    #facilities{padding-top:40px;}
+    #pricing, #book{padding-left:2.25vw; padding-right:2.25vw;}
     .hotspot-wrap{height:420px;}
     .pin::before{content:""; position:absolute; inset:-16px; border-radius:50%;}
     .pin-tip{bottom:36px;}
@@ -669,7 +793,7 @@
     #extTimePills{flex-wrap:nowrap; gap:6px;}
     #extTimePills .pill{padding:7px 10px; font-size:10px; white-space:nowrap;}
     .comm-fab-wrap{right:18px; bottom:18px;}
-    #book{width:100%; max-width:100%; padding-left:3vw; padding-right:3vw;}
+    #book{width:100%; max-width:100%; padding-left:2.25vw; padding-right:2.25vw;}
     #book .booking-shell{width:100%; max-width:none; margin-left:0; margin-right:0; padding:76px 16px 34px;}
     #book .steps-row{width:100%; max-width:100%; margin:0 0 42px; gap:0; grid-template-columns:repeat(6, minmax(0,1fr));}
     #book .steps-row::before{top:16px;}
@@ -683,6 +807,8 @@
     #book #bkDurationPills .pill{padding:12px 8px;}
     #book #bkTimePills{grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));}
     #book #bkTimePills .pill{padding-left:4px; padding-right:4px; font-size:12px; text-align:center; white-space:pre-line;}
+    #book .ms-dur-pills{grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px;}
+    #book .bk-slot-pills{grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));}
     #book .bk-note{font-size:13px;}
     #book .bk-total{padding:20px 18px;}
     #book .bk-total .amt{font-size:32px;}
@@ -705,6 +831,12 @@
     #book .bstep-label{font-size:8px; letter-spacing:0.01em;}
     #book #bkDurationPills{grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; margin-bottom:8px;}
     #book #bkDurationPills .pill{padding:12px 6px;}
+    #book .ms-dur-pills{grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px;}
+    #book .bk-slot-pills{grid-template-columns:1fr;}
+    .bk-slot-tabs{gap:16px;}
+    .bk-slot-tab{flex:0 0 auto;}
+    .ms-toggle-row{flex-direction:column; align-items:flex-start; gap:8px;}
+    .ms-count-row{gap:12px;}
     .facilities-grid{grid-template-columns:1fr;}
   }
   @media(max-width:767px){
@@ -728,6 +860,19 @@
     .fac-icon,.facility-card--feature .fac-icon{width:34px; height:34px; border-radius:10px; margin-bottom:8px;}
     .fac-num{font-size:36px;}
     .facility-card--feature .fac-num{font-size:36px;}
+  }
+  @media(max-width:768px){
+    #bkMultiSlotArea{position:relative; display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:0; scrollbar-width:none; -webkit-overflow-scrolling:touch; scroll-behavior:smooth;}
+    #bkMultiSlotArea::-webkit-scrollbar{display:none;}
+    #bkMultiSlotArea .bk-slot-card{flex:0 0 100%; scroll-snap-align:center; width:100%; min-width:0; box-sizing:border-box; margin-bottom:0; overflow:hidden;}
+    .bk-slot-pager{display:flex; flex-direction:column; align-items:center; gap:8px; margin:4px 0 16px;}
+    .bk-slot-pager-dots{display:flex; gap:8px; align-items:center;}
+    .bk-slot-dot{width:9px; height:9px; border-radius:50%; border:1px solid var(--border); background:transparent; padding:0; cursor:pointer; transition:all .2s ease;}
+    .bk-slot-dot.active{background:var(--neon); border-color:var(--neon); box-shadow:0 0 10px rgba(57,255,122,0.5);}
+    .bk-slot-pager-count{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.08em;}
+    #book .bk-slot-pills{grid-template-columns:repeat(2, minmax(0,1fr)); gap:11px; width:100%; box-sizing:border-box;}
+    #book .bk-slot-pills .pill{height:50px; min-height:50px; max-width:100%; border-radius:21px; font-size:12.5px; padding:4px 6px; line-height:1.25; overflow:hidden; word-break:break-word; box-sizing:border-box;}
+    #book #bkTimePills .pill{min-height:50px; max-width:100%; font-size:12.5px; padding:4px 6px; line-height:1.25; overflow:hidden; word-break:break-word; box-sizing:border-box;}
   }
 </style>
 </head>
@@ -1088,6 +1233,109 @@
   })();
   </script>
 
+  <!-- NEW FACILITIES SHOWCASE -->
+  <section id="comfort" class="fn-showcase">
+    <div class="fn-header fn-reveal">
+      <div class="eyebrow" style="justify-content:center;">Player Comfort</div>
+      <h2 class="fn-heading">Everything you need <span class="g">beyond the game</span></h2>
+      <p class="fn-sub">From hydration to equipment, we've built the little extras that make every session smoother — so you can focus entirely on play.</p>
+    </div>
+
+    <div class="fn-grid">
+      <div class="fn-featured fn-reveal">
+        <div class="fn-featured-media">
+          <div class="fn-feat-ring"></div>
+          <div class="fn-feat-ring r2"></div>
+          <img class="fn-showcase-img" id="fnShowcaseImg" alt="Purified RO Water" role="img">
+        </div>
+        <div class="fn-featured-copy">
+          <div class="fn-feat-chip">Courtside comfort</div>
+          <h3 id="fnFeatTitle">Purified RO Water</h3>
+          <p id="fnFeatDesc">Clean and purified RO drinking water available for players.</p>
+        </div>
+      </div>
+
+      <div class="fn-cards">
+        <div class="fn-card fn-reveal active" data-index="0">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 0 9 9 9 9 0 0 0 6-2.3L21 20l-.6-2.7A9 9 0 1 0 3 12Z"/><path d="M3 12h6a3 3 0 0 0 6 0h6"/></svg></div>
+          <h4>Purified RO Water</h4>
+          <p>Clean and purified RO drinking water available for players.</p>
+        </div>
+        <div class="fn-card fn-reveal" data-index="1">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></div>
+          <h4>Relaxation / Waiting Area</h4>
+          <p>A comfortable space to relax before or after your game.</p>
+        </div>
+        <div class="fn-card fn-reveal" data-index="2">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 9a6 6 0 0 1 12 0v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9Z"/><path d="M6 13h12"/></svg></div>
+          <h4>Refreshments</h4>
+          <p>Refreshment items and beverages available on demand.</p>
+        </div>
+        <div class="fn-card fn-reveal" data-index="3">
+          <div class="fn-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8a7 7 0 0 1 14 0c0 2-1 4-2 5a7 7 0 0 1-10 0c-1-1-2-3-2-5Z"/><path d="M4 20h16M8 8l3 3M16 8l-3 3"/></svg></div>
+          <h4>Key Items for Rental</h4>
+          <ul class="fn-rent-list">
+            <li>Bat</li>
+            <li>Cricket Ball</li>
+            <li>Football</li>
+          </ul>
+        </div>
+        <div class="fn-card fn-reveal" data-index="4">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M12 10h6M12 14h6"/></svg></div>
+          <h4>Locker Facility</h4>
+          <p>Secure locker space for your belongings while you play.</p>
+        </div>
+        <div class="fn-card fn-reveal" data-index="5">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18a3 3 0 0 1 3-3h6M12 15v6H6a3 3 0 0 1-3-3"/><path d="M6 8a3 3 0 0 1 3 3h6"/><path d="M21 18a3 3 0 0 1-3 3h-6"/></svg></div>
+          <h4>Dedicated Rest Room</h4>
+          <p>Dedicated rest room facilities for boys and girls.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function(){
+      var facilities = [
+        { title: 'Purified RO Water', desc: 'Clean and purified RO drinking water available for players.', img: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=800&h=500&fit=crop&q=80' },
+        { title: 'Relaxation / Waiting Area', desc: 'A comfortable space to relax before or after your game.', img: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=800&h=500&fit=crop&q=80' },
+        { title: 'Refreshments', desc: 'Refreshment items and beverages available on demand.', img: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=800&h=500&fit=crop&q=80' },
+        { title: 'Key Items for Rental', desc: 'Essential sports equipment available for rent whenever you need it.', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&h=500&fit=crop&q=80' },
+        { title: 'Locker Facility', desc: 'Secure locker space for your belongings while you play.', img: 'https://images.unsplash.com/photo-1692932596039-e321a4ed7861?w=800&h=500&fit=crop&q=80' },
+        { title: 'Dedicated Rest Room', desc: 'Dedicated restroom facilities for boys and girls.', img: 'https://images.unsplash.com/photo-1571712707792-82c3cc4243f5?w=800&h=500&fit=crop&q=80' }
+      ];
+
+      var imgEl = document.getElementById('fnShowcaseImg');
+      var titleEl = document.getElementById('fnFeatTitle');
+      var descEl = document.getElementById('fnFeatDesc');
+      var cards = document.querySelectorAll('.fn-cards .fn-card');
+
+      function selectFacility(index) {
+        var f = facilities[index];
+        imgEl.style.opacity = '0';
+        setTimeout(function() {
+          imgEl.src = f.img;
+          imgEl.alt = f.title;
+          imgEl.style.opacity = '1';
+        }, 150);
+        titleEl.textContent = f.title;
+        descEl.textContent = f.desc;
+        cards.forEach(function(c, i) {
+          if (i === index) { c.classList.add('active'); } else { c.classList.remove('active'); }
+        });
+      }
+
+      cards.forEach(function(card) {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function() {
+          selectFacility(parseInt(this.getAttribute('data-index'), 10));
+        });
+      });
+
+      selectFacility(0);
+    })();
+  </script>
+
   <!-- PRICING -->
   <section id="pricing">
     <div class="reveal" style="text-align:center;">
@@ -1181,33 +1429,59 @@
 
       <!-- PANE 3 — DURATION -->
       <div id="bkPane3" class="bk-pane" style="display:none;">
-        <label class="field-label">Select duration</label>
-        <div class="pill-row" id="bkDurationPills">
-          <div class="pill" data-duration="1">1 hour</div><div class="pill" data-duration="2">2 hours</div><div class="pill" data-duration="3">3 hours</div><div class="pill" data-duration="4">4 hours</div><div class="pill" data-duration="5">5 hours</div><div class="pill" data-duration="6">6 hours</div><div class="pill" data-duration="7">7 hours</div><div class="pill" data-duration="8">8 hours</div><div class="pill" data-duration="9">9 hours</div><div class="pill" data-duration="10">10 hours</div><div class="pill" data-duration="11">11 hours</div><div class="pill" data-duration="12">12 hours</div>
+        <div class="ms-toggle-row">
+          <label class="ms-toggle">
+            <input type="checkbox" id="bkMultiToggle" onchange="bkSetMulti(this.checked)">
+            <span class="ms-track"></span>
+            <span class="ms-label">Add Multiple Slots</span>
+          </label>
+          <span class="ms-hint">Book several non-overlapping time windows on the same date.</span>
         </div>
-        <div class="bk-note">Choose how long you want to book the turf.</div>
+        <div id="bkSingleDurWrap">
+          <label class="field-label">Select duration</label>
+          <div class="pill-row" id="bkDurationPills">
+            <div class="pill" data-duration="1">1 hour</div><div class="pill" data-duration="2">2 hours</div><div class="pill" data-duration="3">3 hours</div><div class="pill" data-duration="4">4 hours</div><div class="pill" data-duration="5">5 hours</div><div class="pill" data-duration="6">6 hours</div><div class="pill" data-duration="7">7 hours</div><div class="pill" data-duration="8">8 hours</div><div class="pill" data-duration="9">9 hours</div><div class="pill" data-duration="10">10 hours</div><div class="pill" data-duration="11">11 hours</div><div class="pill" data-duration="12">12 hours</div>
+          </div>
+          <div class="bk-note">Choose how long you want to book the turf.</div>
+        </div>
+        <div id="bkMultiPanel" style="display:none;">
+          <label class="field-label">Number of Slots</label>
+          <div class="ms-count-row">
+            <button type="button" class="ms-step" id="bkSlotMinus" onclick="bkStepSlotCount(-1)" aria-label="Remove a slot" disabled>−</button>
+            <div class="ms-count" id="bkSlotCount">2</div>
+            <button type="button" class="ms-step" id="bkSlotPlus" onclick="bkStepSlotCount(1)" aria-label="Add a slot">+</button>
+          </div>
+          <div class="ms-hint" id="bkSlotCountHint">Pick how many time windows to book — from 2 up to 5 slots on the same date.</div>
+          <div id="bkSlotDurations"></div>
+        </div>
         <button class="btn btn-glow magnetic" id="bkDurationContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkGoStep(4)">Continue to time range →</button>
       </div>
 
       <!-- PANE 4 — AVAILABLE TIME RANGES -->
       <div id="bkPane4" class="bk-pane" style="display:none;">
         <label class="field-label">Available time ranges</label>
-        <div class="pill-row" id="bkTimePills"></div>
-        <div class="bk-note" id="bkTimeHint">Choose an available time range.</div>
-        <div class="bk-summary" id="bkRangeSummary" style="display:none; margin-top:18px; margin-bottom:0;">
-          <div class="bk-row"><span>Selected range</span><b id="bkRangeSel">—</b></div>
-          <div class="bk-row"><span>Duration</span><b id="bkDurLabel">—</b></div>
-          <div class="bk-row total"><span>Total amount</span><b id="bkDurAmt">—</b></div>
+        <div id="bkSingleTimeArea">
+          <div class="pill-row" id="bkTimePills"></div>
+          <div class="bk-note" id="bkTimeHint">Choose an available time range.</div>
+          <div class="bk-summary" id="bkRangeSummary" style="display:none; margin-top:18px; margin-bottom:0;">
+            <div class="bk-row"><span>Selected range</span><b id="bkRangeSel">—</b></div>
+            <div class="bk-row"><span>Duration</span><b id="bkDurLabel">—</b></div>
+            <div class="bk-row total"><span>Total amount</span><b id="bkDurAmt">—</b></div>
+          </div>
+          <div class="bk-summary" id="bkSlotsList" style="display:none; margin-top:18px; margin-bottom:0;"></div>
+          <button class="btn btn-outline magnetic" id="bkAddSlotBtn" type="button" style="display:none; width:100%; justify-content:center; margin-top:18px;" onclick="bkAddAnotherSlot()">+ Add another slot</button>
         </div>
-        <div class="bk-summary" id="bkSlotsList" style="display:none; margin-top:18px; margin-bottom:0;"></div>
-        <button class="btn btn-outline magnetic" id="bkAddSlotBtn" type="button" style="display:none; width:100%; justify-content:center; margin-top:18px;" onclick="bkAddAnotherSlot()">+ Add another slot</button>
+        <div id="bkMultiSlotArea" style="display:none;"></div>
         <button class="btn btn-glow magnetic" id="bkTimeContinue" style="width:100%; justify-content:center; margin-top:14px;" disabled onclick="bkConfirmSlots()">Continue to summary →</button>
       </div>
 
       <!-- PANE 5 — BOOKING SUMMARY -->
       <div id="bkPane5" class="bk-pane" style="display:none;">
         <label class="field-label">Review your booking</label>
-        <div class="bk-summary" id="bkSumBreakdown"></div>
+        <div class="bk-row bk-sum-date-row"><span>Booking date</span><b id="bkSumDate">—</b></div>
+        <div class="bk-slot-tabs" id="bkSumSlots" role="tablist" aria-label="Slots"></div>
+        <div class="bk-summary" id="bkSumActive" style="margin-bottom:14px;"></div>
+        <div class="bk-summary" id="bkSumCombined"></div>
         <button class="btn btn-glow magnetic" style="width:100%; justify-content:center;" onclick="bkGoStep(6)">Confirm & proceed to payment →</button>
       </div>
 
@@ -1219,13 +1493,14 @@
           <div class="qr-box"><img id="bkQrImage" class="dynamic-qr" alt="Dynamic UPI payment QR code"><span id="bkQrStatus" style="font-size:11px; color:#111; font-family:'JetBrains Mono',monospace;">Generating QR...</span></div>
           <p style="font-size:13px; color:var(--muted); margin-bottom:6px;">Please scan the QR Code using any UPI application to complete your payment.</p>
           <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>turfon24@okaxis</p>
-          <div style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
-            <div style="display:flex; justify-content:space-between;"><span>Date</span><span class="mono" style="color:var(--white);" id="bkPayDate">—</span></div>
-            <div style="display:flex; justify-content:space-between;"><span>Start Time</span><span class="mono" style="color:var(--white);" id="bkPayTime">—</span></div>
-            <div style="display:flex; justify-content:space-between;"><span>End Time</span><span class="mono" style="color:var(--white);" id="bkPayEnd">—</span></div>
-            <div style="display:flex; justify-content:space-between;"><span>Duration</span><span class="mono" style="color:var(--white);" id="bkPayDur">—</span></div>
-            <div style="display:flex; justify-content:space-between;"><span>Slots</span><span class="mono" style="color:var(--white);" id="bkPaySlots">—</span></div>
-            <div style="display:flex; justify-content:space-between; font-weight:600;"><span>Amount</span><span class="mono" style="color:var(--neon);" id="bkPayAmt">—</span></div>
+          <div style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:14px;"><span>Date</span><span class="mono" style="color:var(--white);" id="bkPayDate">—</span></div>
+            <div id="bkPaySlots"></div>
+            <div style="padding-top:16px; border-top:1px solid var(--border); margin-top:16px; font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; justify-content:space-between;"><span>Price per hour</span><span class="mono" style="color:var(--white);" id="bkPayRate">—</span></div>
+              <div style="display:flex; justify-content:space-between;"><span>Total Duration</span><span class="mono" style="color:var(--white);" id="bkPayTotalDur">—</span></div>
+              <div style="display:flex; justify-content:space-between; font-weight:600;"><span>Total Amount</span><span class="mono" style="color:var(--neon);" id="bkPayAmt">—</span></div>
+            </div>
           </div>
           <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="openUpiAppPicker(event)">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
           <p class="payment-pending" id="bkPaymentStatus">Payment pending. Scan the QR and complete payment in your UPI app.</p>
@@ -1361,7 +1636,7 @@
 <script>
   // safety net: force every scroll-reveal element visible after a short delay,
   // so content can never end up permanently hidden if an observer misfires
-  setTimeout(()=>{ document.querySelectorAll('.reveal,.editorial-row,.story-line').forEach(el=>el.classList.add('in')); }, 1200);
+  setTimeout(()=>{ document.querySelectorAll('.reveal,.editorial-row,.story-line,.fn-reveal').forEach(el=>el.classList.add('in')); }, 1200);
 
   const SITE_SETTINGS_KEY = 'turfon24-site-settings';
   function applyWebsiteSettings(settings){
@@ -1379,7 +1654,7 @@
   }
   function readWebsiteSettings(){
     const settings = JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}');
-    applyWebsiteSettings({phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', address:'Cuddalore', hourlyRate:'800', upi:'turfon24@okaxis', ...settings});
+    applyWebsiteSettings({phone:'+91 89399 89366', whatsapp:'+91 89399 89366', email:'ask@turfon24.com', address:'cuddalore', hourlyRate:'800', upi:'turfon24@okaxis', ...settings});
   }
   function getSiteRate(){ return Number(JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}').hourlyRate) || 800; }
   readWebsiteSettings();
@@ -1399,7 +1674,7 @@
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
   }, {threshold:0.15});
-  document.querySelectorAll('.reveal,.editorial-row').forEach(el=>io.observe(el));
+  document.querySelectorAll('.reveal,.editorial-row,.fn-reveal').forEach(el=>io.observe(el));
 
   const counted = new Set();
   const cio = new IntersectionObserver((entries)=>{
@@ -1647,6 +1922,12 @@
     bkDurationHours = 0; bkSelectedRange = null;
     bkSlots = []; bkRenderSlotsList(); bkSetAddSlotBtn(false);
     bkState.duration = 0; bkState.start = null; bkState.end = null; bkState.selectedRange = null;
+    const bkMultiToggleEl = document.getElementById('bkMultiToggle');
+    if(bkMultiToggleEl && bkMultiToggleEl.checked) bkSetMulti(false);
+    const bkMultiAreaEl = document.getElementById('bkMultiSlotArea');
+    if(bkMultiAreaEl){ bkMultiAreaEl.style.display = 'none'; bkMultiAreaEl.innerHTML = ''; }
+    const bkSingleAreaEl = document.getElementById('bkSingleTimeArea');
+    if(bkSingleAreaEl) bkSingleAreaEl.style.display = 'block';
     document.querySelectorAll('#bkDurationPills .pill').forEach(pill=>pill.classList.remove('sel'));
     document.getElementById('bkDurationContinue').setAttribute('disabled', '');
     document.getElementById('bkTimeContinue').setAttribute('disabled', '');
@@ -1823,6 +2104,9 @@
   let bkState = { date:null, dateLabel:'', duration:0, start:null, end:null, selectedRange:null };
   let bkDurationHours = 0, bkSelectedRange = null, bkAddingSlot = false;
   let bkSlots = [];
+  let bkSummaryActiveSlot = 1;
+  let bkMultiEnabled = false, bkSlotCount = 2;
+  let bkActiveSlotPage = 0;
   let bkCurrentStep = 1;
 
   function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
@@ -1841,7 +2125,8 @@
       s.classList.toggle('done', sn<n);
     });
     document.getElementById('bkStepsRow').classList.toggle('done-through', n > 1);
-    if(n===4){ renderAvailableTimeRanges(); }
+    if(n===3 && bkMultiEnabled) bkRenderMultiDurations();
+    if(n===4){ if(bkMultiEnabled) renderMultiSlotArea(); else renderAvailableTimeRanges(); }
     if(n===5) bkFillSummary();
     if(n===6) bkFillPayment();
   }
@@ -1859,7 +2144,17 @@
   document.getElementById('bkDurationPills').addEventListener('click', (event)=>{
     const pill = event.target.closest('.pill');
     if(!pill) return;
+    const wasSelected = pill.classList.contains('sel');
     document.querySelectorAll('#bkDurationPills .pill').forEach(item=>item.classList.remove('sel'));
+    bkDurationHours = 0;
+    bkState.duration = 0;
+    if(wasSelected){
+      bkSelectedRange = null;
+      bkState.start = null;
+      bkState.end = null;
+      document.getElementById('bkDurationContinue').setAttribute('disabled', '');
+      return;
+    }
     pill.classList.add('sel');
     bkDurationHours = Number(pill.dataset.duration);
     bkState.duration = bkDurationHours;
@@ -1889,12 +2184,13 @@
     }
     return intervals;
   }
-  function getAvailableTimeRanges(){
+  function getAvailableTimeRanges(hours){
     const ranges = [];
-    if(!bkDurationHours) return ranges;
+    const duration = hours || bkDurationHours;
+    if(!duration) return ranges;
     for(let startHour = 0; startHour < bkTimes.length; startHour++){
       const startDateTime = bkStartDateTime(startHour);
-      const endDateTime = new Date(startDateTime.getTime() + bkDurationHours * 60 * 60 * 1000);
+      const endDateTime = new Date(startDateTime.getTime() + duration * 60 * 60 * 1000);
       if (bkState.date.getTime() === today.getTime() && startDateTime <= new Date()) continue;
       if(!bkUnavailableIntervals(startDateTime, endDateTime).length){
         const thisRange = { start: new Date(startDateTime), end: new Date(endDateTime) };
@@ -1925,6 +2221,10 @@
     document.getElementById('bkTimeHint').textContent = `${bkState.start} → ${bkState.end} selected.`;
   }
   function renderAvailableTimeRanges(){
+    const multiArea = document.getElementById('bkMultiSlotArea');
+    const singleArea = document.getElementById('bkSingleTimeArea');
+    if(multiArea) multiArea.style.display = 'none';
+    if(singleArea) singleArea.style.display = 'block';
     bkTimePills.innerHTML = '';
     getAvailableTimeRanges().forEach(range=>{
       const pill = document.createElement('div');
@@ -1953,6 +2253,207 @@
     const time = dateTime.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
     const nextDay = dateTime.getFullYear() !== bkState.date.getFullYear() || dateTime.getMonth() !== bkState.date.getMonth() || dateTime.getDate() !== bkState.date.getDate();
     return nextDay ? `${time}\n(next day)` : time;
+  }
+  const bkDurationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  function bkCreateMultiSlot(i){
+    return { slotNumber: i + 1, hours: 0, start: null, end: null, startLabel: null, endLabel: null, amount: 0 };
+  }
+  function bkSetMulti(on){
+    bkMultiEnabled = on;
+    document.getElementById('bkMultiPanel').style.display = on ? 'block' : 'none';
+    document.getElementById('bkSingleDurWrap').style.display = on ? 'none' : 'block';
+    if(on){
+      bkSlotCount = Math.min(5, Math.max(2, bkSlots.length ? bkSlots.length : bkSlotCount));
+      if(!bkSlots.length) bkSlots = Array.from({ length: bkSlotCount }, (_, i)=>bkCreateMultiSlot(i));
+      bkDurationHours = 0;
+      bkSelectedRange = null;
+      bkState.start = null; bkState.end = null; bkState.selectedRange = null;
+      document.querySelectorAll('#bkDurationPills .pill').forEach(p=>p.classList.remove('sel'));
+      document.getElementById('bkTimeContinue').setAttribute('disabled', '');
+      bkStepSlotCount(0);
+    } else {
+      bkSlots = [];
+      bkSelectedRange = null;
+      bkDurationHours = 0;
+      bkState.start = null; bkState.end = null; bkState.selectedRange = null;
+      document.querySelectorAll('#bkDurationPills .pill, #bkSlotDurations .ms-dur-pill').forEach(p=>p.classList.remove('sel'));
+      document.getElementById('bkDurationContinue').setAttribute('disabled', '');
+    }
+  }
+  function bkStepSlotCount(delta){
+    const next = bkSlotCount + delta;
+    if(next >= 2 && next <= 5) bkSlotCount = next;
+    document.getElementById('bkSlotCount').textContent = bkSlotCount;
+    document.getElementById('bkSlotMinus').disabled = bkSlotCount <= 2;
+    document.getElementById('bkSlotPlus').disabled = bkSlotCount >= 5;
+    while(bkSlots.length < bkSlotCount) bkSlots.push(bkCreateMultiSlot(bkSlots.length));
+    while(bkSlots.length > bkSlotCount) bkSlots.pop();
+    bkRenderMultiDurations();
+    bkUpdateMultiDurationContinue();
+  }
+  function bkRenderMultiDurations(){
+    const box = document.getElementById('bkSlotDurations');
+    if(!box) return;
+    box.innerHTML = '';
+    for(let i = 0; i < bkSlotCount; i++){
+      if(!bkSlots[i]) bkSlots[i] = bkCreateMultiSlot(i);
+      const slot = bkSlots[i];
+      const group = document.createElement('div');
+      group.className = 'ms-slot-dur-group';
+      const head = '<div class="ms-slot-dur-head"><span class="ms-slot-num">Slot ' + (i + 1) + '</span><span class="ms-slot-dur-val">' + (slot.hours ? slot.hours + ' hour' + (slot.hours > 1 ? 's' : '') : 'Choose duration') + '</span></div>';
+      const pills = bkDurationOptions.map(h => '<div class="pill ms-dur-pill' + (slot.hours === h ? ' sel' : '') + '" data-i="' + i + '" data-duration="' + h + '">' + h + ' hour' + (h > 1 ? 's' : '') + '</div>').join('');
+      group.innerHTML = head + '<div class="pill-row ms-dur-pills">' + pills + '</div>';
+      box.appendChild(group);
+    }
+    box.querySelectorAll('.ms-dur-pill').forEach(p=>{
+      p.onclick = ()=>bkPickMultiDuration(Number(p.dataset.i), Number(p.dataset.duration));
+    });
+  }
+  function bkPickMultiDuration(i, h){
+    const slot = bkSlots[i];
+    if(!slot) return;
+    slot.hours = (slot.hours === h) ? 0 : h;
+    slot.start = null; slot.end = null; slot.startLabel = null; slot.endLabel = null; slot.amount = 0;
+    bkRenderMultiDurations();
+    bkUpdateMultiDurationContinue();
+  }
+  function bkUpdateMultiDurationContinue(){
+    const btn = document.getElementById('bkDurationContinue');
+    if(!btn) return;
+    const ok = bkSlots.length && bkSlots.every(s => s && s.hours > 0);
+    if(ok) btn.removeAttribute('disabled');
+    else btn.setAttribute('disabled', '');
+  }
+  function bkMultiSlotOverlapsOthers(skipIndex, range){
+    return bkSlots.some((s, i)=> i !== skipIndex && s.start && s.end && range.start < s.end && s.start < range.end);
+  }
+  function bkSelectMultiSlotPill(slotIndex, startTime){
+    const slot = bkSlots[slotIndex];
+    if(!slot) return;
+    const start = new Date(startTime);
+    const end = new Date(start.getTime() + slot.hours * 60 * 60 * 1000);
+    if(bkMultiSlotOverlapsOthers(slotIndex, { start, end })){
+      document.getElementById('bkTimeHint').textContent = 'That time overlaps another slot — pick a non-overlapping range.';
+      return;
+    }
+    if(slot.start && slot.start.getTime() === start.getTime()){
+      slot.start = null; slot.end = null; slot.startLabel = null; slot.endLabel = null; slot.amount = 0;
+    } else {
+      slot.start = start;
+      slot.end = end;
+      slot.startLabel = formatBookingTime(start);
+      slot.endLabel = formatBookingTime(end);
+      slot.amount = slot.hours * getSiteRate();
+    }
+    renderMultiSlotArea();
+  }
+  function renderMultiSlotArea(){
+    const area = document.getElementById('bkMultiSlotArea');
+    if(!area) return;
+    const singleArea = document.getElementById('bkSingleTimeArea');
+    area.innerHTML = '';
+    if(singleArea) singleArea.style.display = 'none';
+    area.style.display = bkIsMobileRange() ? 'flex' : 'block';
+    bkSetAddSlotBtn(false);
+    bkSlots.forEach((slot, i)=>{
+      const card = document.createElement('div');
+      card.className = 'bk-slot-card' + (slot.start ? ' has-sel' : '');
+      const chosen = slot.start
+        ? '<span class="bk-slot-selected">' + slot.startLabel + ' → ' + slot.endLabel + '</span>'
+        : 'No time selected';
+      let pillsHtml = '';
+      const ranges = getAvailableTimeRanges(slot.hours);
+      ranges.forEach(range=>{
+        if(slot.start && range.start.getTime() === slot.start.getTime()) return;
+        pillsHtml += '<div class="pill" data-i="' + i + '" data-start="' + range.start.getTime() + '">' + formatBookingTime(range.start) + ' → ' + formatBookingTime(range.end) + '</div>';
+      });
+      if(slot.start){
+        pillsHtml = '<div class="pill sel" data-i="' + i + '" data-start="' + slot.start.getTime() + '">' + slot.startLabel + ' → ' + slot.endLabel + '</div>' + pillsHtml;
+      }
+      if(!pillsHtml) pillsHtml = '<div class="bk-slot-empty">No time ranges are available for this duration.</div>';
+      card.innerHTML =
+        '<div class="bk-slot-card-head"><span class="bk-slot-num">SLOT ' + (i + 1) + '</span><span class="bk-slot-dur">Duration: ' + slot.hours + ' hour' + (slot.hours > 1 ? 's' : '') + '</span></div>' +
+        '<div class="bk-slot-chosen">' + chosen + '</div>' +
+        '<div class="pill-row bk-slot-pills">' + pillsHtml + '</div>';
+      area.appendChild(card);
+    });
+    area.querySelectorAll('.pill').forEach(p=>{
+      p.onclick = ()=>bkSelectMultiSlotPill(Number(p.dataset.i), Number(p.dataset.start));
+    });
+    bkSetupSlotPager();
+    const allSet = bkSlots.length && bkSlots.every(s => s.hours > 0 && s.start && s.end);
+    const btn = document.getElementById('bkTimeContinue');
+    const hintEl = document.getElementById('bkTimeHint');
+    if(allSet){
+      btn.removeAttribute('disabled');
+      if(hintEl) hintEl.textContent = 'All slots selected — continue to the summary.';
+    } else {
+      btn.setAttribute('disabled', '');
+      if(hintEl) hintEl.textContent = bkSlots.every(s => s.hours > 0) ? 'Select a non-overlapping time range for every slot.' : 'Pick a duration for every slot first.';
+    }
+  }
+  function bkIsMobileRange(){ return window.matchMedia('(max-width:768px)').matches; }
+  function bkScrollSlotToPage(area, cards, page){
+    if(!area || !cards[page]) return;
+    area.scrollTo({ left: cards[page].offsetLeft, behavior: 'auto' });
+  }
+  function bkUpdateSlotPager(){
+    const pager = document.getElementById('bkMultiSlotPager');
+    if(!pager) return;
+    const dots = pager.querySelectorAll('.bk-slot-dot');
+    dots.forEach((d, i)=>d.classList.toggle('active', i === bkActiveSlotPage));
+    const cnt = pager.querySelector('#bkSlotPagerCount');
+    if(cnt) cnt.textContent = (bkActiveSlotPage + 1) + '/' + (dots.length || 1);
+  }
+  function bkSetupSlotPager(){
+    const area = document.getElementById('bkMultiSlotArea');
+    const old = document.getElementById('bkMultiSlotPager');
+    if(!area || !bkIsMobileRange()){
+      if(old) old.style.display = 'none';
+      return;
+    }
+    const cards = area.querySelectorAll('.bk-slot-card');
+    const count = cards.length;
+    let pager = old;
+    if(!pager){
+      pager = document.createElement('div');
+      pager.id = 'bkMultiSlotPager';
+      pager.className = 'bk-slot-pager';
+      area.parentNode.insertBefore(pager, area.nextSibling);
+    }
+    if(count <= 1){
+      pager.innerHTML = '<span class="bk-slot-pager-count" id="bkSlotPagerCount">1/1</span>';
+    } else {
+      let dots = '';
+      for(let i = 0; i < count; i++){
+        dots += '<button type="button" class="bk-slot-dot' + (i === bkActiveSlotPage ? ' active' : '') + '" data-page="' + i + '" aria-label="Go to slot ' + (i + 1) + '"></button>';
+      }
+      pager.innerHTML = '<span class="bk-slot-pager-count" id="bkSlotPagerCount">' + (bkActiveSlotPage + 1) + '/' + count + '</span><div class="bk-slot-pager-dots">' + dots + '</div>';
+      pager.querySelectorAll('.bk-slot-dot').forEach(d=>{
+        d.onclick = ()=>{
+          bkActiveSlotPage = Number(d.dataset.page);
+          if(bkActiveSlotPage < 0) bkActiveSlotPage = 0;
+          if(bkActiveSlotPage > count - 1) bkActiveSlotPage = count - 1;
+          bkScrollSlotToPage(area, cards, bkActiveSlotPage);
+          bkUpdateSlotPager();
+        };
+      });
+    }
+    pager.style.display = 'flex';
+    if(count > 1 && !area._bkPagerBound){
+      area.addEventListener('scroll', ()=>{
+        const idx = Math.round(area.scrollLeft / area.clientWidth);
+        if(idx >= 0 && idx < count && idx !== bkActiveSlotPage){
+          bkActiveSlotPage = idx;
+          bkUpdateSlotPager();
+        }
+      });
+      area._bkPagerBound = true;
+    }
+    if(bkActiveSlotPage < 0) bkActiveSlotPage = 0;
+    if(bkActiveSlotPage > count - 1) bkActiveSlotPage = count - 1;
+    bkScrollSlotToPage(area, cards, bkActiveSlotPage);
+    bkUpdateSlotPager();
   }
   function bkDuration(){ return bkDurationHours; }
   function bkDurationLabel(){
@@ -2022,48 +2523,91 @@
     }
   }
   function bkConfirmSlots(){
-    if(bkSelectedRange) bkAddAnotherSlot();
-    if(!bkSlots.length) return;
-    bkState.start = bkSlots[0].startLabel;
-    bkState.end = bkSlots[bkSlots.length-1].endLabel;
+    if(bkMultiEnabled){
+      if(!(bkSlots.length && bkSlots.every(s => s.hours > 0 && s.start && s.end))){
+        document.getElementById('bkTimeHint').textContent = 'Choose a non-overlapping time range for every slot before continuing.';
+        return;
+      }
+      bkState.start = bkSlots[0].startLabel;
+      bkState.end = bkSlots[bkSlots.length - 1].endLabel;
+      bkState.duration = bkTotalHours();
+    } else {
+      if(bkSelectedRange) bkAddAnotherSlot();
+      if(!bkSlots.length) return;
+      bkState.start = bkSlots[0].startLabel;
+      bkState.end = bkSlots[bkSlots.length - 1].endLabel;
+      bkState.duration = bkTotalHours();
+    }
     bkGoStep(5);
   }
-  function bkFillSummary(){
-    const breakdown = document.getElementById('bkSumBreakdown');
-    if(!breakdown) return;
+  function bkSelectSummarySlot(i){
+    if(!bkSlots[i]) return;
+    bkSummaryActiveSlot = i;
+    document.querySelectorAll('#bkSumSlots .bk-slot-tab').forEach((t,ti)=>{
+      t.classList.toggle('active', ti === i);
+      t.setAttribute('aria-selected', String(ti === i));
+    });
+    renderActiveSlotSummary();
+  }
+  function renderActiveSlotSummary(){
+    const holder = document.getElementById('bkSumActive');
+    if(!holder) return;
+    const slot = bkSlots[bkSummaryActiveSlot];
+    if(!slot){ holder.innerHTML = ''; return; }
     const rows = [];
-    rows.push(`<div class="bk-row"><span>Booking date</span><b>${bkState.dateLabel || '—'}</b></div>`);
-    if(bkSlots.length > 1){
-      bkSlots.forEach((slot,i)=>{
-        rows.push(`<div class="bk-row bk-slot-head"><span>Slot ${i+1}</span></div>`);
-        rows.push(`<div class="bk-row"><span>Start time</span><b>${slot.startLabel}</b></div>`);
-        rows.push(`<div class="bk-row"><span>End time</span><b>${slot.endLabel}</b></div>`);
-        rows.push(`<div class="bk-row"><span>Duration</span><b>${slot.hours} hour${slot.hours>1?'s':''}</b></div>`);
-      });
-    } else {
-      const s0 = bkSlots[0] || null;
-      rows.push(`<div class="bk-row"><span>Start time</span><b>${s0 ? s0.startLabel : (bkState.start || '—')}</b></div>`);
-      rows.push(`<div class="bk-row"><span>End time</span><b>${s0 ? s0.endLabel : (bkState.end || '—')}</b></div>`);
-      rows.push(`<div class="bk-row"><span>Duration</span><b>${s0 ? (s0.hours+' hour'+(s0.hours>1?'s':'')) : bkDurationLabel()}</b></div>`);
+    rows.push(`<div class="bk-row bk-slot-head"><span>Slot ${bkSummaryActiveSlot + 1}</span></div>`);
+    rows.push(`<div class="bk-row"><span>Start time</span><b>${slot.startLabel || '—'}</b></div>`);
+    rows.push(`<div class="bk-row"><span>End time</span><b>${slot.endLabel || '—'}</b></div>`);
+    rows.push(`<div class="bk-row"><span>Duration</span><b>${slot.hours ? (slot.hours+' hour'+(slot.hours>1?'s':'')) : '—'}</b></div>`);
+    rows.push(`<div class="bk-row"><span>Amount</span><b>₹${((slot.hours || 0) * getSiteRate()).toLocaleString('en-IN')}</b></div>`);
+    holder.innerHTML = rows.join('');
+  }
+  function bkFillSummary(){
+    const dateEl = document.getElementById('bkSumDate');
+    if(dateEl) dateEl.textContent = bkState.dateLabel || '—';
+    const tabs = document.getElementById('bkSumSlots');
+    const combined = document.getElementById('bkSumCombined');
+    const count = bkSlots.length ? bkSlots.length : 1;
+    if(bkSummaryActiveSlot >= count) bkSummaryActiveSlot = 0;
+    if(tabs){
+      tabs.innerHTML = Array.from({ length: count }, (_,i)=>
+        '<button type="button" class="bk-slot-tab' + (i === bkSummaryActiveSlot ? ' active' : '') + '" role="tab" aria-selected="' + (i === bkSummaryActiveSlot) + '" onclick="bkSelectSummarySlot(' + i + ')">SLOT ' + (i + 1) + '</button>'
+      ).join('');
     }
-    rows.push(`<div class="bk-row"><span>Price per hour</span><b>₹${getSiteRate().toLocaleString('en-IN')}</b></div>`);
-    if(bkSlots.length > 1){
+    renderActiveSlotSummary();
+    if(combined){
+      const rows = [];
+      rows.push(`<div class="bk-row"><span>Price per hour</span><b>₹${getSiteRate().toLocaleString('en-IN')}</b></div>`);
       rows.push(`<div class="bk-row"><span>Total duration</span><b>${bkTotalHoursLabel()}</b></div>`);
+      rows.push(`<div class="bk-row total"><span>Total amount</span><b>₹${(bkTotalHours()*getSiteRate()).toLocaleString('en-IN')}</b></div>`);
+      combined.innerHTML = rows.join('');
     }
-    rows.push(`<div class="bk-row total"><span>Total amount</span><b>₹${(bkTotalHours()*getSiteRate()).toLocaleString('en-IN')}</b></div>`);
-    breakdown.innerHTML = rows.join('');
   }
   async function bkFillPayment(){
-    const multi = bkSlots.length > 1;
-    document.getElementById('bkPayDate').textContent = bkState.dateLabel || '—';
-    document.getElementById('bkPayTime').textContent = bkState.start || '—';
-    document.getElementById('bkPayEnd').textContent = bkState.end || '—';
-    document.getElementById('bkPayDur').textContent = multi ? bkTotalHoursLabel() : bkDurationLabel();
     const slotsEl = document.getElementById('bkPaySlots');
-    if(slotsEl) slotsEl.textContent = multi ? `${bkSlots.length} slots · ${bkSlots.map(s=>`${s.startLabel} – ${s.endLabel}`).join(' · ')}` : '1 slot';
+    const slotCount = bkSlots.length ? bkSlots.length : 1;
+    if(slotsEl){
+      slotsEl.innerHTML = Array.from({ length: slotCount }, (_,i)=>{
+        const slot = bkSlots[i] || null;
+        const start = slot && slot.startLabel ? slot.startLabel : '—';
+        const end = slot && slot.endLabel ? slot.endLabel : '—';
+        const dur = slot && slot.hours ? (slot.hours + ' hour' + (slot.hours > 1 ? 's' : '')) : '—';
+        return '<div class="bk-pay-slot">' +
+          '<div class="bk-pay-slot-head">SLOT ' + (i + 1) + '</div>' +
+          '<div class="bk-pay-slot-row"><span>Start Time</span><b>' + start + '</b></div>' +
+          '<div class="bk-pay-slot-row"><span>End Time</span><b>' + end + '</b></div>' +
+          '<div class="bk-pay-slot-row"><span>Duration</span><b>' + dur + '</b></div>' +
+          '</div>';
+      }).join('');
+    }
+    document.getElementById('bkPayDate').textContent = bkState.dateLabel || '—';
+    const rateEl = document.getElementById('bkPayRate');
+    if(rateEl) rateEl.textContent = '₹' + getSiteRate().toLocaleString('en-IN');
+    const durEl = document.getElementById('bkPayTotalDur');
+    if(durEl) durEl.textContent = bkTotalHoursLabel();
     document.getElementById('bkPayAmt').textContent = 'Preparing…';
     try {
-      const session = await requestPaymentSession('hourly', {hours:bkTotalHours(), startTime:bkState.start, endTime:bkState.end, duration:bkTotalHours(), date:bkState.dateLabel, slots:bkSlots.map(s=>({start:s.startLabel, end:s.endLabel, hours:s.hours}))});
+      const session = await requestPaymentSession('hourly', {hours:bkTotalHours(), startTime:bkState.start, endTime:bkState.end, duration:bkTotalHours(), date:bkState.dateLabel, slots:bkSlots.map(s=>({start:s.startLabel, end:s.endLabel, hours:s.hours, amount:(s.hours||0) * getSiteRate()}))});
       document.getElementById('bkPayAmt').textContent = formatAmount(session.amount);
       await showPayment(session, 'bkQrImage', 'bkQrStatus', 'bkPayApp');
     } catch (error) {
@@ -2112,6 +2656,25 @@
   function bkResetBooking(){
     bkState = { date:null, dateLabel:'', duration:0, start:null, end:null, selectedRange:null };
     bkDurationHours = 0; bkSelectedRange = null; bkSlots = []; bkAddingSlot = false;
+    bkMultiEnabled = false; bkSlotCount = 2; bkActiveSlotPage = 0;
+    const multiToggle = document.getElementById('bkMultiToggle');
+    if(multiToggle) multiToggle.checked = false;
+    const multiPanel = document.getElementById('bkMultiPanel');
+    if(multiPanel){ multiPanel.style.display = 'none'; }
+    const singleDurWrap = document.getElementById('bkSingleDurWrap');
+    if(singleDurWrap) singleDurWrap.style.display = 'block';
+    const multiArea = document.getElementById('bkMultiSlotArea');
+    if(multiArea){ multiArea.style.display = 'none'; multiArea.innerHTML = ''; }
+    const singleTimeArea = document.getElementById('bkSingleTimeArea');
+    if(singleTimeArea) singleTimeArea.style.display = 'block';
+    const slotDur = document.getElementById('bkSlotDurations');
+    if(slotDur){ slotDur.innerHTML = ''; }
+    const slotCount = document.getElementById('bkSlotCount');
+    if(slotCount) slotCount.textContent = '2';
+    const slotMinus = document.getElementById('bkSlotMinus');
+    if(slotMinus) slotMinus.disabled = true;
+    const slotPlus = document.getElementById('bkSlotPlus');
+    if(slotPlus) slotPlus.disabled = false;
     document.getElementById('bkMobile').value = '';
     document.getElementById('bkOtp').value = '';
     document.getElementById('bkOtpBlock').style.display = 'none';
@@ -2130,10 +2693,11 @@
     document.getElementById('bkQrImage')?.removeAttribute?.('src');
     document.getElementById('bkQrStatus').textContent = 'Generating QR...';
     document.getElementById('bkPayDate').textContent = '—';
-    document.getElementById('bkPayTime').textContent = '—';
-    document.getElementById('bkPayEnd').textContent = '—';
-    document.getElementById('bkPayDur').textContent = '—';
     document.getElementById('bkPayAmt').textContent = '—';
+    const payRate = document.getElementById('bkPayRate');
+    if(payRate) payRate.textContent = '—';
+    const payTotalDur = document.getElementById('bkPayTotalDur');
+    if(payTotalDur) payTotalDur.textContent = '—';
     const completeBtn = document.getElementById('bkCompletePaymentButton');
     if(completeBtn){ completeBtn.disabled = false; completeBtn.textContent = 'I have completed my payment'; }
     const payStatus = document.getElementById('bkPaymentStatus');
@@ -2142,7 +2706,7 @@
     if(slotsList){ slotsList.style.display = 'none'; slotsList.innerHTML = ''; }
     bkSetAddSlotBtn(false);
     const paySlots = document.getElementById('bkPaySlots');
-    if(paySlots) paySlots.textContent = '—';
+    if(paySlots) paySlots.innerHTML = '';
     paymentSession = null;
   }
   function bkFinishPayment(){
