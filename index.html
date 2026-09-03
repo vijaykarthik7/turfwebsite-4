@@ -729,6 +729,29 @@
     .fac-num{font-size:36px;}
     .facility-card--feature .fac-num{font-size:36px;}
   }
+  /* ===== SPACING — PRICING + RESERVE PITCH ONLY (≈25% less empty space, horizontal widening) ===== */
+  #pricing, #book{ padding:66px 6vw; }
+  #pricing .reveal .eyebrow, #book .reveal .eyebrow{ margin-bottom:14px; }
+  #pricing .reveal .section-title, #book .reveal .section-title{ margin-bottom:12px; }
+  #pricing .reveal .section-sub, #book .reveal .section-sub{ margin-bottom:30px; }
+
+  #pricing .pricing-cols{ gap:20px; max-width:1120px; }
+  #pricing .pricing-card{ padding:36px 28px; }
+  #pricing .pricing-card .rate-badges{ margin-top:18px; }
+  #pricing .extended-inner{ padding:32px 38px; }
+  #pricing .extended-inner > p{ margin-bottom:18px; }
+  #pricing .ext-features{ margin-bottom:21px; }
+
+  #book .booking-shell{ padding:33px; max-width:800px; }
+  #book .steps-row{ margin-bottom:28px; }
+  #book .rc-cal{ margin-bottom:10px; }
+
+  @media(max-width:900px){
+    #pricing, #book{ padding:48px 2.25vw; }
+    #pricing .pricing-cols{ max-width:100%; }
+    #book .booking-shell{ padding:57px 16px 26px; max-width:100%; }
+    #book .steps-row{ margin-bottom:32px; }
+  }
 </style>
 </head>
 <body>

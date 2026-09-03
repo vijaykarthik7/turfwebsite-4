@@ -211,6 +211,12 @@
   .date-filter::-webkit-calendar-picker-indicator{cursor:pointer; opacity:0;}
   .date-filter{pointer-events:none;}
   .date-wrap .date-picker{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index:3; margin:0; padding:0; border:none; background:transparent; color:transparent; -webkit-appearance:none; appearance:none;}
+  /* Shared dark calendar for every native date picker (the transparent overlay opens the browser popup).
+     color-scheme:dark makes the webkit/Chromium date popup render dark (dark surface, light text, green
+     selection) instead of the default white calendar, matching the dashboard. Applies site-wide via the
+     shared .date-picker/.date-filter inputs so every section stays consistent. */
+  input[type="date"]{color-scheme:dark;}
+  .date-filter, .date-picker{color-scheme:dark;}
   /* Reduced filter pill text */
   .filt-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease;}
   .filt-pill.sel, .filt-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
@@ -266,11 +272,24 @@
   .profile-picture-actions label:hover{border-color:var(--neon); color:var(--neon);}
 
   /* calendar */
+  .cal-head{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .cal-head h3{flex:1 1 auto; margin:0; font-size:18px;}
+  .cal-nav{width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:var(--charcoal); border:1px solid var(--border); border-radius:9px; color:var(--white); cursor:pointer; transition:border-color .2s ease, background .2s ease;}
+  .cal-nav:hover{border-color:var(--neon); background:rgba(57,255,122,0.06);}
   .cal-grid2{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
-  .cal-cell{aspect-ratio:1; border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative;}
+  .cal-cell{border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative; min-height:80px;}
   .cal-cell .cnt{position:absolute; bottom:6px; right:6px; background:rgba(57,255,122,0.15); color:var(--neon); font-size:9px; padding:2px 5px; border-radius:100px;}
   .cal-cell.has-bookings{border-color:var(--neon); cursor:pointer;}
   .cal-cell.has-bookings:hover{background:rgba(57,255,122,0.06);}
+  .cal-details{margin-top:4px;}
+  .cal-details-head{display:flex; align-items:center; gap:14px; margin-bottom:16px; flex-wrap:wrap;}
+  .cal-details-head h3{flex:1 1 auto; margin:0; font-size:18px;}
+  .cal-back{display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--border); border-radius:9px; color:var(--white); padding:8px 14px; font-size:12px; font-family:'Inter',sans-serif; font-weight:600; cursor:pointer; transition:border-color .2s ease, color .2s ease; white-space:nowrap;}
+  .cal-back:hover{border-color:var(--neon); color:var(--neon);}
+  .cal-back svg{flex-shrink:0;}
+  .cal-detail-count{background:rgba(57,255,122,0.15); color:var(--neon); font-size:11px; font-family:'JetBrains Mono',monospace; padding:4px 10px; border-radius:100px; white-space:nowrap;}
+  .cal-detail-body{display:flex; flex-direction:column; gap:12px;}
+  .cal-empty{text-align:center; padding:40px 16px; color:var(--muted); font-size:13px; border:1px dashed var(--border); border-radius:12px; background:rgba(255,255,255,0.015);}
   .cal-date-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--border);}
   .cal-date-head strong{color:var(--white); font-size:14px;}
   .cal-date-head .cnt{background:rgba(57,255,122,0.15); color:var(--neon); font-size:10px; padding:3px 9px; border-radius:100px; font-family:'JetBrains Mono',monospace; white-space:nowrap;}
@@ -316,11 +335,34 @@
   .range-pills{display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 4px;}
   .range-pill{padding:8px 14px; border:1px solid var(--border); border-radius:100px; font-size:11.5px; color:var(--muted); cursor:pointer; transition:all .2s ease; background:transparent;}
   .range-pill.sel, .range-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
+  .analytics-daterange{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:14px 0 4px; padding:14px; background:rgba(255,255,255,0.025); border:1px solid var(--border); border-radius:12px;}
+  .dr-field{display:flex; align-items:center; gap:8px;}
+  .dr-label{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap;}
+  .dr-sep{color:var(--muted); font-size:11px;}
+  .dr-hint{flex:1 1 100%; font-size:10.5px; color:var(--muted); margin-top:2px;}
   .chart-scroll{position:relative; overflow-x:auto; overflow-y:hidden; margin:18px 0 4px; -webkit-overflow-scrolling:touch; scrollbar-width:thin; scrollbar-color:rgba(57,255,122,0.35) transparent;}
   .chart-scroll::-webkit-scrollbar{height:8px;}
   .chart-scroll::-webkit-scrollbar-thumb{background:rgba(57,255,122,0.25); border-radius:8px;}
   .chart-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);}
   .chart-scroll svg{display:block;}
+  .analytics-viz{display:flex; gap:22px; align-items:stretch; margin:18px 0 4px;}
+  .analytics-viz .chart-scroll{margin:0; flex:1 1 auto; min-width:0;}
+  .pie-wrap{flex:0 0 300px; display:flex; flex-direction:column; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:12px; padding:16px; box-sizing:border-box;}
+  .pie-title{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px;}
+  .pie-inner{display:flex; flex-direction:column; align-items:center; gap:14px; flex:1; min-height:0;}
+  #analyticsDonut{width:100%; max-width:230px; flex:0 0 auto;}
+  #analyticsDonut svg{display:block; width:100%; height:auto;}
+  .pie-donut-total{font-family:'JetBrains Mono',monospace; font-size:15px; font-weight:600; fill:var(--white);}
+  .pie-donut-total-label{font-family:'Inter',sans-serif; font-size:9px; fill:var(--muted); letter-spacing:0.06em;}
+  .pie-legend{width:100%; display:flex; flex-direction:column; gap:5px; overflow-y:auto; max-height:170px; scrollbar-width:thin; scrollbar-color:rgba(57,255,122,0.35) transparent;}
+  .pie-legend::-webkit-scrollbar{width:6px;}
+  .pie-legend::-webkit-scrollbar-thumb{background:rgba(57,255,122,0.25); border-radius:8px;}
+  .legend-row{display:flex; align-items:center; gap:8px; font-size:11px; color:var(--muted); white-space:nowrap;}
+  .legend-swatch{width:10px; height:10px; border-radius:3px; flex:0 0 auto;}
+  .legend-date{font-family:'JetBrains Mono',monospace; overflow:hidden; text-overflow:ellipsis;}
+  .legend-pct{color:var(--muted); font-size:10px;}
+  .legend-value{margin-left:auto; font-family:'JetBrains Mono',monospace; color:var(--white); font-weight:600;}
+  .pie-empty{display:flex; align-items:center; justify-content:center; min-height:200px; width:100%; color:var(--muted); font-size:13px; text-align:center; border:1px dashed var(--border); border-radius:12px; box-sizing:border-box; padding:16px;}
   .chart-tip{position:absolute; z-index:12; pointer-events:none; background:var(--charcoal-2); border:1px solid var(--neon); border-radius:9px; padding:7px 11px; font-size:11px; color:var(--white); box-shadow:0 10px 26px rgba(0,0,0,0.45); opacity:0; transition:opacity .15s ease; white-space:nowrap;}
   .chart-tip.show{opacity:1;}
   .analytics-summary{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px;}
@@ -354,9 +396,25 @@
   .analytics-page-head p{color:var(--muted); font-size:12.5px; margin-top:4px;}
   .analytics-back{display:inline-flex; align-items:center; gap:7px; color:var(--neon); font-size:12.5px; font-weight:600; text-decoration:none; padding:8px 14px; border:1px solid var(--border); border-radius:9px; transition:all .2s ease; background:rgba(57,255,122,0.04);}
   .analytics-back:hover{border-color:var(--neon); background:rgba(57,255,122,0.1);}
-  .analytics-selector{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:4px;}
-  .analytics-selector .metric-pill{padding:7px 13px; border:1px solid var(--border); border-radius:100px; font-size:11px; color:var(--muted); cursor:pointer; transition:all .2s ease; background:transparent; font-family:'Inter',sans-serif;}
-  .analytics-selector .metric-pill.sel, .analytics-selector .metric-pill:hover{border-color:var(--neon); color:var(--neon); background:rgba(57,255,122,0.06);}
+  .analytics-dropdown{position:relative; width:330px; max-width:100%; margin-left:auto; margin-bottom:16px; text-align:left; z-index:30;}
+  .analytics-dropdown .analytics-select{display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:var(--charcoal-2); color:var(--white); font-family:'Inter',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:border-color .2s ease, box-shadow .2s ease, background .2s ease; outline:none;}
+  .analytics-dropdown .analytics-select:hover{border-color:var(--neon); background:rgba(20,29,25,0.95);}
+  .analytics-dropdown .analytics-select:focus-visible{border-color:var(--neon); box-shadow:0 0 0 3px rgba(57,255,122,0.14);}
+  .analytics-dropdown .analytics-select-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .analytics-dropdown .analytics-select-label.placeholder{color:var(--muted);}
+  .analytics-dropdown .analytics-select-arrow{flex:0 0 auto; color:var(--neon); transition:transform .2s ease;}
+  .analytics-dropdown.open .analytics-select-arrow{transform:rotate(180deg);}
+  .analytics-dropdown.open .analytics-select{border-color:var(--neon); box-shadow:0 0 0 3px rgba(57,255,122,0.12);}
+  .analytics-dropdown-menu{position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:40; display:none; max-height:300px; overflow-y:auto; background:var(--charcoal-2); border:1px solid rgba(57,255,122,0.22); border-radius:12px; box-shadow:0 14px 34px rgba(0,0,0,0.5); padding:6px;}
+  .analytics-dropdown.open .analytics-dropdown-menu{display:block;}
+  .analytics-dropdown-menu .analytics-option{display:block; width:100%; text-align:left; padding:10px 12px; border:none; border-radius:8px; background:transparent; color:var(--white); font-family:'Inter',sans-serif; font-size:12.5px; cursor:pointer; transition:background .15s ease, color .15s ease;}
+  .analytics-dropdown-menu .analytics-option:hover{background:rgba(57,255,122,0.10); color:var(--neon);}
+  .analytics-dropdown-menu .analytics-option.sel{background:rgba(57,255,122,0.14); color:var(--neon); font-weight:600;}
+  @media(max-width:1000px){
+    .analytics-dropdown{width:100%;}
+    .analytics-dropdown .analytics-select{padding:13px 14px; font-size:14.5px; min-height:46px;}
+    .analytics-dropdown-menu{max-height:280px;}
+  }
 
   @media(max-width:1000px){
     .sidebar{position:fixed; left:0; height:100vh; transform:translateX(-100%); transition:transform .3s ease; z-index:100;}
@@ -390,11 +448,20 @@
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
     /* Admin Calendar — mobile-only: give date number and count badge separate in-flow areas so they never overlap */
     .cal-grid2{gap:5px;}
-    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
+    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px; min-height:110px;}
     .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
     .analytics-summary{grid-template-columns:1fr 1fr;}
+    .analytics-viz{flex-direction:column;}
+    .pie-wrap{flex:1 1 auto; width:100%;}
+    .pie-inner{flex-direction:row; align-items:center;}
+    #analyticsDonut{max-width:190px; flex:0 0 190px;}
+    .pie-legend{flex:1; max-height:170px;}
     .analytics-page-head h3{font-size:17px;}
     .range-pill{font-size:11px; padding:7px 11px;}
+    .analytics-daterange{flex-direction:column; align-items:stretch; gap:10px; padding:12px;}
+    .analytics-daterange .dr-field{width:100%; justify-content:space-between;}
+    .analytics-daterange .date-wrap{flex:1 1 auto !important; min-width:0 !important; max-width:none !important;}
+    .analytics-daterange .dr-sep{display:none;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
@@ -531,13 +598,41 @@
         <p>Monitor bookings, payments, customers and enquiries.</p>
       </div>
       <div class="panel">
-        <div class="analytics-selector" id="analyticsSelector" role="tablist" aria-label="Select metric"></div>
+        <div class="analytics-dropdown" id="analyticsDropdown">
+          <button type="button" class="analytics-select" id="analyticsSelector" aria-haspopup="listbox" aria-expanded="false" aria-label="Select Booking Category">
+            <span class="analytics-select-label" id="analyticsSelectorLabel">Select Booking Category</span>
+            <svg class="analytics-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="analytics-dropdown-menu" id="analyticsDropdownMenu" role="listbox" aria-label="Booking categories"></div>
+        </div>
         <div class="range-pills" id="rangePills" role="tablist" aria-label="Select date range">
           <button type="button" class="range-pill sel" role="tab" aria-selected="true" data-range="7">Last 7 Days</button>
           <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="30">Last 30 Days</button>
           <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="90">Last 3 Months</button>
+          <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="custom">Custom Date</button>
         </div>
-        <div class="chart-scroll" id="analyticsChart"></div>
+        <div class="analytics-daterange" id="analyticsDateRange" style="display:none;">
+          <label class="dr-field">
+            <span class="dr-label">From</span>
+            <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input id="analyticsFromDate" class="date-filter" type="text" readonly aria-label="From date" title="From date"><input id="analyticsFromDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
+          </label>
+          <span class="dr-sep">to</span>
+          <label class="dr-field">
+            <span class="dr-label">To</span>
+            <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input id="analyticsToDate" class="date-filter" type="text" readonly aria-label="To date" title="To date"><input id="analyticsToDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
+          </label>
+          <span class="dr-hint" id="analyticsRangeHint">Select From and To dates to filter.</span>
+        </div>
+        <div class="analytics-viz">
+          <div class="chart-scroll" id="analyticsChart"></div>
+          <div class="pie-wrap">
+            <div class="pie-title">Breakdown by day</div>
+            <div class="pie-inner">
+              <div id="analyticsDonut"></div>
+              <div class="pie-legend" id="analyticsDonutLegend"></div>
+            </div>
+          </div>
+        </div>
         <div class="analytics-summary" id="analyticsSummary"></div>
         <div class="analytics-detail" id="analyticsDetail" aria-live="polite"></div>
         <div class="analytics-foot">
@@ -570,11 +665,11 @@
     <div class="page" id="page-payments">
       <div class="panel" style="margin-bottom:16px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
         <div>
-          <div style="font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Total payments received</div>
+          <div id="paymentsCountLabel" style="font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Today&rsquo;s payments</div>
           <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; color:var(--white); margin-top:4px;" id="paymentsTotalCount">0</div>
         </div>
-        <div>
-          <div style="font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Total amount received</div>
+        <div style="margin-left:auto; text-align:right;">
+          <div id="paymentsAmountLabel" style="font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Total amount received</div>
           <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; color:var(--neon); margin-top:4px;" id="paymentsTotalAmount">₹0</div>
         </div>
       </div>
@@ -584,20 +679,21 @@
         <div class="filt-pill sel" data-payment-status="all">All</div><div class="filt-pill" data-payment-status="verified">Verified</div>
         <div class="spacer"></div>
         <button class="btn btn-ghost" id="paymentExport"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
+        <button class="btn btn-ghost" id="paymentHistoryBtn" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span id="paymentHistoryLabel">View Payment History</span></button>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Booking ID</th><th>Customer</th><th>Mobile</th><th>Booking type</th><th>Booking date</th><th>Payment time</th><th>Amount received</th><th>Payment method</th><th>Payment status</th><th>Actions</th></tr></thead>
           <tbody id="paymentsBody"></tbody>
         </table>
-        <div class="table-foot"><span>Showing all received payments</span></div>
+        <div class="table-foot"><span id="paymentsFoot">Showing today&rsquo;s received payments</span></div>
       </div>
     </div>
 
     <!-- ENQUIRIES -->
     <div class="page" id="page-enquiries">
       <div class="toolbar">
-        <input id="enquirySearch" type="text" placeholder="Search enquiries...">
+        <input id="enquirySearch" type="text" placeholder="Search by name, mobile, booking ID...">
         <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input id="enquiryDate" class="date-filter" type="text" readonly aria-label="Filter extended bookings by date" title="Filter extended bookings by date"><input id="enquiryDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel" data-enquiry-status="all">All</div><div class="filt-pill" data-enquiry-status="new">New</div><div class="filt-pill" data-enquiry-status="contacted">Contacted</div><div class="filt-pill" data-enquiry-status="closed">Closed</div>
         <button class="btn btn-ghost" id="enquiryExport" style="margin-left:auto;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Export</button>
@@ -633,8 +729,20 @@
     <!-- CALENDAR -->
     <div class="page" id="page-calendar">
       <div class="panel">
-        <h3>August 2026 — booked slots per day</h3>
+        <div class="cal-head">
+          <button type="button" class="cal-nav" id="calPrev" aria-label="Previous month" title="Previous month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <h3 id="calTitle">September 2026 — booked slots per day</h3>
+          <button type="button" class="cal-nav" id="calNext" aria-label="Next month" title="Next month"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
         <div class="cal-grid2" id="calGrid2"></div>
+        <div class="cal-details" id="calDetails" style="display:none;">
+          <div class="cal-details-head">
+            <button type="button" class="cal-back" id="calBack"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back to Calendar</button>
+            <h3 id="calDetailDate"></h3>
+            <span id="calDetailCount" class="cal-detail-count"></span>
+          </div>
+          <div id="calDetailBody" class="cal-detail-body"></div>
+        </div>
       </div>
     </div>
 
@@ -642,14 +750,14 @@
     <!-- WHATSAPP ENQUIRIES -->
     <div class="page" id="page-whatsapp">
       <div class="toolbar">
-        <input type="text" id="whatsappSearch" placeholder="Search by name, phone...">
+        <input type="text" id="whatsappSearch" placeholder="Search by name, mobile...">
         <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly id="whatsappDate" aria-label="Filter WhatsApp enquiries by date" title="Filter WhatsApp enquiries by date"><input id="whatsappDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
-        <div class="filt-pill sel" data-wa-status="all">All</div><div class="filt-pill" data-wa-status="new">New</div><div class="filt-pill" data-wa-status="pending">Contacted</div><div class="filt-pill" data-wa-status="cancelled">Archived</div>
+        <div class="filt-pill sel" data-wa-status="all">All</div><div class="filt-pill" data-wa-status="new">New</div><div class="filt-pill" data-wa-status="pending">Contacted</div>
         <button class="btn btn-ghost" id="whatsappExport" style="margin-left:auto;" title="Download WhatsApp enquiries as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Message</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Customer</th><th>Mobile</th><th>Email</th><th>Message</th><th>Received</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="whatsappBody"></tbody>
         </table>
         <div class="table-foot"><span>Showing all WhatsApp enquiries</span></div>
@@ -659,14 +767,13 @@
     <!-- CHATBOT CONVERSATIONS -->
     <div class="page" id="page-chatbot">
       <div class="toolbar">
-        <input type="text" id="chatSearch" placeholder="Search by visitor name, phone...">
+        <input type="text" id="chatSearch" placeholder="Search by name, mobile...">
         <span class="date-wrap"><span class="date-ph">dd-mm-yyyy</span><input class="date-filter" type="text" readonly id="chatDate" aria-label="Filter AI chats by date" title="Filter AI chats by date"><input id="chatDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
         <div class="filt-pill sel" data-chat-status="all">All</div><div class="filt-pill" data-chat-status="new">New</div><div class="filt-pill" data-chat-status="resolved">Resolved</div>
-        <button class="btn btn-ghost" id="chatbotExport" style="margin-left:auto;" title="Download chatbot conversations as CSV"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Visitor</th><th>Phone</th><th>Email</th><th>Questions asked</th><th>Timestamp</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Customer</th><th>Mobile</th><th>Email</th><th>Questions asked</th><th>Timestamp</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="chatbotBody"></tbody>
         </table>
         <div class="table-foot"><span>Showing all chatbot conversations</span></div>
@@ -1073,6 +1180,46 @@
     ['BK1036','Vikram Singh','96543 21098','Aug 24','07:00 PM','4 hrs','₹2,800','verified','confirmed','2026-08-24'],
     ['BK1035','Ayesha Khan','95432 10987','Aug 24','06:00 PM','1 hr','₹800','verified','confirmed','2026-08-24'],
   ];
+  (function(){
+    var pool=[
+      ['Rohan Patel','87654 32109'],['Meera Iyer','76543 21098'],['Arjun Singh','65432 10987'],
+      ['Zara Khan','54321 09876'],['Dev Sharma','43210 98765'],['Anya Reddy','32109 87654'],
+      ['Kabir Nair','21098 76543'],['Nisha Joshi','10987 65432'],['Ravi Kumar','09876 54321'],
+      ['Priya Desai','98761 23456'],['Amit Verma','87651 23450'],['Sonia Gupta','76541 23098'],
+      ['Vikram Rao','65431 09876'],['Tanya Menon','54321 09870'],['Siddharth Jain','43211 09876'],
+      ['Pooja Bose','32101 98765'],['Raj Malhotra','21091 87654'],['Deepa Nair','10981 65432'],
+      ['Sanjay Kaur','09871 54321'],['Kavita Singh','98761 43210'],['Manoj Tiwari','87651 43209'],
+      ['Leela Sharma','76541 32108'],['Nitin Choudhary','65431 21097'],['Swati Pandey','54321 09876']
+    ];
+    var times=['06:00 AM','07:00 AM','08:30 AM','10:00 AM','04:00 PM','05:30 PM','06:00 PM','07:00 PM','08:00 PM','09:00 PM'];
+    var durs=['1 hr','1.5 hrs','2 hrs','2.5 hrs','3 hrs','4 hrs'];
+    var amts=['₹800','₹1,200','₹1,400','₹1,600','₹2,100','₹2,400','₹2,800'];
+    var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months=[
+      [0,2026,[5,12,20]],[1,2026,[3,14,22]],[2,2026,[7,15,25]],[3,2026,[4,11,19]],
+      [4,2026,[6,13,21]],[5,2026,[2,10,18]],[6,2026,[8,16,24]],
+      [8,2026,[3,11,19]],[9,2026,[5,12,26]],[10,2026,[4,13,21]],[11,2026,[6,15,24]],
+      [0,2027,[7,14,21]]
+    ];
+    var id=2000;
+    months.forEach(function(mo){
+      var m=mo[0],y=mo[1],days=mo[2];
+      days.forEach(function(d){
+        var iso=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var disp=ms[m]+' '+d;
+        for(var b=0;b<2;b++){
+          var n=pool[(id+b)%pool.length];
+          var t=times[(id*3+b*7)%times.length];
+          var dur=durs[(id*2+b*5)%durs.length];
+          var amt=amts[(id*4+b*3)%amts.length];
+          var ps=(id+b)%3===0?'pending':'verified';
+          var bs=(id*3+b)%4===0?'cancelled':(id+b)%3===0?'pending':'confirmed';
+          bookings.push(['BK'+id,n[0],n[1],disp,t,dur,amt,ps,bs,iso]);
+          id++;
+        }
+      });
+    });
+  })();
   const pstatusLbl = {verified:'Verified', pending:'Pending'};
   const paymentsReceived = bookings.filter(b => b[7] === 'verified').reduce((sum, b) => sum + Number(String(b[6]).replace(/[₹,]/g, '')), 0);
   // ---- stat cards ----
@@ -1288,14 +1435,13 @@
     ['Rahul Verma','98765 43210','rahul.v@example.com','Do you have a slot free this Saturday evening?','2 min ago','new','2026-08-27'],
     ['Sana Sheikh','91234 56780','sana.s@example.com','Can I get a group discount for 10+ people?','1 hr ago','pending','2026-08-26'],
     ['Aditya Rao','99887 66554','aditya.r@example.com','Is the turf covered in case of rain?','4 hrs ago','confirmed','2026-08-25'],
-    ['Priya Nair','90011 22334','priya.n@example.com','Looking to book for a corporate tournament.','Yesterday','cancelled','2026-08-24'],
   ];
-const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cancelled:'Archived'};
+const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
   let waStatus = 'all';
   function waSetStatus(i, status){
     if(!waEnquiries[i]) return;
     waEnquiries[i][5] = status;
-    showToast(status === 'cancelled' ? 'Enquiry archived' : 'Marked as contacted');
+    showToast('Marked as contacted');
     renderWhatsApp();
   }
   function waRows(){
@@ -1317,8 +1463,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     <td><div class="row-actions">
       <button title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
       <button onclick="waSetStatus(${i},'pending')" title="Mark as contacted"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
-      <button onclick="showToast('Opening reply...')" title="Reply"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg></button>
-      <button class="danger" onclick="waSetStatus(${i},'cancelled')" title="Archive"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9M10 13h4"/></svg></button>
     </div></td></tr>`;
     }).join('') : `<tr><td colspan="7" class="tbl-empty">${waStatus === 'all' ? 'No WhatsApp enquiries found' : 'No ' + waStatusLbl[waStatus] + ' enquiries found'}</td></tr>`;
   }
@@ -1364,9 +1508,7 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     <tr data-date="${c[6]}"><td>${c[0]}</td><td class="mono">${c[1]}</td><td>${c[2]}</td><td style="white-space:normal; max-width:200px;">${c[3]}</td><td>${c[4]}</td>
     <td><span class="badge ${c[5] === 'new' ? 'pending' : 'confirmed'}">${c[5] === 'new' ? 'New' : 'Resolved'}</span></td>
     <td><div class="row-actions">
-      <button onclick="showToast('Opening conversation...')" title="Continue"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v13H8l-4 4Z"/></svg></button>
       <button onclick="chatSetStatus(${i},'resolved')" title="Mark resolved"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>
-      <button onclick="showToast('Conversation exported')" title="Export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg></button>
     </div></td></tr>`;
     }).join('') : `<tr><td colspan="7" class="tbl-empty">${chatStatus === 'all' ? 'No chatbot conversations found' : 'No ' + (chatStatus === 'new' ? 'New' : 'Resolved') + ' conversations found'}</td></tr>`;
   }
@@ -1376,11 +1518,6 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     renderChatbot();
   }));
   ['chatSearch','chatDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'chatDate' ? 'change' : 'input', renderChatbot));
-  document.getElementById('chatbotExport').addEventListener('click', ()=>{
-    const rows = chatRows();
-    if(!rows.length){ showToast('No data available to export'); return; }
-    exportCsv(`turfon24-chatbot-conversations-${new Date().toISOString().slice(0,10)}.csv`, [{key:'name',label:'Visitor Name'},{key:'phone',label:'Phone'},{key:'email',label:'Email'},{key:'questions',label:'Questions Asked'},{key:'timestamp',label:'Timestamp'},{key:'status',label:'Status'}], rows.map(c=>({name:c[0],phone:c[1],email:c[2],questions:c[3],timestamp:c[4],status:c[5] === 'new' ? 'New' : 'Resolved'})));
-  });
   renderChatbot();
 
   // ---- customers table ----
@@ -1452,13 +1589,17 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
   }
   let paymentStatus = 'all';
   let payments = [];
+  let paymentHistoryMode = false;
+  const paymentsTodayKey = bookings.reduce((mx,b)=> b[9] > mx ? b[9] : mx, '');
   function paymentRows(){
     const search = (document.getElementById('paymentSearch').value || '').trim().toLowerCase();
-    const date = document.getElementById('paymentDate').value;
+    const dateInput = document.getElementById('paymentDate').value;
+    const effectiveDate = paymentHistoryMode ? '' : (dateInput || paymentsTodayKey);
     return payments.filter(p=>{
       const matchesStatus = paymentStatus === 'all' || normalizeStatus(p.status) === paymentStatus;
       const matchesSearch = !search || (p.id + ' ' + p.name + ' ' + p.mobile).toLowerCase().includes(search);
-      return matchesStatus && matchesSearch && (!date || p.iso === date);
+      const matchesDate = !effectiveDate || p.iso === effectiveDate;
+      return matchesStatus && matchesSearch && matchesDate;
     });
   }
   function renderPayments(){
@@ -1469,22 +1610,53 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       <td><span class="badge verified">Verified</span></td>
       <td><div class="row-actions">
         <button onclick='openBookingDetail(${JSON.stringify(bookings.filter(function(b){return b[0]===p.id;})[0])})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-      </div></td></tr>`).join('') : `<tr><td colspan="10" class="tbl-empty">No received payments found</td></tr>`;
+      </div></td></tr>`).join('') : `<tr><td colspan="10" class="tbl-empty">${paymentHistoryMode ? 'No received payments found' : 'No payments received today'}</td></tr>`;
     const totalAmount = rows.reduce((sum,p)=>sum + Number(String(p.amount).replace(/[₹,]/g,'')), 0);
     document.getElementById('paymentsTotalCount').textContent = String(rows.length);
     document.getElementById('paymentsTotalAmount').textContent = '₹' + totalAmount.toLocaleString('en-IN');
+    document.getElementById('paymentsCountLabel').textContent = paymentHistoryMode ? 'Total payments' : 'Today\u2019s payments';
+    document.getElementById('paymentsFoot').textContent = paymentHistoryMode ? 'Showing all received payments' : 'Showing today\u2019s received payments';
   }
+  function setPaymentHistoryMode(on){
+    paymentHistoryMode = on;
+    const dateEl = document.getElementById('paymentDate');
+    const datePicker = document.getElementById('paymentDate-picker');
+    if(on){
+      if(dateEl) dateEl.value = '';
+      if(datePicker) datePicker.value = '';
+    } else {
+      if(dateEl) dateEl.value = paymentsTodayKey;
+      if(datePicker) datePicker.value = paymentsTodayKey;
+    }
+    syncDateDisplay();
+    const btn = document.getElementById('paymentHistoryLabel');
+    if(btn) btn.textContent = on ? 'Back to Today\u2019s Payments' : 'View Payment History';
+    renderPayments();
+  }
+  document.getElementById('paymentHistoryBtn').addEventListener('click', ()=>setPaymentHistoryMode(!paymentHistoryMode));
   document.querySelectorAll('[data-payment-status]').forEach(button=>button.addEventListener('click', ()=>{
     paymentStatus = button.dataset.paymentStatus;
     document.querySelectorAll('[data-payment-status]').forEach(item=>item.classList.toggle('sel', item === button));
     renderPayments();
   }));
-  ['paymentSearch','paymentDate'].forEach(id=>document.getElementById(id).addEventListener(id === 'paymentDate' ? 'change' : 'input', renderPayments));
+  document.getElementById('paymentSearch').addEventListener('input', renderPayments);
+  document.getElementById('paymentDate').addEventListener('change', ()=>{
+    if(paymentHistoryMode){
+      paymentHistoryMode = false;
+      document.getElementById('paymentHistoryLabel').textContent = 'View Payment History';
+    }
+    renderPayments();
+  });
   document.getElementById('paymentExport').addEventListener('click', ()=>{
     const rows = paymentRows();
     if(!rows.length){ showToast('No data available to export'); return; }
     exportCsv(`payment-received-${new Date().toISOString().slice(0,10)}.csv`, [{key:'id',label:'Booking ID'},{key:'name',label:'Customer Name'},{key:'mobile',label:'Mobile'},{key:'type',label:'Booking Type'},{key:'date',label:'Booking Date'},{key:'time',label:'Payment Time'},{key:'amount',label:'Amount Received'},{key:'method',label:'Payment Method'},{key:'status',label:'Payment Status'}], rows);
   });
+  const paymentDateEl = document.getElementById('paymentDate');
+  const paymentDatePickerEl = document.getElementById('paymentDate-picker');
+  if(paymentDateEl) paymentDateEl.value = paymentsTodayKey;
+  if(paymentDatePickerEl) paymentDatePickerEl.value = paymentsTodayKey;
+  syncDateDisplay();
   renderPayments();
 
   const customerHistory = {
@@ -1665,11 +1837,11 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     const container = document.getElementById('analyticsChart');
     const n = points.length;
     const maxV = points.reduce((m,p)=> Math.max(m,p.value), 1) || 1;
-    const H = 250, padL = 46, padR = 16, padT = 22, padB = 42;
+    const H = 300, padL = 46, padR = 16, padT = 22, padB = 44;
     const avail = Math.max(container.clientWidth || 640, 300);
-    const slotBase = n <= 14 ? 48 : (n <= 30 ? 30 : 24);
-    const slot = Math.max(20, Math.min(slotBase, Math.floor((avail - padL - padR) / n)));
-    const barWidth = Math.max(10, slot - 12);
+    const slotBase = n <= 14 ? 100 : (n <= 30 ? 44 : 26);
+    const slot = Math.max(22, Math.min(slotBase, Math.floor((avail - padL - padR) / n)));
+    const barWidth = Math.max(8, Math.round(slot * 0.72));
     const innerW = padL + padR + n * slot;
     const plotTop = padT, plotBottom = H - padB, plotH = plotBottom - plotTop;
     const yFor = v => plotBottom - (v / maxV) * plotH;
@@ -1725,18 +1897,76 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
         : '<div class="sum-chip"><div class="k">Highest day</div><div class="v green">' + fmt(highV) + '</div><span class="sub">' + formatAnalyticsDate(highDate) + '</span></div>' +
           '<div class="sum-chip"><div class="k">Lowest day</div><div class="v">' + fmt(lowV) + '</div><span class="sub">' + formatAnalyticsDate(lowDate) + '</span></div>');
   }
+  function polarPt(cx, cy, r, a){ return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+  function donutArc(cx, cy, r0, r1, a0, a1){
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    const p1 = polarPt(cx, cy, r0, a0), p2 = polarPt(cx, cy, r0, a1);
+    const p3 = polarPt(cx, cy, r1, a1), p4 = polarPt(cx, cy, r1, a0);
+    return 'M' + p1[0] + ' ' + p1[1] +
+           'A' + r0 + ' ' + r0 + ' 0 ' + large + ' 1 ' + p2[0] + ' ' + p2[1] +
+           'L' + p3[0] + ' ' + p3[1] +
+           'A' + r1 + ' ' + r1 + ' 0 ' + large + ' 0 ' + p4[0] + ' ' + p4[1] + 'Z';
+  }
+  const DONUT_PALETTE = ['#39FF7A','#2BE36B','#1FC55C','#16B24F','#0FA857','#0D9449','#0B7F3F','#0A6C36','#085A2E','#074B27','#063D20','#05311A'];
+  function renderAnalyticsDonut(points, currency, label){
+    const el = document.getElementById('analyticsDonut');
+    const legend = document.getElementById('analyticsDonutLegend');
+    if(!el) return;
+    const total = points.reduce((s,p)=>s+p.value,0);
+    const active = points.filter(p=>p.value>0);
+    if(total <= 0 || !active.length){
+      el.innerHTML = '<div class="pie-empty">No data available</div>';
+      if(legend) legend.innerHTML = '';
+      return;
+    }
+    const size = 200, cx = 100, cy = 100, rOut = 86, rIn = 56;
+    let a0 = -Math.PI / 2;
+    let arcs = '';
+    const segs = [];
+    active.forEach((p,i)=>{
+      const frac = p.value / total;
+      const a1 = a0 + frac * 2 * Math.PI;
+      const color = DONUT_PALETTE[i % DONUT_PALETTE.length];
+      arcs += '<path class="donut-seg" d="' + donutArc(cx, cy, rOut, rIn, a0, a1) + '" fill="' + color + '"><title>' + label + ': ' + formatAnalyticsValue(p.value, currency) + ' on ' + formatAnalyticsDate(p.date) + ' (' + Math.round(frac*100) + '%)</title></path>';
+      segs.push({ p:p, color:color, frac:frac });
+      a0 = a1;
+    });
+    const totalFmt = formatAnalyticsValue(total, currency);
+    const ts = totalFmt.length > 14 ? 11 : (totalFmt.length > 10 ? 13 : 15);
+    el.innerHTML = '<svg viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' + label + ' breakdown by day">' + arcs +
+      '<text x="100" y="96" text-anchor="middle" class="pie-donut-total" style="font-size:' + ts + 'px;">' + totalFmt + '</text>' +
+      '<text x="100" y="113" text-anchor="middle" class="pie-donut-total-label">TOTAL</text></svg>';
+    legend.innerHTML = segs.map(s=>{
+      return '<div class="legend-row"><span class="legend-swatch" style="background:' + s.color + '"></span><span class="legend-date">' + formatAnalyticsDate(s.p.date) + '</span><span class="legend-pct">' + Math.round(s.frac*100) + '%</span><span class="legend-value">' + formatAnalyticsValue(s.p.value, currency) + '</span></div>';
+    }).join('');
+  }
+  function currentRangeBounds(){
+    const end = analyticsState.anchor;
+    if(analyticsState.range === '90'){
+      return { start: subtractMonthsIso(end, 3), end };
+    }
+    if(analyticsState.range === 'custom'){
+      const from = document.getElementById('analyticsFromDate') ? document.getElementById('analyticsFromDate').value : '';
+      const to = document.getElementById('analyticsToDate') ? document.getElementById('analyticsToDate').value : '';
+      const hint = document.getElementById('analyticsRangeHint');
+      if(from && to && from <= to){
+        if(hint) hint.textContent = '';
+        return { start: from, end: to };
+      }
+      if(hint){
+        hint.textContent = from && to && from > to ? 'Start date must be on or before the end date.' : 'Select From and To dates to filter.';
+      }
+      return { start: addDaysIso(end, -6), end };
+    }
+    const days = analyticsState.range === '30' ? 30 : 7;
+    return { start: addDaysIso(end, -(days - 1)), end };
+  }
   function renderAnalytics(){
     const metric = analyticsState.metric;
     if(!metric) return;
     const rows = metric.rows();
-    const end = analyticsState.anchor;
-    let start;
-    if(analyticsState.range === '90'){
-      start = subtractMonthsIso(end, 3);
-    } else {
-      const days = analyticsState.range === '30' ? 30 : 7;
-      start = addDaysIso(end, -(days - 1));
-    }
+    const bounds = currentRangeBounds();
+    const start = bounds.start, end = bounds.end;
     let points;
     if(metric.availability){
       points = buildAvailabilitySeries(start, end, rows, metric.date);
@@ -1745,6 +1975,7 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     }
     analyticsState.points = points;
     renderAnalyticsChart(points, metric.currency, metric.label);
+    renderAnalyticsDonut(points, metric.currency, metric.label);
     renderAnalyticsSummary(points, metric.currency);
     const total = points.reduce((s,p)=>s+p.value,0);
     document.getElementById('analyticsNote').textContent =
@@ -1775,25 +2006,56 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
       p.classList.toggle('sel', active);
       p.setAttribute('aria-selected', String(active));
     });
+    const dr = document.getElementById('analyticsDateRange');
+    if(dr) dr.style.display = (range === 'custom') ? 'flex' : 'none';
     renderAnalytics();
   }
+  const ANALYTICS_LABELS = {
+    turf:'Turf Available', total:'Total Bookings', paid:'Payment Received', today:'Today\'s Bookings',
+    pendingConf:'Pending Confirmations', pendingPay:'Pending Payment Verification', enq:'Extended Booking Enquiries',
+    completed:'Completed Bookings', cancelled:'Cancelled Bookings', customers:'Total Customers', wa:'WhatsApp Enquiries', chat:'Chatbot Conversations'
+  };
   function buildAnalyticsSelector(){
-    const container = document.getElementById('analyticsSelector');
-    if(!container) return;
+    const menu = document.getElementById('analyticsDropdownMenu');
+    const trigger = document.getElementById('analyticsSelector');
+    const label = document.getElementById('analyticsSelectorLabel');
+    const wrap = document.getElementById('analyticsDropdown');
+    if(!menu || !trigger || !label || !wrap) return;
     const keys = Object.keys(analyticsMetrics);
-    const labels = {
-      turf:'Turf Available', total:'Total Bookings', paid:'Payment Received', today:'Today\'s Bookings',
-      pendingConf:'Pending Confirmations', pendingPay:'Pending Payment Verification', enq:'Extended Booking Enquiries',
-      completed:'Completed Bookings', cancelled:'Cancelled Bookings', customers:'Total Customers', wa:'WhatsApp Enquiries', chat:'Chatbot Conversations'
-    };
-    container.innerHTML = keys.map(k=>'<button type="button" class="metric-pill" data-metric="' + k + '" role="tab" aria-selected="false">' + (labels[k] || k) + '</button>').join('');
-    container.querySelectorAll('.metric-pill').forEach(btn=>btn.addEventListener('click', ()=>selectAnalyticsMetric(btn.dataset.metric)));
+    menu.innerHTML = keys.map(k=>'<button type="button" class="analytics-option" data-key="' + k + '" role="option">' + (ANALYTICS_LABELS[k] || k) + '</button>').join('');
+    menu.querySelectorAll('.analytics-option').forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        selectAnalyticsMetric(opt.dataset.key);
+        closeAnalyticsDropdown();
+      });
+    });
+    trigger.addEventListener('click', ()=>toggleAnalyticsDropdown());
+    document.addEventListener('click', (e)=>{ if(wrap && !wrap.contains(e.target)) closeAnalyticsDropdown(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeAnalyticsDropdown(); });
   }
-  function setActiveMetricPill(metricKey){
-    document.querySelectorAll('#analyticsSelector .metric-pill').forEach(btn=>{
-      const active = btn.dataset.metric === metricKey;
-      btn.classList.toggle('sel', active);
-      btn.setAttribute('aria-selected', String(active));
+  function toggleAnalyticsDropdown(){
+    const wrap = document.getElementById('analyticsDropdown');
+    const trigger = document.getElementById('analyticsSelector');
+    if(!wrap || !trigger) return;
+    const open = wrap.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', String(open));
+  }
+  function closeAnalyticsDropdown(){
+    const wrap = document.getElementById('analyticsDropdown');
+    const trigger = document.getElementById('analyticsSelector');
+    if(!wrap || !trigger) return;
+    wrap.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+  function setActiveMetricSelect(metricKey){
+    const label = document.getElementById('analyticsSelectorLabel');
+    const wrap = document.getElementById('analyticsDropdown');
+    if(!label || !wrap) return;
+    const isPlaceholder = !metricKey || !analyticsMetrics[metricKey];
+    label.textContent = isPlaceholder ? 'Select Booking Category' : (ANALYTICS_LABELS[metricKey] || metricKey);
+    label.classList.toggle('placeholder', isPlaceholder);
+    wrap.querySelectorAll('.analytics-option').forEach(opt=>{
+      opt.classList.toggle('sel', opt.dataset.key === metricKey);
     });
   }
   function selectAnalyticsMetric(metricKey){
@@ -1801,7 +2063,7 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     if(!metric) return;
     const rows = metric.rows();
     analyticsState = { metric, range:'7', anchor: seriesAnchor(rows, metric.date), points: null };
-    setActiveMetricPill(metricKey);
+    setActiveMetricSelect(metricKey);
     setAnalyticsRange('7');
   }
   function openAnalytics(stat){
@@ -1856,6 +2118,10 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     el.scrollTop = 0;
   }
   document.querySelectorAll('#rangePills .range-pill').forEach(p=>p.addEventListener('click', ()=>setAnalyticsRange(p.dataset.range)));
+  ['analyticsFromDate','analyticsToDate'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('change', ()=>{ if(analyticsState.range === 'custom') renderAnalytics(); });
+  });
   buildAnalyticsSelector();
   selectAnalyticsMetric('total');
   function applyAnalyticsHashMetric(){
@@ -1868,14 +2134,17 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
   window.addEventListener('hashchange', ()=>{ if(window.location.hash.indexOf('page-analytics') !== -1) applyAnalyticsHashMetric(); });
   if(window.location.hash.indexOf('page-analytics') !== -1) applyAnalyticsHashMetric();
 
-  // ---- calendar ----
-  const calTitleEl = document.querySelector('#page-calendar .panel h3');
-  const calTitleMatch = calTitleEl ? calTitleEl.textContent.trim().match(/^([A-Za-z]+) (\d{4})/) : null;
+  // ---- calendar (dynamic month navigation) ----
+  const calTitleEl = document.querySelector('#page-calendar h3#calTitle');
   const calMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const calYear = calTitleMatch ? Number(calTitleMatch[2]) : new Date().getFullYear();
-  const calMonth = calTitleMatch ? calMonths.indexOf(calTitleMatch[1]) : new Date().getMonth();
-  const calDays = new Date(calYear, calMonth + 1, 0).getDate();
-  const calDateKey = day => `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const calGrid = document.getElementById('calGrid2');
+  const bookingsByDate = {};
+  bookings.forEach(b => { (bookingsByDate[b[9]] = bookingsByDate[b[9]] || []).push(b); });
+  let calYear = 2026;
+  let calMonth = 8;
+  function calDateKey(day){
+    return calYear + '-' + String(calMonth + 1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+  }
   function timeToMin(t){
     const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(String(t || '').trim());
     if(!m) return 0;
@@ -1884,43 +2153,64 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved', cance
     return h * 60 + Number(m[2]);
   }
   function openCalendarDate(dateKey){
-    const list = bookings.filter(b => b[9] === dateKey).sort((a, b) => timeToMin(a[4]) - timeToMin(b[4]));
-    const label = new Date(dateKey + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const countLabel = `${list.length} ${list.length === 1 ? 'Booking' : 'Bookings'}`;
-    document.getElementById('detailBody').innerHTML = `
-      <div class="cal-date-head"><strong>${label}</strong><span class="cnt">${countLabel}</span></div>
-      <div class="cal-book-list">
-      ${list.map((b, idx) => `
-        <div class="cal-book-card">
-          <div class="who"><span class="num">${idx + 1}</span><b>${b[1]}</b></div>
-          <div class="detail-row"><span>Booking ID</span><span class="mono">${b[0]}</span></div>
-          <div class="detail-row"><span>Phone</span><span class="mono">${b[2]}</span></div>
-          <div class="detail-row"><span>Time</span><span>${b[4]}</span></div>
-          <div class="detail-row"><span>Duration</span><span>${b[5]}</span></div>
-          <div class="detail-row"><span>Amount</span><span class="mono">${b[6]}</span></div>
-          <div class="detail-row"><span>Booking status</span><span class="badge ${b[8]}">${bstatusLbl[b[8]]}</span></div>
-        </div>`).join('')}
-      </div>`;
-    openModal('detailModal');
-  }
-  const calGrid = document.getElementById('calGrid2');
-  const bookingsByDate = {};
-  bookings.forEach(b => { (bookingsByDate[b[9]] = bookingsByDate[b[9]] || []).push(b); });
-  for(let i = 1; i <= calDays; i++){
-    const key = calDateKey(i);
-    const dayBookings = bookingsByDate[key] || [];
-    const cell = document.createElement('div');
-    cell.className = 'cal-cell';
-    if(dayBookings.length){
-      cell.classList.add('has-bookings');
-      cell.dataset.date = key;
-      cell.innerHTML = i + `<span class="cnt">${dayBookings.length}</span>`;
-      cell.addEventListener('click', () => openCalendarDate(key));
+    var list = (bookingsByDate[dateKey] || []).slice().sort(function(a, b){ return timeToMin(a[4]) - timeToMin(b[4]); });
+    var label = new Date(dateKey + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    var countLabel = list.length + (list.length === 1 ? ' Booking' : ' Bookings');
+    document.getElementById('calDetailDate').textContent = label;
+    document.getElementById('calDetailCount').textContent = list.length ? countLabel : 'No bookings';
+    if(list.length){
+      document.getElementById('calDetailBody').innerHTML =
+        '<div class="cal-book-list">' +
+        list.map(function(b, idx){
+          return '<div class="cal-book-card">' +
+            '<div class="who"><span class="num">' + (idx + 1) + '</span><b>' + b[1] + '</b></div>' +
+            '<div class="detail-row"><span>Booking ID</span><span class="mono">' + b[0] + '</span></div>' +
+            '<div class="detail-row"><span>Mobile</span><span class="mono">' + b[2] + '</span></div>' +
+            '<div class="detail-row"><span>Time</span><span>' + b[4] + '</span></div>' +
+            '<div class="detail-row"><span>Duration</span><span>' + b[5] + '</span></div>' +
+            '<div class="detail-row"><span>Amount</span><span class="mono">' + b[6] + '</span></div>' +
+            '<div class="detail-row"><span>Booking status</span><span class="badge ' + b[8] + '">' + bstatusLbl[b[8]] + '</span></div>' +
+          '</div>';
+        }).join('') +
+        '</div>';
     } else {
-      cell.textContent = String(i);
+      document.getElementById('calDetailBody').innerHTML = '<div class="cal-empty">No bookings for this date.</div>';
     }
-    calGrid.appendChild(cell);
+    calGrid.style.display = 'none';
+    document.querySelector('.cal-head').style.display = 'none';
+    document.getElementById('calDetails').style.display = '';
   }
+  function closeCalendarDetails(){
+    document.getElementById('calDetails').style.display = 'none';
+    calGrid.style.display = '';
+    document.querySelector('.cal-head').style.display = '';
+  }
+  function renderCalendar(){
+    closeCalendarDetails();
+    var days = new Date(calYear, calMonth + 1, 0).getDate();
+    calGrid.innerHTML = '';
+    if(calTitleEl) calTitleEl.textContent = calMonths[calMonth] + ' ' + calYear + ' \u2014 booked slots per day';
+    for(var i = 1; i <= days; i++){
+      var key = calDateKey(i);
+      var dayBookings = bookingsByDate[key] || [];
+      var cell = document.createElement('div');
+      cell.className = 'cal-cell' + (dayBookings.length ? ' has-bookings' : '');
+      cell.dataset.date = key;
+      cell.innerHTML = i + (dayBookings.length ? '<span class="cnt">' + dayBookings.length + '</span>' : '');
+      cell.addEventListener('click', (function(k){ return function(){ openCalendarDate(k); }; })(key));
+      calGrid.appendChild(cell);
+    }
+  }
+  function calShift(dir){
+    calMonth += dir;
+    if(calMonth < 0){ calMonth = 11; calYear--; }
+    if(calMonth > 11){ calMonth = 0; calYear++; }
+    renderCalendar();
+  }
+  document.getElementById('calPrev').addEventListener('click', function(){ calShift(-1); });
+  document.getElementById('calNext').addEventListener('click', function(){ calShift(1); });
+  document.getElementById('calBack').addEventListener('click', function(){ closeCalendarDetails(); });
+  renderCalendar();
 
   // ---- login visual particles ----
   const lvBox = document.getElementById('lvParticles');

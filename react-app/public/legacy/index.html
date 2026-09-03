@@ -250,22 +250,19 @@
   .fn-heading .g{color:var(--neon);}
   .fn-sub{color:var(--muted); font-size:15.5px; line-height:1.65; margin:0;}
   .fn-grid{display:grid; grid-template-columns:1.35fr 1fr; gap:24px; align-items:stretch;}
-  .fn-featured{position:relative; border-radius:26px; overflow:hidden; border:1px solid rgba(57,255,122,0.18); background:linear-gradient(150deg, rgba(18,27,23,.9) 0%, rgba(7,13,11,.96) 100%); display:flex; flex-direction:column; min-height:520px;}
-  .fn-featured-media{position:relative; flex:1 1 auto; min-height:280px; display:flex; align-items:center; justify-content:center; overflow:hidden;}
-  .fn-featured-media::before{content:""; position:absolute; inset:0; background:radial-gradient(120% 110% at 50% 20%, rgba(57,255,122,0.16), transparent 55%);}
-  .fn-featured-media::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(7,13,11,.9), transparent 55%);}
+  .fn-featured{position:relative; border-radius:26px; overflow:hidden; border:1px solid rgba(57,255,122,0.18); background:linear-gradient(150deg, rgba(18,27,23,.9) 0%, rgba(7,13,11,.96) 100%); min-height:520px;}
+  .fn-featured-media{position:absolute; inset:0; overflow:hidden;}
+  .fn-featured-media::before{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(5,10,8,.82) 0%, rgba(5,10,8,.30) 40%, rgba(5,10,8,0) 65%); pointer-events:none;}
   .fn-showcase-img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:0; z-index:0; transition:opacity 0.3s ease;}
+  .fn-showcase-img[data-pos="center"]{object-position:center center;}
+  .fn-showcase-img[data-pos="left"]{object-position:left center;}
+  .fn-showcase-img[data-pos="top"]{object-position:center 20%;}
+  .fn-showcase-img[data-pos="bottom"]{object-position:center 65%;}
   .fn-card.active{border-color:rgba(57,255,122,0.55); box-shadow:0 18px 42px rgba(0,0,0,0.4), 0 0 28px rgba(57,255,122,0.18);}
-  .fn-card.active .fn-card-icon{background:rgba(57,255,122,0.16); box-shadow:0 0 18px rgba(57,255,122,0.32);}
-  .fn-feat-glow{position:absolute; inset:0; display:grid; place-items:center;}
-  .fn-feat-glow svg{width:min(56%,290px); height:auto; color:var(--neon); opacity:.5; filter:drop-shadow(0 0 26px rgba(57,255,122,0.35));}
-  .fn-feat-ring{position:absolute; width:min(72%,380px); aspect-ratio:1; border-radius:50%; border:1px dashed rgba(57,255,122,0.35); animation:fnRingSpin 22s linear infinite;}
-  .fn-feat-ring.r2{width:min(52%,270px); border-style:solid; border-color:rgba(57,255,122,0.16); animation-duration:14s; animation-direction:reverse;}
-  @keyframes fnRingSpin{to{transform:rotate(360deg);}}
-  .fn-featured-copy{position:relative; z-index:2; padding:34px 34px 38px;}
-  .fn-featured-copy h3{font-size:25px; font-weight:600; letter-spacing:-0.01em; margin:0 0 12px;}
-  .fn-featured-copy p{color:var(--muted); font-size:14.5px; line-height:1.7; max-width:540px; margin:0;}
-  .fn-feat-chip{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); border:1px solid rgba(57,255,122,0.3); background:rgba(57,255,122,0.06); border-radius:100px; padding:6px 14px; margin-bottom:18px;}
+  .fn-featured-copy{position:absolute; bottom:0; left:0; z-index:3; padding:30px 34px 34px;}
+  .fn-featured-copy h3{font-size:25px; font-weight:600; letter-spacing:-0.02em; margin:0 0 10px; color:var(--white);}
+  .fn-featured-copy p{color:rgba(255,255,255,.9); font-size:14.5px; line-height:1.6; max-width:440px; margin:0;}
+  .fn-feat-chip{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); border:1px solid rgba(57,255,122,0.3); background:rgba(57,255,122,0.06); border-radius:100px; padding:6px 14px; margin-bottom:16px;}
   .fn-cards{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-content:start;}
   .fn-card{position:relative; background:linear-gradient(150deg, rgba(18,27,23,.88) 0%, rgba(7,13,11,.95) 100%); border:1px solid rgba(57,255,122,0.14); border-radius:20px; padding:24px 22px; display:flex; flex-direction:column; transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease; overflow:hidden;}
   .fn-card::before{content:""; position:absolute; inset:0; border-radius:20px; background:radial-gradient(120% 90% at 15% 0%, rgba(57,255,122,0.08), transparent 55%); opacity:0; transition:opacity .3s ease; pointer-events:none;}
@@ -273,7 +270,7 @@
   .fn-card:hover::before{opacity:1;}
   .fn-card-icon{width:50px; height:50px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:rgba(57,255,122,0.08); border:1px solid rgba(57,255,122,0.24); color:var(--neon); flex-shrink:0; filter:drop-shadow(0 0 10px rgba(57,255,122,0.22)); margin-bottom:16px; transition:background .3s ease, box-shadow .3s ease;}
   .fn-card:hover .fn-card-icon{background:rgba(57,255,122,0.16); box-shadow:0 0 18px rgba(57,255,122,0.32);}
-  .fn-card h4{font-size:15.5px; font-weight:600; letter-spacing:-0.01em; margin:0 0 7px; position:relative; z-index:1;}
+  .fn-card h4{font-size:15.5px; font-weight:600; letter-spacing:-0.01em; margin:auto 0 7px; position:relative; z-index:1;}
   .fn-card p{font-size:12.5px; color:var(--muted); line-height:1.6; margin:0; position:relative; z-index:1;}
   .fn-rent-list{list-style:none; margin:4px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; position:relative; z-index:1;}
   .fn-rent-list li{display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--white); line-height:1.4; font-weight:500;}
@@ -290,10 +287,9 @@
   }
   @media(max-width:620px){
     .fn-showcase{padding:72px 6vw;}
-    .fn-featured{min-height:0;}
-    .fn-featured-copy{padding:26px 22px 30px;}
+    .fn-featured{height:400px; min-height:0;}
+    .fn-featured-copy{padding:26px 22px;}
     .fn-featured-copy h3{font-size:21px;}
-    .fn-feat-glow svg{width:min(60%,240px);}
   }
   /* ===== FACILITIES — responsive match programme (mobile & tablet) ===== */
   .fac-mobile{display:none; margin:0 5vw;}
@@ -721,11 +717,11 @@
   .booking-shell .rc-nav-group > span{font-size:10.5px;}
   .booking-shell .rc-grid{gap:3px;}
   .booking-shell .rc-grid .rc-h{padding-bottom:3px; font-size:9.5px;}
-  .booking-shell .rc-day{border-radius:6px; font-size:11px;}
+  .booking-shell .rc-day{border-radius:6px; font-size:11px; aspect-ratio:auto; height:32px;}
   @media(max-width:600px){
     .booking-shell .rc-nav{width:34px; height:34px;}
     .booking-shell .rc-grid{gap:4px;}
-    .booking-shell .rc-day{font-size:12px;}
+    .booking-shell .rc-day{font-size:12px; height:38px;}
   }
   @media(max-width:900px){
     .booking-shell .rc-cal{padding:10px 14px 12px;}
@@ -873,6 +869,30 @@
     #book .bk-slot-pills{grid-template-columns:repeat(2, minmax(0,1fr)); gap:11px; width:100%; box-sizing:border-box;}
     #book .bk-slot-pills .pill{height:50px; min-height:50px; max-width:100%; border-radius:21px; font-size:12.5px; padding:4px 6px; line-height:1.25; overflow:hidden; word-break:break-word; box-sizing:border-box;}
     #book #bkTimePills .pill{min-height:50px; max-width:100%; font-size:12.5px; padding:4px 6px; line-height:1.25; overflow:hidden; word-break:break-word; box-sizing:border-box;}
+  }
+
+  /* ===== SPACING — PRICING + RESERVE PITCH ONLY (≈25% less empty space, horizontal widening) ===== */
+  #pricing, #book{ padding:54px 4.5vw; }
+  #pricing .reveal .eyebrow, #book .reveal .eyebrow{ margin-bottom:14px; }
+  #pricing .reveal .section-title, #book .reveal .section-title{ margin-bottom:12px; }
+  #pricing .reveal .section-sub, #book .reveal .section-sub{ margin-bottom:30px; }
+
+  #pricing .pricing-cols{ gap:20px; max-width:1120px; }
+  #pricing .pricing-card{ padding:36px 28px; }
+  #pricing .pricing-card .rate-badges{ margin-top:18px; }
+  #pricing .extended-inner{ padding:32px 38px; }
+  #pricing .extended-inner > p{ margin-bottom:18px; }
+  #pricing .ext-features{ margin-bottom:21px; }
+
+  #book .booking-shell{ padding:58px 33px 33px; max-width:800px; }
+  #book .steps-row{ margin-bottom:44px; }
+  #book .rc-cal{ margin-bottom:10px; }
+
+  @media(max-width:900px){
+    #pricing, #book{ padding:42px 1.7vw; }
+    #pricing .pricing-cols{ max-width:100%; }
+    #book .booking-shell{ padding:57px 16px 26px; max-width:100%; }
+    #book .steps-row{ margin-bottom:32px; }
   }
 </style>
 </head>
@@ -1244,34 +1264,27 @@
     <div class="fn-grid">
       <div class="fn-featured fn-reveal">
         <div class="fn-featured-media">
-          <div class="fn-feat-ring"></div>
-          <div class="fn-feat-ring r2"></div>
-          <img class="fn-showcase-img" id="fnShowcaseImg" alt="Purified RO Water" role="img">
-        </div>
-        <div class="fn-featured-copy">
-          <div class="fn-feat-chip">Courtside comfort</div>
-          <h3 id="fnFeatTitle">Purified RO Water</h3>
-          <p id="fnFeatDesc">Clean and purified RO drinking water available for players.</p>
+          <img class="fn-showcase-img" id="fnShowcaseImg" data-pos="left" alt="Dedicated Rest Room" role="img">
+          <div class="fn-featured-copy">
+            <div class="fn-feat-chip">Courtside comfort</div>
+            <h3 id="fnFeatTitle">Dedicated Rest Room</h3>
+            <p id="fnFeatDesc">Clean. Fresh. Ready.</p>
+          </div>
         </div>
       </div>
 
       <div class="fn-cards">
         <div class="fn-card fn-reveal active" data-index="0">
-          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 0 9 9 9 9 0 0 0 6-2.3L21 20l-.6-2.7A9 9 0 1 0 3 12Z"/><path d="M3 12h6a3 3 0 0 0 6 0h6"/></svg></div>
-          <h4>Purified RO Water</h4>
-          <p>Clean and purified RO drinking water available for players.</p>
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18a3 3 0 0 1 3-3h6M12 15v6H6a3 3 0 0 1-3-3"/><path d="M6 8a3 3 0 0 1 3 3h6"/><path d="M21 18a3 3 0 0 1-3 3h-6"/></svg></div>
+          <h4>Dedicated Rest Room</h4>
+          <p>Dedicated rest room facilities for boys and girls.</p>
         </div>
         <div class="fn-card fn-reveal" data-index="1">
-          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></div>
-          <h4>Relaxation / Waiting Area</h4>
-          <p>A comfortable space to relax before or after your game.</p>
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M12 10h6M12 14h6"/></svg></div>
+          <h4>Locker Facility</h4>
+          <p>Secure locker space for your belongings while you play.</p>
         </div>
         <div class="fn-card fn-reveal" data-index="2">
-          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 9a6 6 0 0 1 12 0v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9Z"/><path d="M6 13h12"/></svg></div>
-          <h4>Refreshments</h4>
-          <p>Refreshment items and beverages available on demand.</p>
-        </div>
-        <div class="fn-card fn-reveal" data-index="3">
           <div class="fn-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8a7 7 0 0 1 14 0c0 2-1 4-2 5a7 7 0 0 1-10 0c-1-1-2-3-2-5Z"/><path d="M4 20h16M8 8l3 3M16 8l-3 3"/></svg></div>
           <h4>Key Items for Rental</h4>
           <ul class="fn-rent-list">
@@ -1280,15 +1293,20 @@
             <li>Football</li>
           </ul>
         </div>
+        <div class="fn-card fn-reveal" data-index="3">
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 9a6 6 0 0 1 12 0v8a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9Z"/><path d="M6 13h12"/></svg></div>
+          <h4>Refreshments</h4>
+          <p>Refreshment items and beverages available on demand.</p>
+        </div>
         <div class="fn-card fn-reveal" data-index="4">
-          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2"/><path d="M12 10h6M12 14h6"/></svg></div>
-          <h4>Locker Facility</h4>
-          <p>Secure locker space for your belongings while you play.</p>
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></div>
+          <h4>Relaxation / Waiting Area</h4>
+          <p>A comfortable space to relax before or after your game.</p>
         </div>
         <div class="fn-card fn-reveal" data-index="5">
-          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18a3 3 0 0 1 3-3h6M12 15v6H6a3 3 0 0 1-3-3"/><path d="M6 8a3 3 0 0 1 3 3h6"/><path d="M21 18a3 3 0 0 1-3 3h-6"/></svg></div>
-          <h4>Dedicated Rest Room</h4>
-          <p>Dedicated rest room facilities for boys and girls.</p>
+          <div class="fn-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 0 9 9 9 9 0 0 0 6-2.3L21 20l-.6-2.7A9 9 0 1 0 3 12Z"/><path d="M3 12h6a3 3 0 0 0 6 0h6"/></svg></div>
+          <h4>Purified RO Water</h4>
+          <p>Clean and purified RO drinking water available for players.</p>
         </div>
       </div>
     </div>
@@ -1297,12 +1315,12 @@
   <script>
     (function(){
       var facilities = [
-        { title: 'Purified RO Water', desc: 'Clean and purified RO drinking water available for players.', img: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=800&h=500&fit=crop&q=80' },
-        { title: 'Relaxation / Waiting Area', desc: 'A comfortable space to relax before or after your game.', img: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=800&h=500&fit=crop&q=80' },
-        { title: 'Refreshments', desc: 'Refreshment items and beverages available on demand.', img: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=800&h=500&fit=crop&q=80' },
-        { title: 'Key Items for Rental', desc: 'Essential sports equipment available for rent whenever you need it.', img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&h=500&fit=crop&q=80' },
-        { title: 'Locker Facility', desc: 'Secure locker space for your belongings while you play.', img: 'https://images.unsplash.com/photo-1692932596039-e321a4ed7861?w=800&h=500&fit=crop&q=80' },
-        { title: 'Dedicated Rest Room', desc: 'Dedicated restroom facilities for boys and girls.', img: 'https://images.unsplash.com/photo-1571712707792-82c3cc4243f5?w=800&h=500&fit=crop&q=80' }
+        { title: 'Dedicated Rest Room', desc: 'Dedicated restroom facilities for boys and girls.', img: './facility-1-restroom.jpeg', pos:'left' },
+        { title: 'Locker Facility', desc: 'Secure locker space for your belongings while you play.', img: './facility-2-locker.jpeg', pos:'center' },
+        { title: 'Key Items for Rental', desc: 'Essential sports equipment available for rent whenever you need it.', img: './facility-3-rental.jpeg', pos:'center' },
+        { title: 'Refreshments', desc: 'Refreshment items and beverages available on demand.', img: './facility-4-refreshment.jpeg', pos:'center' },
+        { title: 'Relaxation / Waiting Area', desc: 'A comfortable space to relax before or after your game.', img: './facility-5-relax.jpeg', pos:'center' },
+        { title: 'Purified RO Water', desc: 'Clean and purified RO drinking water available for players.', img: './facility-6-rowater.jpeg', pos:'center' }
       ];
 
       var imgEl = document.getElementById('fnShowcaseImg');
@@ -1313,6 +1331,7 @@
       function selectFacility(index) {
         var f = facilities[index];
         imgEl.style.opacity = '0';
+        imgEl.setAttribute('data-pos', f.pos || 'center');
         setTimeout(function() {
           imgEl.src = f.img;
           imgEl.alt = f.title;
