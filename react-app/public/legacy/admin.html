@@ -1866,6 +1866,17 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
       const y = plotBottom - h;
       out += '<rect class="ana-bar" tabindex="0" data-i="' + i + '" data-date="' + p.date + '" data-count="' + p.value + '" data-label="' + label + '" x="' + x + '" y="' + y + '" width="' + barWidth + '" height="' + h + '" rx="5" fill="' + (p.value > 0 ? 'url(#anaGrad)' : 'rgba(57,255,122,0.12)') + '"><title>' + label + ': ' + formatAnalyticsValue(p.value, currency) + ' on ' + formatAnalyticsDate(p.date) + '</title></rect>';
     });
+    const trendPts = points.map((p,i)=>(
+      { cx: padL + i * slot + barWidth / 2, cy: yFor(p.value) }
+    ));
+    if(trendPts.length){
+      const trendLine = trendPts.map((pt,i)=>(i ? 'L' : 'M') + pt.cx + ' ' + pt.cy).join(' ');
+      out += '<path class="ana-trend-halo" pointer-events="none" d="' + trendLine + '" fill="none" stroke="#39FF7A" stroke-opacity="0.22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+      out += '<path class="ana-trend" pointer-events="none" d="' + trendLine + '" fill="none" stroke="#39FF7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+      trendPts.forEach(pt=>{
+        out += '<circle class="ana-dot" pointer-events="none" cx="' + pt.cx + '" cy="' + pt.cy + '" r="3.4" fill="#39FF7A" stroke="#04140D" stroke-width="1.4"/>';
+      });
+    }
     out += '</svg>';
     container.innerHTML = out;
     const svg = container.querySelector('svg');

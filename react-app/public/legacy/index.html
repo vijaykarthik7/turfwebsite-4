@@ -461,7 +461,7 @@
   .steps-row{position:relative; display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:0; margin-bottom:38px;}
   .steps-row::before{content:""; position:absolute; top:13px; left:0; right:0; height:2px; background:var(--border); z-index:0; transform:translateY(-50%);}
   .bstep{display:flex; flex-direction:column; align-items:center; gap:7px; position:relative; z-index:1; min-width:0;}
-  .bstep-dot{width:27px;height:27px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; border:1px solid var(--border); background:var(--black); transition:all .3s ease;}
+  .bstep-dot{width:27px;height:27px;border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; border:1px solid var(--border); background:transparent; transition:all .3s ease;}
   .bstep.active .bstep-dot{background:var(--neon); color:#04140D; border-color:var(--neon); box-shadow:0 0 14px rgba(57,255,122,0.5);}
   .bstep.done .bstep-dot{background:transparent; color:var(--neon); border-color:var(--neon);}
   .bstep-label{font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.03em; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;}
@@ -663,6 +663,14 @@
   .otp-inline input{flex:1;}
   .otp-inline .btn{padding:10px 16px; font-size:12.5px; white-space:nowrap;}
   .otp-status{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--neon); margin-top:8px; font-family:'JetBrains Mono',monospace;}
+  .bk-otp-row{display:flex; align-items:center; gap:12px; margin-top:10px;}
+  .bk-resend-btn{background:none; border:none; padding:0; color:var(--neon); font-size:12px; font-family:'Inter',sans-serif; font-weight:600; letter-spacing:0.02em; cursor:pointer; transition:opacity .2s ease;}
+  .bk-resend-btn:hover:not(:disabled){text-decoration:underline;}
+  .bk-resend-btn:disabled{opacity:0.4; cursor:default; text-decoration:none;}
+  .bk-resend-timer{font-size:11.5px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .bk-otp-msg{min-height:16px; margin-top:6px; font-size:12px; line-height:1.5; font-family:'Inter',sans-serif;}
+  .bk-otp-msg.ok{color:var(--neon);}
+  .bk-otp-msg.err{color:#ef4444;}
 
   .rc-cal{background:var(--black); border:1px solid var(--border); border-radius:14px; padding:16px; margin:6px 0 18px;}
   .rc-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
@@ -710,21 +718,23 @@
   }
 
   /* booking Date-step calendar — compact sizing (scoped to the hourly booking shell only) */
-  .booking-shell .rc-cal{padding:10px 12px 12px; margin:4px 0 14px;}
+  .booking-shell .rc-cal{padding:10px 6px 12px; margin:16px -24px 14px;}
   .booking-shell .rc-head{margin-bottom:7px; gap:10px;}
   .booking-shell .rc-nav{width:26px; height:26px; border-radius:8px;}
   .booking-shell .rc-nav-group{gap:8px;}
   .booking-shell .rc-nav-group > span{font-size:10.5px;}
-  .booking-shell .rc-grid{gap:3px;}
-  .booking-shell .rc-grid .rc-h{padding-bottom:3px; font-size:9.5px;}
-  .booking-shell .rc-day{border-radius:6px; font-size:11px; aspect-ratio:auto; height:32px;}
+  .booking-shell .rc-grid{grid-template-columns:repeat(7,1fr); column-gap:3px; row-gap:1px;}
+  .booking-shell .rc-grid .rc-h{padding:8px 0 4px; font-size:9.5px;}
+  .booking-shell .rc-day{border-radius:6px; font-size:11px; aspect-ratio:auto; height:30px;}
+  .booking-shell .rc-day.range-edge{width:24px; height:24px; margin:auto; border-radius:7px;}
   @media(max-width:600px){
     .booking-shell .rc-nav{width:34px; height:34px;}
-    .booking-shell .rc-grid{gap:4px;}
+    .booking-shell .rc-grid{column-gap:4px; row-gap:2px;}
     .booking-shell .rc-day{font-size:12px; height:38px;}
+    .booking-shell .rc-day.range-edge{width:26px; height:26px;}
   }
   @media(max-width:900px){
-    .booking-shell .rc-cal{padding:10px 14px 12px;}
+    .booking-shell .rc-cal{padding:10px 8px 12px; margin:16px -14px 14px;}
   }
 
   @media(max-width:900px){
@@ -1417,13 +1427,15 @@
       <div id="bkPane1" class="bk-pane">
         <div class="fm-field" style="margin-bottom:16px;">
           <label>Mobile number</label>
-          <div class="otp-inline"><input type="tel" id="bkMobile" placeholder="98xxx xxxxx"><button class="btn btn-outline magnetic" onclick="bkSendOtp()">Send OTP</button></div>
+          <div class="otp-inline"><input type="tel" id="bkMobile" placeholder="98xxx xxxxx"><button class="btn btn-outline magnetic" id="bkSendOtpBtn" onclick="bkSendOtp()">Send OTP</button></div>
+          <div class="bk-otp-msg" id="bkOtpMsg" style="margin-top:8px;"></div>
         </div>
         <div id="bkOtpBlock" style="display:none; margin-bottom:6px;">
           <div class="fm-field"><label>Enter OTP</label>
-            <div class="otp-inline"><input type="text" id="bkOtp" maxlength="6" placeholder="6-digit code"><button class="btn btn-outline magnetic" onclick="bkVerifyOtp()">Verify OTP</button></div>
+            <div class="otp-inline"><input type="text" id="bkOtp" maxlength="4" placeholder="4-digit code" autocomplete="one-time-code"><button class="btn btn-outline magnetic" id="bkVerifyOtpBtn" onclick="bkVerifyOtp()">Verify OTP</button></div>
           </div>
           <div class="otp-status" id="bkOtpStatus" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg> Number verified</div>
+          <div class="bk-otp-row"><button class="bk-resend-btn" id="bkResendOtpBtn" type="button" onclick="bkResendOtp()" disabled>Resend OTP</button><span class="bk-resend-timer" id="bkResendTimer"></span></div>
         </div>
         <div class="bk-note">Booking actions stay locked until your number is verified.</div>
         <button class="btn btn-glow magnetic" id="bkVerifyContinue" style="width:100%; justify-content:center; margin-top:18px;" disabled onclick="bkGoStep(2)">Continue to date selection →</button>
@@ -1582,16 +1594,9 @@
     <div class="fm-row">
       <div class="fm-field"><label>Name</label><input type="text" id="extName" placeholder="Your full name"><div class="fm-err">Please enter your name.</div></div>
       <div class="fm-field" id="extMobileField"><label>Mobile number</label>
-        <div class="otp-inline"><input type="tel" id="extMobile" placeholder="98xxx xxxxx"><button class="btn btn-outline magnetic" onclick="sendExtOtp()">Send OTP</button></div>
-        <div class="fm-err">Please verify your mobile number.</div>
+        <input type="tel" id="extMobile" placeholder="98xxx xxxxx">
+        <div class="fm-err">Please enter your mobile number.</div>
       </div>
-    </div>
-
-    <div id="extOtpBlock" style="display:none; margin-bottom:16px;">
-      <div class="fm-field" id="extOtpField"><label>Enter OTP</label>
-        <div class="otp-inline"><input type="text" id="extOtp" maxlength="6" placeholder="6-digit code"><button class="btn btn-outline magnetic" onclick="verifyExtOtp()">Verify OTP</button></div>
-      </div>
-      <div class="otp-status" id="extOtpStatus" style="display:none;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg> Number verified</div>
     </div>
 
     <label class="field-label" id="rangeDateLabel">Select date range</label>
@@ -1619,7 +1624,7 @@
 
     <div class="fm-field" style="margin-bottom:22px;"><label>Additional requirements</label><textarea id="extNotes" placeholder="Tournament size, number of teams, catering, anything else we should know..."></textarea></div>
 
-    <button class="btn btn-glow magnetic" id="extSubmitBtn" style="width:100%; justify-content:center;" disabled onclick="submitExtended()">Submit Enquiry</button>
+    <button class="btn btn-glow magnetic" id="extSubmitBtn" style="width:100%; justify-content:center;" onclick="submitExtended()">Submit Enquiry</button>
     <div class="ticket-note" style="text-align:center; margin-top:12px;">Verify your mobile number to enable submission.</div>
   </div>
 </div>
@@ -1807,15 +1812,7 @@
     if(e.key==='Escape'){ document.querySelectorAll('.modal-overlay.open').forEach(ov=>closeModal(ov.id)); }
   });
 
-  // Extended booking OTP flow
-  function sendExtOtp(){ document.getElementById('extOtpBlock').style.display='block'; }
-  function verifyExtOtp(){
-    document.getElementById('extOtpStatus').style.display='flex';
-    document.getElementById('extSubmitBtn').removeAttribute('disabled');
-    setExtendedFieldError('extMobileField', '', false);
-    setExtendedFieldError('extOtpField', '', false);
-  }
-
+  // Extended booking form — mobile number field (no OTP requirement)
   function setExtendedFieldError(idOrField, message, on){
     const field = typeof idOrField === 'string' ? document.getElementById(idOrField) : idOrField;
     if(!field) return;
@@ -1832,11 +1829,12 @@
     }
   }
   function extMobileVerified(){
-    const btn = document.getElementById('extSubmitBtn');
-    return !!(btn && !btn.hasAttribute('disabled'));
+    const m = document.getElementById('extMobile');
+    const v = m ? String(m.value || '').replace(/[^\d]/g, '') : '';
+    return v.length === 10;
   }
   function clearExtendedErrors(){
-    ['extName','extMobileField','extOtpField'].forEach(id => {
+    ['extName','extMobileField'].forEach(id => {
       const el = document.getElementById(id);
       if(el) setExtendedFieldError(el, '', false);
     });
@@ -1846,8 +1844,7 @@
     const nameEmpty = !name || !name.value.trim();
     setExtendedFieldError('extName', 'Please enter your name.', nameEmpty);
     const mobileOk = extMobileVerified();
-    setExtendedFieldError('extMobileField', 'Please verify your mobile number.', !mobileOk);
-    setExtendedFieldError('extOtpField', '', !mobileOk);
+    setExtendedFieldError('extMobileField', 'Please enter a valid mobile number.', !mobileOk);
   }
   (function initExtendedReminder(){
     const extNameInput = document.getElementById('extName');
@@ -1959,6 +1956,7 @@
     } else {
       renderBkCalendar();
     }
+    bkPersist();
   }
 
   // extended range calendar — dynamic month navigation
@@ -2064,16 +2062,13 @@
   renderRangeCalendar();
 
   function resetExtendedBooking(){
-    ['extName','extMobile','extOtp','extNotes'].forEach(id => { const field = document.getElementById(id); if(field) field.value = ''; });
+    ['extName','extMobile','extNotes'].forEach(id => { const field = document.getElementById(id); if(field) field.value = ''; });
     rangeStart = null;
     rangeEnd = null;
     rcYear = calendarYear;
     rcMonth = calendarMonth;
     extendedPreferredTimes = [];
     document.querySelectorAll('#extTimePills .pill').forEach(pill => { pill.classList.remove('sel'); pill.setAttribute('aria-pressed', 'false'); });
-    document.getElementById('extOtpBlock').style.display = 'none';
-    document.getElementById('extOtpStatus').style.display = 'none';
-    document.getElementById('extSubmitBtn').setAttribute('disabled', '');
     clearExtendedErrors();
     renderRangeCalendar();
   }
@@ -2128,10 +2123,351 @@
   let bkActiveSlotPage = 0;
   let bkCurrentStep = 1;
 
-  function bkSendOtp(){ document.getElementById('bkOtpBlock').style.display='block'; }
+  // ===== HOURLY BOOKING — MSG91 OTP (scoped to this step only) =====
+  let bkOtpVerified = false;
+  let bkOtpReqId = null;
+  let bkVerifiedMobile = '';
+  let bkOtpAccessToken = null;
+  let bkOtpCooldownTimer = null;
+  let bkMsg91Ready = false;
+  let bkMsg91Busy = false;
+  let bkOtpCooldownLeft = 0;
+  let bkOtpResendCount = 0;
+  let bkMsg91Inited = false;
+  const bkOtpCooldownSecs = 30;
+  // ============================================================
+  // MSG91 OTP WIDGET CONFIGURATION (Hourly Booking only)
+  // ------------------------------------------------------------
+  // 1. Ensure `widgetId` below matches the widget you created in
+  //    your MSG91 dashboard (OTP -> Create Widget -> your widget).
+  // 2. Paste your REAL MSG91 OTP Widget Token into `tokenAuth`
+  //    (MSG91 -> OTP -> your widget -> Token).
+  //    This is the safe client-side widget Token, NOT your
+  //    account Auth Key. Never commit your private Auth Key here.
+  // 3. tokenAuth holds the real MSG91 OTP Widget Token (safe
+  //    client-side token, NOT the account Auth Key). It cannot be
+  //    emptied or the button stays disabled by design.
+  // ============================================================
+  const bkMsg91Config = { widgetId: '3669636b3053363130373435', tokenAuth: '567261Tfna7ojRBkf6a995ed0P1' };
+
+  // ===== Hourly booking session persistence (survives refresh; cleared on full completion/close) =====
+  const BK_SESSION_KEY = 'bkHourlySession';
+  function bkSer(v){
+    if(v instanceof Date) return { __d: v.toISOString() };
+    if(Array.isArray(v)) return v.map(bkSer);
+    if(v && typeof v === 'object'){ const o = {}; for(const k in v){ if(v[k] !== undefined) o[k] = bkSer(v[k]); } return o; }
+    return v;
+  }
+  function bkDe(p){
+    if(p === null || typeof p !== 'object') return p;
+    if(Array.isArray(p)) return p.map(bkDe);
+    if(typeof p.__d === 'string') return new Date(p.__d);
+    const o = {};
+    for(const k in p){ o[k] = bkDe(p[k]); }
+    return o;
+  }
+  function bkPersist(){
+    try {
+      sessionStorage.setItem(BK_SESSION_KEY, JSON.stringify(bkSer({
+        step: bkCurrentStep,
+        otpVerified: bkOtpVerified,
+        verifiedMobile: bkVerifiedMobile,
+        otpAccessToken: bkOtpAccessToken,
+        mobile: document.getElementById('bkMobile').value || '',
+        calYear: bkCalYear,
+        calMonth: bkCalMonth,
+        multiEnabled: bkMultiEnabled,
+        slotCount: bkSlotCount,
+        activeSlotPage: bkActiveSlotPage,
+        summaryActiveSlot: bkSummaryActiveSlot,
+        durationHours: bkDurationHours,
+        selectedRange: bkSelectedRange,
+        slots: bkSlots,
+        state: bkState
+      })));
+    } catch(e){}
+  }
+  function bkClearSession(){
+    try { sessionStorage.removeItem(BK_SESSION_KEY); } catch(e){}
+  }
+  // ============================================================
+
+  function bkOtpMsg(text, type){
+    const el = document.getElementById('bkOtpMsg');
+    if(!el) return;
+    el.className = 'bk-otp-msg' + (type ? ' ' + type : '');
+    el.textContent = text || '';
+  }
+  function bkStartOtpCooldown(secs){
+    bkOtpCooldownLeft = secs;
+    const btn = document.getElementById('bkResendOtpBtn');
+    const timer = document.getElementById('bkResendTimer');
+    if(btn) btn.disabled = true;
+    if(timer) timer.textContent = 'Resend in ' + secs + 's';
+    clearInterval(bkOtpCooldownTimer);
+    bkOtpCooldownTimer = setInterval(function(){
+      bkOtpCooldownLeft = bkOtpCooldownLeft - 1;
+      if(bkOtpCooldownLeft <= 0){
+        clearInterval(bkOtpCooldownTimer);
+        bkOtpCooldownTimer = null;
+        if(btn) btn.disabled = false;
+        if(timer) timer.textContent = '';
+        return;
+      }
+      if(timer) timer.textContent = 'Resend in ' + bkOtpCooldownLeft + 's';
+    }, 1000);
+  }
+  function bkClearOtpCooldown(){
+    clearInterval(bkOtpCooldownTimer);
+    bkOtpCooldownTimer = null;
+    bkOtpCooldownLeft = 0;
+    const btn = document.getElementById('bkResendOtpBtn');
+    const timer = document.getElementById('bkResendTimer');
+    if(btn) btn.disabled = true;
+    if(timer) timer.textContent = '';
+  }
+  function bkNormalizeMobile(raw){
+    let v = String(raw || '').replace(/[^\d]/g, '');
+    if(v.length === 10) return '91' + v;
+    if(v.length === 12 && v.indexOf('91') === 0) return v;
+    if(v.length === 11 && v.charAt(0) === '0') return '91' + v.slice(1);
+    return v;
+  }
+  function bkIsValidMobileInternational(v){
+    return /^[1-9][0-9]{10,14}$/.test(v);
+  }
+  function bkLoadingMsg91(){
+    const btn = document.getElementById('bkSendOtpBtn');
+    if(btn) btn.disabled = true;
+    bkOtpMsg('OTP service is loading…', 'ok');
+  }
+  function bkInitMsg91(){
+    if(typeof window.initSendOTP !== 'function'){
+      console.error('[MSG91 ERROR] initSendOTP is not defined on window');
+      bkOtpMsg('OTP service failed to initialize. Please try again later.', 'err');
+      return;
+    }
+    if(!bkMsg91Config.tokenAuth){
+      console.error('[MSG91 ERROR] widget token is empty. Set MSG91_WIDGET_TOKEN or supply the widget token.');
+      bkOtpMsg('OTP service is not configured. Please contact support.', 'err');
+      return;
+    }
+    if(bkMsg91Inited) return;
+    bkMsg91Inited = true;
+    try {
+      window.initSendOTP({
+        widgetId: bkMsg91Config.widgetId,
+        tokenAuth: bkMsg91Config.tokenAuth,
+        identifier: '',
+        exposeMethods: true,
+        captchaRenderId: '',
+        success: function(){ },
+        failure: function(error){ console.error('[MSG91 CONFIG FAILURE]', error); }
+      });
+      console.log('[MSG91] widget initialized');
+      bkWaitMsg91Ready(function(){
+        console.log('[MSG91] sendOtp function:', typeof window.sendOtp);
+        console.log('[MSG91] verifyOtp function:', typeof window.verifyOtp);
+        console.log('[MSG91] retryOtp function:', typeof window.retryOtp);
+        console.log('[MSG91] getWidgetData function:', typeof window.getWidgetData);
+        console.log('[MSG91] isCaptchaVerified function:', typeof window.isCaptchaVerified);
+        if(typeof window.getWidgetData === 'function'){
+          try { console.log('[MSG91] widgetData:', window.getWidgetData()); } catch(e){ console.error('[MSG91 ERROR] getWidgetData threw', e); }
+        }
+        if(typeof window.isCaptchaVerified === 'function'){
+          try { console.log('[MSG91] Captcha verified:', window.isCaptchaVerified()); } catch(e){ console.error('[MSG91 ERROR] isCaptchaVerified threw', e); }
+        }
+        const sendBtn = document.getElementById('bkSendOtpBtn');
+        if(sendBtn) sendBtn.disabled = false;
+      });
+    } catch(error){
+      console.error('[MSG91 ERROR] init threw', error);
+    }
+  }
+  var bkMsg91PollTimer = null;
+  var bkPendingSend = null;
+  function bkWaitMsg91Ready(cb, silent){
+    if(bkMsg91Ready && typeof window.sendOtp === 'function' && typeof window.verifyOtp === 'function'){ if(cb) cb(); return; }
+    if(bkMsg91PollTimer){ if(!bkPendingSend && cb) bkPendingSend = cb; return; }
+    var tries = 0;
+    bkMsg91PollTimer = setInterval(function(){
+      tries++;
+      if(typeof window.sendOtp === 'function' && typeof window.verifyOtp === 'function'){
+        clearInterval(bkMsg91PollTimer); bkMsg91PollTimer = null;
+        bkMsg91Ready = true;
+        console.log('[MSG91] methods now exposed: sendOtp=' + typeof window.sendOtp + ', verifyOtp=' + typeof window.verifyOtp + ', retryOtp=' + typeof window.retryOtp);
+        if(cb) cb();
+        if(bkPendingSend){ var p = bkPendingSend; bkPendingSend = null; p(); }
+        return;
+      }
+      if(tries > 60){
+        clearInterval(bkMsg91PollTimer); bkMsg91PollTimer = null;
+        bkPendingSend = null;
+        console.error('[MSG91 ERROR] MSG91 methods were not exposed within ~12s. Check that this widget is a Custom UI widget with exposeMethods enabled.');
+        bkOtpMsg('OTP service could not initialize. Ensure the MSG91 widget is the Custom UI type (exposeMethods).', 'err');
+      }
+    }, 200);
+  }
+  (function bkLoadMsg91(){
+    if(!bkMsg91Config.tokenAuth){
+      console.error('[MSG91 ERROR] widget token is empty. AH: please paste your real MSG91 OTP Widget Token into bkMsg91Config.tokenAuth.');
+      const btn = document.getElementById('bkSendOtpBtn');
+      if(btn) btn.disabled = true;
+      bkOtpMsg('OTP service is not configured yet. Set the widget token to enable OTP.', 'err');
+      return;
+    }
+    console.log('[MSG91] script loaded, initializing');
+    const s = document.createElement('script');
+    s.src = 'https://verify.msg91.com/otp-provider.js';
+    s.async = true;
+    s.onload = function(){ console.log('[MSG91] script loaded'); bkInitMsg91(); };
+    s.onerror = function(){ console.error('[MSG91 ERROR] failed to load provider script'); const btn = document.getElementById('bkSendOtpBtn'); if(btn) btn.disabled = true; bkOtpMsg('OTP service could not be loaded. Please try again later.', 'err'); };
+    document.head.appendChild(s);
+  })();
+
+  function bkSendOtp(){
+    if(bkOtpVerified){ return; }
+    const btn = document.getElementById('bkSendOtpBtn');
+    const mobileRaw = document.getElementById('bkMobile').value || '';
+    if(!mobileRaw.trim()){ bkOtpMsg('Please enter your mobile number.', 'err'); return; }
+    const normal = bkNormalizeMobile(mobileRaw);
+    if(!bkIsValidMobileInternational(normal)){ bkOtpMsg('Please enter a valid 10-digit mobile number.', 'err'); return; }
+    if(bkMsg91Busy) return;
+    if(typeof window.isCaptchaVerified === 'function'){
+      try { console.log('[MSG91] captcha verified state:', window.isCaptchaVerified()); } catch(e){ console.error('[MSG91 ERROR] captcha check threw', e); }
+    }
+    bkMsg91Busy = true;
+    if(btn) btn.disabled = true;
+    console.log('[MSG91] sending OTP to:', normal);
+    if(typeof window.sendOtp !== 'function'){
+      bkWaitMsg91Ready(function(){ bkDoSendOtp(normal); });
+      return;
+    }
+    bkDoSendOtp(normal);
+  }
+  function bkDoSendOtp(normal2){
+    const btn = document.getElementById('bkSendOtpBtn');
+    if(typeof window.sendOtp !== 'function'){ bkOtpMsg('OTP service is not ready. Please resend.', 'err'); if(btn) btn.disabled = false; return; }
+    bkMsg91Busy = true;
+    if(btn) btn.disabled = true;
+    bkOtpMsg('Sending OTP…', 'ok');
+    console.log('[MSG91] dispatch sendOtp to:', normal2);
+    try {
+    window.sendOtp(
+      normal2,
+        function(res){
+          bkMsg91Busy = false;
+          console.log('[MSG91] send response:', res);
+          const reqId = (res && (res.reqId || res.requestId || res.msgId || res.message)) || (res && res.data && (res.data.reqId || res.data.requestId || res.data.message)) || null;
+          bkOtpReqId = reqId;
+          console.log('[MSG91] captured reqId:', reqId);
+          bkOtpResendCount = 0;
+          document.getElementById('bkOtpBlock').style.display = 'block';
+          document.getElementById('bkOtp').focus();
+          bkStartOtpCooldown(bkOtpCooldownSecs);
+          if(btn) btn.disabled = false;
+          bkOtpMsg('OTP sent successfully. Enter the code to continue.', 'ok');
+        },
+        function(error){
+          bkMsg91Busy = false;
+          if(btn) btn.disabled = false;
+          console.error('[MSG91] send failure:', error);
+          bkOtpMsg(bkMsg91ReadableError(error, 'Could not send OTP. Please check your number and try again.'), 'err');
+        }
+      );
+    } catch(error){
+      bkMsg91Busy = false;
+      if(btn) btn.disabled = false;
+      console.error('[MSG91] send threw:', error);
+      bkOtpMsg('OTP service error. Please try again.', 'err');
+    }
+  }
+  function bkMsg91ReadableError(error, fallback){
+    try {
+      if(!error) return fallback;
+      if(typeof error === 'string') return error;
+      const msg = error && (error.message || error.description || (error.data && (error.data.message || error.data.description)));
+      return (msg && String(msg).trim()) ? String(msg) : fallback;
+    } catch(e){ return fallback; }
+  }
+
   function bkVerifyOtp(){
-    document.getElementById('bkOtpStatus').style.display='flex';
-    document.getElementById('bkVerifyContinue').removeAttribute('disabled');
+    if(!bkOtpReqId && typeof window.verifyOtp === 'function'){ bkOtpMsg('Please send an OTP first.', 'err'); return; }
+    const otpValue = (document.getElementById('bkOtp').value || '').replace(/\D/g, '');
+    if(otpValue.length < 4){ bkOtpMsg('Please enter the OTP you received.', 'err'); return; }
+    if(bkMsg91Busy) return;
+    if(bkOtpVerified) return;
+    if(typeof window.verifyOtp !== 'function'){ bkOtpMsg('OTP service is not ready. Please resend the OTP.', 'err'); return; }
+    const verifyBtn = document.getElementById('bkVerifyOtpBtn');
+    bkMsg91Busy = true;
+    if(verifyBtn) verifyBtn.disabled = true;
+    bkOtpMsg('Verifying…', 'ok');
+    try {
+      window.verifyOtp(
+        otpValue,
+        function(data){
+          bkMsg91Busy = false;
+          if(verifyBtn) verifyBtn.disabled = false;
+          console.log('[MSG91] verify success:', data);
+          bkOtpVerified = true;
+          bkOtpAccessToken = (data && (data.token || data.accessToken || data.jwt || data.access_token)) || null;
+          bkVerifiedMobile = bkNormalizeMobile(document.getElementById('bkMobile').value || '');
+          document.getElementById('bkOtpStatus').style.display = 'flex';
+          document.getElementById('bkVerifyContinue').removeAttribute('disabled');
+          bkClearOtpCooldown();
+          bkOtpMsg('Number verified.', 'ok');
+          bkPersist();
+        },
+        function(error){
+          bkMsg91Busy = false;
+          if(verifyBtn) verifyBtn.disabled = false;
+          console.error('[MSG91] verify failure:', error);
+          bkOtpMsg('Invalid or expired OTP. Please try again.', 'err');
+        },
+        bkOtpReqId
+      );
+    } catch(error){
+      bkMsg91Busy = false;
+      if(verifyBtn) verifyBtn.disabled = false;
+      console.error('MSG91 verifyOtp threw', error);
+      bkOtpMsg('Verification error. Please resend the OTP and try again.', 'err');
+    }
+  }
+
+  function bkResendOtp(){
+    if(bkOtpVerified) return;
+    if(bkOtpCooldownLeft > 0) return;
+    if(bkMsg91Busy) return;
+    if(bkOtpResendCount >= 3){ bkOtpMsg('Resend limit reached. Please send OTP again.', 'err'); return; }
+    const btn = document.getElementById('bkResendOtpBtn');
+    if(typeof window.retryOtp !== 'function'){ bkOtpMsg('OTP service is not ready. Please try again.', 'err'); return; }
+    bkMsg91Busy = true;
+    if(btn) btn.disabled = true;
+    bkOtpMsg('Resending OTP…', 'ok');
+    try {
+      window.retryOtp(
+        '11',
+        function(data){
+          bkMsg91Busy = false;
+          console.log('[MSG91] retry success:', data);
+          bkOtpResendCount = bkOtpResendCount + 1;
+          bkStartOtpCooldown(bkOtpCooldownSecs);
+          bkOtpMsg('OTP resent. Check your phone.', 'ok');
+        },
+        function(error){
+          bkMsg91Busy = false;
+          if(btn) btn.disabled = false;
+          console.error('[MSG91] retry failure:', error);
+          bkOtpMsg('Could not resend OTP. Please try again.', 'err');
+        },
+        bkOtpReqId
+      );
+    } catch(error){
+      bkMsg91Busy = false;
+      if(btn) btn.disabled = false;
+      console.error('MSG91 retryOtp threw', error);
+      bkOtpMsg('Resend error. Please try again.', 'err');
+    }
   }
 
   function bkGoStep(n){
@@ -2148,6 +2484,7 @@
     if(n===4){ if(bkMultiEnabled) renderMultiSlotArea(); else renderAvailableTimeRanges(); }
     if(n===5) bkFillSummary();
     if(n===6) bkFillPayment();
+    bkPersist();
   }
   function bkGoBack(){
     if(bkCurrentStep > 1) bkGoStep(bkCurrentStep - 1);
@@ -2238,6 +2575,7 @@
     document.getElementById('bkTimeContinue').removeAttribute('disabled');
     bkSetAddSlotBtn(true);
     document.getElementById('bkTimeHint').textContent = `${bkState.start} → ${bkState.end} selected.`;
+    bkPersist();
   }
   function renderAvailableTimeRanges(){
     const multiArea = document.getElementById('bkMultiSlotArea');
@@ -2676,6 +3014,20 @@
     bkState = { date:null, dateLabel:'', duration:0, start:null, end:null, selectedRange:null };
     bkDurationHours = 0; bkSelectedRange = null; bkSlots = []; bkAddingSlot = false;
     bkMultiEnabled = false; bkSlotCount = 2; bkActiveSlotPage = 0;
+    bkOtpVerified = false;
+    bkOtpReqId = null;
+    bkVerifiedMobile = '';
+    bkOtpAccessToken = null;
+    bkMsg91Busy = false;
+    bkOtpResendCount = 0;
+    bkClearOtpCooldown();
+    bkOtpMsg('');
+    const sendOtpBtn = document.getElementById('bkSendOtpBtn');
+    if(sendOtpBtn){ sendOtpBtn.disabled = !(bkMsg91Ready || typeof window.sendOtp === 'function'); }
+    const verifyOtpBtn = document.getElementById('bkVerifyOtpBtn');
+    if(verifyOtpBtn) verifyOtpBtn.disabled = false;
+    const resendOtpBtn = document.getElementById('bkResendOtpBtn');
+    if(resendOtpBtn) resendOtpBtn.disabled = true;
     const multiToggle = document.getElementById('bkMultiToggle');
     if(multiToggle) multiToggle.checked = false;
     const multiPanel = document.getElementById('bkMultiPanel');
