@@ -133,6 +133,7 @@
   @keyframes radarPing{0%{transform:scale(0.5); opacity:1;} 100%{transform:scale(2.6); opacity:0;}}
   .pin-tip{position:absolute; bottom:28px; left:50%; transform:translateX(-50%) translateY(6px); width:210px; background:var(--charcoal); border:1px solid var(--border); border-radius:12px; padding:14px 16px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:3;}
   .pin:hover,.pin.active{z-index:10;}
+  .pin--top .pin-tip{top:28px; bottom:auto;}
   .pin:hover .pin-tip, .pin.active .pin-tip{opacity:1; transform:translateX(-50%) translateY(0);}
   .pin-tip .tnum{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--neon);}
   .pin-tip h4{font-size:13px; margin:4px 0 4px;}
@@ -1047,7 +1048,7 @@
       <div class="pin pin--mid" style="top:55%; left:48%;">
         <div class="pin-tip"><div class="tnum">02</div><h4>Anti-slip surface</h4><p>Textured synthetic fibers hold grip through sweat and rain.</p></div>
       </div>
-      <div class="pin pin--edge-right" style="top:22%; left:72%;">
+      <div class="pin pin--edge-right pin--top" style="top:22%; left:72%;">
         <div class="pin-tip"><div class="tnum">03</div><h4>Boundary lighting</h4><p>Edge-mounted floods keep sidelines as bright as center pitch.</p></div>
       </div>
       <div class="pin pin--edge-right pin--bottom" style="top:72%; left:78%;">
