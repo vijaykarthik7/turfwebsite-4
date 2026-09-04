@@ -451,10 +451,14 @@
   @keyframes qrReveal{from{opacity:0; transform:scale(0.92);} to{opacity:1; transform:scale(1);}}
   .qr-glow-border{position:absolute; inset:0; border-radius:20px; padding:1px; background:linear-gradient(120deg,var(--neon),var(--blue),var(--neon)); background-size:200% 200%; animation:borderflow 4s linear infinite; -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;}
   @keyframes borderflow{0%{background-position:0% 50%;} 100%{background-position:200% 50%;}}
-  .qr-box{width:170px; height:170px; margin:18px auto; border-radius:12px; background:var(--white); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .qr-box{width:min(320px,100%); height:min(320px,100%); aspect-ratio:1; margin:24px auto; border-radius:16px; background:var(--white); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;}
   .dynamic-qr{display:none; width:100%; height:100%; padding:10px; object-fit:contain; image-rendering:pixelated;}
-  .payment-actions{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:20px;}
-  .payment-actions .btn{justify-content:center; flex:1 1 150px;}
+  .payment-actions{display:flex; gap:8px; justify-content:center; margin-top:20px;}
+  .payment-actions .btn{justify-content:center; width:100%;}
+  .bk-payment-details{display:none;}
+  .bk-pay-total{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:420px; margin:18px auto 0; padding:14px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); color:var(--muted); font-size:14px;}
+  .bk-pay-total strong{color:var(--neon); font:600 20px 'JetBrains Mono',monospace;}
+  @media(max-width:900px){.qr-box{width:min(320px,100%); margin-left:auto; margin-right:auto;}.bk-pay-total{width:100%;}}
   .payment-pending{font-size:12px; color:var(--muted); line-height:1.5; margin-top:14px;}
   .qr-box .scan-line{position:absolute; left:0; right:0; height:3px; background:linear-gradient(90deg,transparent,var(--neon),transparent); animation:scanLine 2.2s ease-in-out infinite;}
   @keyframes scanLine{0%{top:0;} 50%{top:96%;} 100%{top:0;}}
@@ -1188,16 +1192,16 @@
           <div class="qr-box"><img id="bkQrImage" class="dynamic-qr" alt="Dynamic UPI payment QR code"><span id="bkQrStatus" style="font-size:11px; color:#111; font-family:'JetBrains Mono',monospace;">Generating QR...</span></div>
           <p style="font-size:13px; color:var(--muted); margin-bottom:6px;">Please scan the QR Code using any UPI application to complete your payment.</p>
           <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>turfon24@okaxis</p>
-          <div style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
+          <div class="bk-pay-total"><span>Total amount</span><strong id="bkPayTotal">Preparing...</strong></div>
+          <div class="bk-payment-details" style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
             <div style="display:flex; justify-content:space-between;"><span>Date</span><span class="mono" style="color:var(--white);" id="bkPayDate">—</span></div>
             <div style="display:flex; justify-content:space-between;"><span>Start Time</span><span class="mono" style="color:var(--white);" id="bkPayTime">—</span></div>
             <div style="display:flex; justify-content:space-between;"><span>End Time</span><span class="mono" style="color:var(--white);" id="bkPayEnd">—</span></div>
             <div style="display:flex; justify-content:space-between;"><span>Duration</span><span class="mono" style="color:var(--white);" id="bkPayDur">—</span></div>
             <div style="display:flex; justify-content:space-between; font-weight:600;"><span>Amount</span><span class="mono" style="color:var(--neon);" id="bkPayAmt">—</span></div>
           </div>
-          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="openUpiAppPicker(event)">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
-          <p class="payment-pending" id="bkPaymentStatus">Payment pending. Scan the QR and complete payment in your UPI app.</p>
-          <button class="btn btn-glow" id="bkCompletePaymentButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="bkCompletePayment()">I have completed my payment</button>
+          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="payNow(event)">Pay Now</a></div>
+          <p class="payment-pending" id="bkPaymentStatus" style="display:none;">Payment pending. Scan the QR and complete payment in your UPI app.</p>
         </div>
       </div>
     </div>
@@ -1240,9 +1244,10 @@
     <button class="modal-close" onclick="bkFinishPayment()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     <canvas id="paymentConfettiCanvas" style="position:absolute; inset:0; z-index:1; pointer-events:none;"></canvas>
     <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg></div>
-    <h3>Payment Request Submitted Successfully</h3>
-    <p>Thank you for completing your payment. Your booking request has been received successfully. Our team will verify your payment and contact you soon to confirm your booking.</p>
-    <button class="btn btn-glow magnetic" onclick="bkFinishPayment()">Close</button>
+    <h3>Payment Confirmation</h3>
+    <p style="font-size:20px; color:var(--white); font-weight:600;">I have completed the payment</p>
+    <p>After clicking, our team will verify your payment.</p>
+    <button class="btn btn-glow magnetic" onclick="bkFinishPayment()">I HAVE PAID</button>
   </div>
 </div>
 
@@ -1539,6 +1544,7 @@
   }
 
   let paymentSession = null;
+  let paymentAppLeftPage = false;
   async function createPaymentSession(type, details){
     const response = await fetch('/api/payment/create', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type, ...details}) });
     if(!response.ok) throw new Error((await response.json().catch(()=>({}))).message || 'Payment setup failed');
@@ -1724,9 +1730,11 @@
     document.getElementById('bkPayEnd').textContent = bkState.end || '—';
     document.getElementById('bkPayDur').textContent = bkDurationLabel();
     document.getElementById('bkPayAmt').textContent = 'Preparing…';
+    document.getElementById('bkPayTotal').textContent = 'Preparing…';
     try {
       const session = await requestPaymentSession('hourly', {hours:bkDuration(), startTime:bkState.start, endTime:bkState.end, duration:bkDuration(), date:bkState.dateLabel});
       document.getElementById('bkPayAmt').textContent = formatAmount(session.amount);
+      document.getElementById('bkPayTotal').textContent = formatAmount(session.amount);
       await showPayment(session, 'bkQrImage', 'bkQrStatus', 'bkPayApp');
     } catch (error) {
       document.getElementById('bkPaymentStatus').textContent = error.message;
@@ -1741,6 +1749,22 @@
     if(event && event.preventDefault) event.preventDefault();
     if(!paymentSession) return;
     openModal('upiAppModal');
+  }
+  function payNow(event){
+    if(event && event.preventDefault) event.preventDefault();
+    if(!paymentSession?.upiUri) return;
+    paymentAppLeftPage = false;
+    const handlePaymentReturn = ()=>{
+      if(document.visibilityState === 'hidden'){
+        paymentAppLeftPage = true;
+      } else if(paymentAppLeftPage){
+        paymentAppLeftPage = false;
+        document.removeEventListener('visibilitychange', handlePaymentReturn);
+        bkCompletePayment();
+      }
+    };
+    document.addEventListener('visibilitychange', handlePaymentReturn);
+    window.location.href = paymentSession.upiUri;
   }
   function payWithUpiApp(app){
     closeModal('upiAppModal');
@@ -1797,11 +1821,13 @@
     document.getElementById('bkPayEnd').textContent = '—';
     document.getElementById('bkPayDur').textContent = '—';
     document.getElementById('bkPayAmt').textContent = '—';
+    document.getElementById('bkPayTotal').textContent = '—';
     const completeBtn = document.getElementById('bkCompletePaymentButton');
     if(completeBtn){ completeBtn.disabled = false; completeBtn.textContent = 'I have completed my payment'; }
     const payStatus = document.getElementById('bkPaymentStatus');
     if(payStatus) payStatus.textContent = 'Payment pending. Scan the QR and complete payment in your UPI app.';
     paymentSession = null;
+    paymentAppLeftPage = false;
   }
   function bkFinishPayment(){
     closeModal('paymentConfirmModal');
