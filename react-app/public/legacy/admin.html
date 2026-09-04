@@ -450,12 +450,23 @@
     .history-switch{width:100%;}
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
     /* Admin Calendar — use the available mobile width for medium square tiles */
-    #page-calendar{padding:12px;}
-    #page-calendar .panel{padding:16px 12px;}
+    #page-calendar{padding:10px 8px 24px;}
+    #page-calendar .panel{padding:16px 12px 20px; border-radius:16px;}
     #page-calendar .cal-head{gap:8px;}
     #page-calendar .cal-head h3{font-size:16px;}
     #page-calendar .cal-nav{width:34px; height:34px;}
-    .cal-grid2{grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px;}
+    .cal-grid2{grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px;}
+    .cal-cell{min-height:52px; padding:0; display:flex; align-items:center; justify-content:center; font-size:13px;}
+    .cal-cell .cnt{right:4px; bottom:4px; font-size:8px; padding:2px 4px;}
+    #page-calendar .cal-details{margin:0;}
+    #page-calendar .cal-details-head{gap:10px; margin-bottom:14px;}
+    #page-calendar .cal-details-head h3{order:2; flex:1 1 calc(100% - 50px); font-size:17px;}
+    #page-calendar .cal-back{order:1; width:38px; height:34px; padding:0; justify-content:center; font-size:0;}
+    #page-calendar .cal-back svg{width:16px; height:16px;}
+    #page-calendar .cal-detail-count{order:3; flex:1 1 100%; margin-left:48px; margin-top:-4px; width:max-content;}
+    #page-calendar .cal-book-list{max-height:none; margin:0; padding:0;}
+    #page-calendar .cal-book-card{padding:14px 12px; margin-bottom:10px; border-radius:12px;}
+    #page-calendar .cal-book-card .detail-row{font-size:12px; padding:9px 0;}
     .cal-cell{display:flex; align-items:center; justify-content:center; align-self:start; min-height:0; padding:0; font-size:14px;}
     .cal-cell .cnt{position:absolute; bottom:4px; right:4px; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
     .analytics-summary{grid-template-columns:1fr 1fr;}
@@ -2297,19 +2308,23 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     document.getElementById('calDetailCount').textContent = list.length ? countLabel : 'No bookings';
     if(list.length){
       document.getElementById('calDetailBody').innerHTML =
-        '<div class="cal-book-list">' +
-        list.map(function(b, idx){
-          return '<div class="cal-book-card">' +
-            '<div class="who"><span class="num">' + (idx + 1) + '</span><b>' + b[1] + '</b></div>' +
-            '<div class="detail-row"><span>Booking ID</span><span class="mono">' + b[0] + '</span></div>' +
-            '<div class="detail-row"><span>Mobile</span><span class="mono">' + b[2] + '</span></div>' +
-            '<div class="detail-row"><span>Time</span><span>' + b[4] + '</span></div>' +
-            '<div class="detail-row"><span>Duration</span><span>' + b[5] + '</span></div>' +
-            '<div class="detail-row"><span>Amount</span><span class="mono">' + b[6] + '</span></div>' +
-            '<div class="detail-row"><span>Booking status</span><span class="badge ' + b[8] + '">' + bstatusLbl[b[8]] + '</span></div>' +
-          '</div>';
+        '<div class="table-wrap cal-detail-table-wrap"><table>' +
+        '<thead><tr><th>Booking ID</th><th>Customer</th><th>Mobile</th><th>Date</th><th>Time</th><th>Duration</th><th>Amount</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>' +
+        '<tbody>' + list.map(function(b){
+          return '<tr>' +
+            '<td class="mono">' + b[0] + '</td>' +
+            '<td>' + b[1] + '</td>' +
+            '<td class="mono">' + b[2] + '</td>' +
+            '<td>' + b[3] + '</td>' +
+            '<td>' + b[4] + '</td>' +
+            '<td>' + b[5] + '</td>' +
+            '<td class="mono">' + b[6] + '</td>' +
+            '<td><span class="badge ' + b[7] + '">' + pstatusLbl[b[7]] + '</span></td>' +
+            '<td><span class="badge ' + b[8] + '">' + bstatusLbl[b[8]] + '</span></td>' +
+            '<td><div class="row-actions"><button onclick=\'openBookingDetail(' + JSON.stringify(b) + ')\' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>' +
+          '</tr>';
         }).join('') +
-        '</div>';
+        '</tbody></table></div>';
     } else {
       document.getElementById('calDetailBody').innerHTML = '<div class="cal-empty">No bookings for this date.</div>';
     }
