@@ -266,7 +266,8 @@
   .fgroup{margin-bottom:18px;}
   .fgroup.full{grid-column:1 / -1;}
   .profile-picture{display:flex; align-items:center; gap:16px; margin-bottom:22px;}
-  .profile-picture-preview{width:76px; height:76px; border-radius:50%; object-fit:cover; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--white); font-size:24px; font-weight:700; background:linear-gradient(135deg,var(--blue),var(--emerald)); border:1px solid var(--border);}
+  .profile-picture-preview{width:76px; height:76px; border-radius:50%; object-fit:cover; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--white); font-size:24px; font-weight:700; background:transparent; border:1px solid var(--border); overflow:hidden;}
+  .profile-picture-preview img{width:100% !important; height:100% !important; object-fit:contain; border-radius:50%; display:block; transform:scale(1.1);}
   .profile-picture-actions input{display:none;}
   .profile-picture-actions label{display:inline-flex; padding:10px 14px; border:1px solid var(--border); border-radius:8px; color:var(--white); cursor:pointer; font-size:12px;}
   .profile-picture-actions label:hover{border-color:var(--neon); color:var(--neon);}
@@ -538,7 +539,7 @@
       <div class="nav-item" data-page="calendar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="nav-label">Calendar</span></div>
       <div class="nav-item" data-page="payments"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 9h5M17 9h5"/></svg><span class="nav-label">Payment Received</span></div>
       <div class="nav-item" data-page="whatsapp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg><span class="nav-label">WhatsApp Enquiries</span></div>
-      <div class="nav-item" data-page="chatbot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Chatbot Conversations</span><span class="nav-notice" title="New chat conversation"></span></div>
+      <div class="nav-item" data-page="chatbot"><img class="nav-icon" src="/logo-assets/LogoWater.png" alt="Chatbot" style="width:18px;height:18px;object-fit:contain;flex-shrink:0;"><span class="nav-label">Chatbot Conversations</span><span class="nav-notice" title="New chat conversation"></span></div>
       <div class="nav-divider"></div>
       <div class="nav-item" data-page="settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V19a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.5V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.5 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span class="nav-label">Website Settings</span></div>
       <div class="nav-item" data-page="profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="nav-label">Profile</span></div>
@@ -565,6 +566,10 @@
               <div class="notification-item unread" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg></span><span class="notification-copy"><strong>Extended booking</strong><span>Tournament enquiry received for a weekend booking.</span><span class="notification-time">18 min ago</span></span><span class="notification-dot"></span></div>
               <div class="notification-item unread" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg></span><span class="notification-copy"><strong>WhatsApp enquiry</strong><span>New availability question from Priya on WhatsApp.</span><span class="notification-time">32 min ago</span></span><span class="notification-dot"></span></div>
               <div class="notification-item unread" data-notification-type="chat" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg></span><span class="notification-copy"><strong>AI chat</strong><span>A visitor asked about today's available time slots.</span><span class="notification-time">45 min ago</span></span><span class="notification-dot"></span></div>
+              <div class="notification-item unread" data-notification-type="booking" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><span class="notification-copy"><strong>Payment verified</strong><span>Payment of ₹2,100 verified against booking #BK1040.</span><span class="notification-time">1 hr ago</span></span><span class="notification-dot"></span></div>
+              <div class="notification-item" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/></svg></span><span class="notification-copy"><strong>Booking cancelled</strong><span>Booking #BK1039 was cancelled by the customer.</span><span class="notification-time">3 hrs ago</span></span></div>
+              <div class="notification-item" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg></span><span class="notification-copy"><strong>WhatsApp enquiry</strong><span>Kabir Nair asked about hosting a corporate tournament.</span><span class="notification-time">7 hrs ago</span></span></div>
+              <div class="notification-item" onclick="markNotificationRead(this)"><span class="notification-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg></span><span class="notification-copy"><strong>AI chat</strong><span>Karan Mehta asked about hourly pricing options.</span><span class="notification-time">Yesterday</span></span></div>
             </div>
           </div>
         </div>
@@ -1040,10 +1045,13 @@
   }
   loadWebsiteSettings();
   const PROFILE_PICTURE_KEY = 'turfon24-admin-profile-picture';
+  const PROFILE_PICTURE_SOURCE = '/logo-assets/LogoWater.png';
   function applyProfilePicture(source){
     const preview = document.getElementById('profilePicturePreview');
     const injectedAvatar = document.querySelector('.side-foot .admin-profile-avatar');
-    document.querySelectorAll('.side-foot .avatar, #profilePicturePreview').forEach(avatar => {
+    const previewImage = preview?.querySelector('img');
+    if(previewImage) previewImage.src = source;
+    document.querySelectorAll('.side-foot .avatar').forEach(avatar => {
       avatar.textContent = '';
       avatar.style.backgroundImage = `url(${source})`;
       avatar.style.backgroundSize = 'cover';
@@ -1063,8 +1071,8 @@
     if(savedProfilePicture) applyProfilePicture(savedProfilePicture);
     showToast('Profile updated');
   }
-  const savedProfilePicture = localStorage.getItem(PROFILE_PICTURE_KEY);
-  if(savedProfilePicture) applyProfilePicture(savedProfilePicture);
+  localStorage.removeItem(PROFILE_PICTURE_KEY);
+  applyProfilePicture(PROFILE_PICTURE_SOURCE);
   document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
     item.addEventListener('click', ()=>{
       document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1196,10 +1204,19 @@
     var amts=['₹800','₹1,200','₹1,400','₹1,600','₹2,100','₹2,400','₹2,800'];
     var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var months=[
-      [0,2026,[5,12,20]],[1,2026,[3,14,22]],[2,2026,[7,15,25]],[3,2026,[4,11,19]],
-      [4,2026,[6,13,21]],[5,2026,[2,10,18]],[6,2026,[8,16,24]],
-      [8,2026,[3,11,19]],[9,2026,[5,12,26]],[10,2026,[4,13,21]],[11,2026,[6,15,24]],
-      [0,2027,[7,14,21]]
+      [0,2026,[3,6,9,12,15,18,21,24]],
+      [1,2026,[2,5,8,11,14,17,20,23]],
+      [2,2026,[1,4,7,10,13,16,19,22,25]],
+      [3,2026,[2,5,8,11,14,17,20,23]],
+      [4,2026,[3,6,9,12,15,18,21,24]],
+      [5,2026,[1,4,7,10,13,16,19,22]],
+      [6,2026,[2,5,8,11,14,17,20,23,26]],
+      [7,2026,[3,6,9,12,15,18,21,24,27]],
+      [8,2026,[1,4,7,10,13,16,19,22,25,28]],
+      [9,2026,[2,5,8,11,14,17,20,23]],
+      [10,2026,[3,6,9,12,15,18,21,24]],
+      [11,2026,[1,4,7,10,13,16,19,22]],
+      [0,2027,[2,4,7,9,14,16,18,21,24]]
     ];
     var id=2000;
     months.forEach(function(mo){
@@ -1207,7 +1224,7 @@
       days.forEach(function(d){
         var iso=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
         var disp=ms[m]+' '+d;
-        for(var b=0;b<2;b++){
+        for(var b=0;b<5;b++){
           var n=pool[(id+b)%pool.length];
           var t=times[(id*3+b*7)%times.length];
           var dur=durs[(id*2+b*5)%durs.length];
@@ -1383,6 +1400,11 @@
     ['Extended enquiry received from Priya Nair', '1 hr ago'],
     ['Booking #BK1039 cancelled by customer', '3 hrs ago'],
     ['New customer registered — Aditya Rao', '5 hrs ago'],
+    ['WhatsApp enquiry from Kabir Nair about tournament hosting', '7 hrs ago'],
+    ['Payment of ₹2,100 verified for booking #BK1040', '9 hrs ago'],
+    ['New chatbot conversation — Karan Mehta asked about pricing', '11 hrs ago'],
+    ['Booking #BK1038 confirmed by admin', 'Yesterday, 06:00 AM'],
+    ['Extended enquiry from Sunrise FC Academy confirmed', 'Yesterday, 02:00 PM'],
   ];
   document.getElementById('activityList').innerHTML = activity.map(a=>`<div class="activity-row"><span class="adot"></span>${a[0]}<span class="atime">${a[1]}</span></div>`).join('');
 
@@ -1420,6 +1442,16 @@
     ['EQ202','Manav Iyer','97654 33221','Sep 5','Sep 6','2','Night','Quotation Sent','2026-09-05','2026-09-06'],
     ['EQ201','Weekend Warriors Club','96500 44332','Aug 22','Aug 24','3','Evening','Confirmed','2026-08-22','2026-08-24'],
     ['EQ200','Riya Kapoor','95400 55667','Aug 15','Aug 16','2','Morning','Closed','2026-08-15','2026-08-16'],
+    ['EQ199','Kabir Nair','94300 22110','Sep 10','Sep 11','2','Evening','New','2026-09-10','2026-09-11'],
+    ['EQ198','St. Mary\'s College','93200 99887','Sep 12','Sep 14','3','Morning','Contacted','2026-09-12','2026-09-14'],
+    ['EQ197','Nisha Joshi','92100 44332','Sep 15','Sep 16','2','Night','New','2026-09-15','2026-09-16'],
+    ['EQ196','Sunrise FC Academy','96500 44321','Sep 18','Sep 20','3','Evening','Quotation Sent','2026-09-18','2026-09-20'],
+    ['EQ195','Rohit Malhotra','91000 11223','Aug 10','Aug 11','2','Morning','Confirmed','2026-08-10','2026-08-11'],
+    ['EQ194','City Youth Club','90800 55664','Jul 28','Jul 29','2','Night','Closed','2026-07-28','2026-07-29'],
+    ['EQ193','Ananya Iyer','90700 33221','Jul 18','Jul 19','2','Evening','Confirmed','2026-07-18','2026-07-19'],
+    ['EQ192','IIM Sports Society','90600 99887','Jul 05','Jul 07','3','Morning','Contacted','2026-07-05','2026-07-07'],
+    ['EQ191','Zara Khan','90500 44332','Jun 26','Jun 27','2','Night','Closed','2026-06-26','2026-06-27'],
+    ['EQ190','Aakash Jain','90400 22331','Jun 14','Jun 15','2','Evening','Confirmed','2026-06-14','2026-06-15'],
   ];
   const enqBadge = {'New':'verified','Contacted':'pending','Quotation Sent':'pending','Confirmed':'confirmed','Closed':'cancelled'};
   document.getElementById('enquiriesBody').innerHTML = enquiries.map(e=>`
@@ -1435,6 +1467,15 @@
     ['Rahul Verma','98765 43210','rahul.v@example.com','Do you have a slot free this Saturday evening?','2 min ago','new','2026-08-27'],
     ['Sana Sheikh','91234 56780','sana.s@example.com','Can I get a group discount for 10+ people?','1 hr ago','pending','2026-08-26'],
     ['Aditya Rao','99887 66554','aditya.r@example.com','Is the turf covered in case of rain?','4 hrs ago','confirmed','2026-08-25'],
+    ['Priya Nair','90011 22334','priya.n@example.com','Booking a 2-hour slot tomorrow 7 PM please.','6 hrs ago','pending','2026-08-24'],
+    ['Karan Mehta','98123 45670','karan.m@example.com','What are the charges for a full-day rental?','Yesterday','new','2026-08-23'],
+    ['Neha Joshi','97865 43120','neha.j@example.com','Do you provide boots and balls on rent?','Yesterday','confirmed','2026-08-22'],
+    ['Vikram Singh','96543 21098','vikram.s@example.com','Is floodlighting available for night matches?','2 days ago','new','2026-08-21'],
+    ['Ayesha Khan','95432 10987','ayesha.k@example.com','How do I confirm and pay for my booking?','2 days ago','pending','2026-08-20'],
+    ['Kabir Nair','94300 22110','kabir.n@example.com','Can we host a corporate tournament here?','3 days ago','new','2026-08-19'],
+    ['Nisha Joshi','93200 99887','nisha.j@example.com','Is there a waiting area with refreshments?','3 days ago','confirmed','2026-08-18'],
+    ['Ravi Kumar','92100 44332','ravi.k@example.com','What are the operating hours on Sundays?','4 days ago','new','2026-08-17'],
+    ['Tanya Menon','91000 11223','tanya.m@example.com','Can I extend my hourly booking mid-game?','4 days ago','pending','2026-08-16'],
   ];
 const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
   let waStatus = 'all';
@@ -1483,6 +1524,12 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     ['Neha Joshi','97865 43120','neha.j@example.com','Operating hours, OTP','3 hrs ago','new','2026-08-26'],
     ['Vikram Singh','96543 21098','vikram.s@example.com','Multi-day booking, Location','Yesterday','resolved','2026-08-25'],
     ['Ayesha Khan','95432 10987','ayesha.k@example.com','Payment methods','2 days ago','resolved','2026-08-24'],
+    ['Rohit Malhotra','91000 11223','rohit.m@example.com','Slot availability, Refund policy','3 days ago','new','2026-08-23'],
+    ['Priya Desai','98761 23456','priya.d@example.com','Group booking, Discount codes','4 days ago','new','2026-08-22'],
+    ['Siddharth Jain','94300 22110','sid.j@example.com','Duplicate booking help','5 days ago','resolved','2026-08-21'],
+    ['Deepa Nair','93200 99887','deepa.n@example.com','Cancel and rebook a slot','6 days ago','new','2026-08-20'],
+    ['Amit Verma','92100 44332','amit.v@example.com','Event hosting for birthday','1 week ago','resolved','2026-08-19'],
+    ['Sonia Gupta','91000 11223','sonia.g@example.com','Coach session availability','1 week ago','new','2026-08-18'],
   ];
   let chatStatus = 'all';
   function chatSetStatus(i, status){
@@ -1579,12 +1626,13 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
 
   // ---- Payment Received table (derived from verified bookings) ----
   const PAYMENT_METHOD_DEFAULT = 'Online (UPI)';
+  const PAYMENT_METHODS = ['Online (UPI)', 'UPI', 'Card', 'Net Banking'];
   function buildPayments(){
     return bookings
       .filter(b => normalizeStatus(b[7]) === 'verified')
-      .map(b => ({
+      .map((b, i) => ({
         id: b[0], name: b[1], mobile: b[2], type: 'Hourly', date: b[3], iso: b[9],
-        time: b[4], amount: b[6], method: PAYMENT_METHOD_DEFAULT, status: 'Verified'
+        time: b[4], amount: b[6], method: PAYMENT_METHODS[i % PAYMENT_METHODS.length], status: 'Verified'
       }));
   }
   let paymentStatus = 'all';
@@ -1676,6 +1724,23 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
       ['Karan Mehta','98123 45670','2026-08-18','07:00 PM','2 hrs','₹1,400','Pending'],
       ['Sana Sheikh','91234 56780','2026-08-17','08:00 PM','2 hrs','₹1,400','Confirmed'],
       ['Rahul Verma','98765 43210','2026-08-16','06:00 AM','1 hr','₹800','Confirmed'],
+      ['Ishita Gupta','91234 56789','2026-08-15','07:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Vikram Singh','96543 21098','2026-08-14','08:00 PM','3 hrs','₹2,100','Pending'],
+      ['Ayesha Khan','95432 10987','2026-08-13','06:00 PM','1 hr','₹800','Confirmed'],
+      ['Sana Sheikh','91234 56780','2026-08-12','07:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Rahul Verma','98765 43210','2026-08-11','06:00 AM','2 hrs','₹1,400','Confirmed'],
+      ['Kabir Nair','94300 22110','2026-08-10','09:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Nisha Joshi','93200 99887','2026-08-09','07:00 PM','1 hr','₹800','Confirmed'],
+      ['Aditya Rao','99887 66554','2026-08-08','06:00 AM','3 hrs','₹2,100','Cancelled'],
+      ['Priya Nair','90011 22334','2026-08-07','08:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Karan Mehta','98123 45670','2026-08-06','06:00 PM','1 hr','₹800','Confirmed'],
+      ['Ravi Kumar','92100 44332','2026-08-05','07:00 PM','4 hrs','₹2,800','Confirmed'],
+      ['Tanya Menon','91000 11223','2026-08-04','06:00 AM','2 hrs','₹1,400','Pending'],
+      ['Sana Sheikh','91234 56780','2026-08-03','09:00 PM','1 hr','₹800','Confirmed'],
+      ['Rahul Verma','98765 43210','2026-08-02','07:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Ishita Gupta','91234 56789','2026-08-01','06:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Vikram Singh','96543 21098','2026-07-31','08:00 PM','2 hrs','₹1,400','Confirmed'],
+      ['Ayesha Khan','95432 10987','2026-07-30','06:00 AM','1 hr','₹800','Confirmed'],
     ],
     extended: [
       ['Weekend Warriors Club','96500 44332','2026-08-22','2026-08-24','3 days','₹18,900','Confirmed'],
@@ -1690,6 +1755,11 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
       ['Rahul Verma','98765 43210','2026-07-10','2026-07-12','3 days','₹18,900','Confirmed'],
       ['Sunrise FC Academy','96500 44321','2026-07-03','2026-07-04','2 days','₹12,600','Quotation Sent'],
       ['Priya Nair','90011 22334','2026-06-27','2026-06-28','2 days','₹12,600','Confirmed'],
+      ['St. Mary\'s College','91200 11223','2026-06-12','2026-06-14','3 days','₹18,900','Confirmed'],
+      ['Kabir Nair','94300 22110','2026-05-29','2026-05-30','2 days','₹12,600','Quotation Sent'],
+      ['Rohit Malhotra','91000 11223','2026-05-15','2026-05-17','3 days','₹18,900','Contacted'],
+      ['Weekend Warriors Club','96500 44332','2026-05-02','2026-05-03','2 days','₹12,600','Confirmed'],
+      ['Sunrise FC Academy','96500 44321','2026-04-20','2026-04-22','3 days','₹18,900','Confirmed'],
     ],
   };
   let activeHistoryType = 'hourly';

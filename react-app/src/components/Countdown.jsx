@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './countdown.css'
+import taglineLogo from '../assets/Tagline.png'
 
 const TARGET = new Date('2026-09-13T00:00:00').getTime()
 
@@ -81,7 +82,7 @@ export default function Countdown({ onHome }) {
         <div className="countdown__inner">
           <img
             className="countdown__tagline-img"
-            src="/logo-assets/Tagline.png"
+            src={taglineLogo}
             alt="Your Turf. Your Time. Your Game."
           />
 
