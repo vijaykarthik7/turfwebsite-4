@@ -311,10 +311,10 @@
     .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
     .history-switch{width:100%;}
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
-    /* Admin Calendar — mobile-only: give date number and count badge separate in-flow areas so they never overlap */
+    /* Admin Calendar — keep mobile cells square and anchor the count badge */
     .cal-grid2{gap:5px;}
-    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
-    .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
+    .cal-cell{display:flex; align-items:center; justify-content:center; align-self:start; min-height:0; padding:0; font-size:14px;}
+    .cal-cell .cnt{position:absolute; bottom:4px; right:4px; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}

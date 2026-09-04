@@ -270,7 +270,7 @@
 
   /* calendar */
   .cal-grid2{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
-  .cal-cell{aspect-ratio:1; border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative;}
+  .cal-cell{aspect-ratio:1 / 1; border:1px solid var(--border); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); position:relative;}
   .cal-cell .cnt{position:absolute; bottom:6px; right:6px; background:rgba(57,255,122,0.15); color:var(--neon); font-size:9px; padding:2px 5px; border-radius:100px;}
   .cal-cell.has-bookings{border-color:var(--neon); cursor:pointer;}
   .cal-cell.has-bookings:hover{background:rgba(57,255,122,0.06);}
@@ -345,10 +345,15 @@
     .toolbar .btn-ghost{font-size:11px; padding:8px 12px;}
     .history-switch{width:100%;}
     .history-switch .filt-pill{flex:1; text-align:center; font-size:11px; padding:8px 6px;}
-    /* Admin Calendar — mobile-only: give date number and count badge separate in-flow areas so they never overlap */
-    .cal-grid2{gap:5px;}
-    .cal-cell{display:grid; grid-template-rows:1fr auto; grid-template-columns:1fr; place-items:center; padding:0 3px 3px; font-size:14px;}
-    .cal-cell .cnt{position:static; grid-row:2; justify-self:end; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
+    /* Admin Calendar — use the available mobile width for medium square tiles */
+    #page-calendar{padding:12px;}
+    #page-calendar .panel{padding:16px 12px;}
+    #page-calendar .cal-head{gap:8px;}
+    #page-calendar .cal-head h3{font-size:16px;}
+    #page-calendar .cal-nav{width:34px; height:34px;}
+    .cal-grid2{grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px;}
+    .cal-cell{display:flex; align-items:center; justify-content:center; align-self:start; min-height:0; padding:0; font-size:14px;}
+    .cal-cell .cnt{position:absolute; bottom:4px; right:4px; font-size:8px; line-height:1; min-width:14px; text-align:center; padding:2px 4px;}
   }
   @keyframes radarPing2{0%,100%{opacity:1;} 50%{opacity:0.35;}}
   @keyframes loginDotsMove{from{background-position:0 0,34px 48px;} to{background-position:82px 96px, -103px -103px;}}
