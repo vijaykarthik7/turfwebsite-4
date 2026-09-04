@@ -132,6 +132,7 @@
   .pin::after{content:""; position:absolute; inset:-8px; border-radius:50%; border:1px solid var(--neon); animation:radarPing 2s ease-out infinite;}
   @keyframes radarPing{0%{transform:scale(0.5); opacity:1;} 100%{transform:scale(2.6); opacity:0;}}
   .pin-tip{position:absolute; bottom:28px; left:50%; transform:translateX(-50%) translateY(6px); width:210px; background:var(--charcoal); border:1px solid var(--border); border-radius:12px; padding:14px 16px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:3;}
+  .pin:hover,.pin.active{z-index:10;}
   .pin:hover .pin-tip, .pin.active .pin-tip{opacity:1; transform:translateX(-50%) translateY(0);}
   .pin-tip .tnum{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--neon);}
   .pin-tip h4{font-size:13px; margin:4px 0 4px;}
@@ -249,10 +250,9 @@
   .fn-heading{font-size:clamp(28px,3.6vw,42px); font-weight:600; letter-spacing:-0.02em; margin:0 0 16px;}
   .fn-heading .g{color:var(--neon);}
   .fn-sub{color:var(--muted); font-size:15.5px; line-height:1.65; margin:0;}
-  .fn-grid{display:grid; grid-template-columns:1.85fr 1fr; gap:26px; align-items:stretch;}
-  .fn-featured{position:relative; border-radius:26px; overflow:hidden; border:1px solid rgba(57,255,122,0.18); background:linear-gradient(150deg, rgba(18,27,23,.9) 0%, rgba(7,13,11,.96) 100%);}
-  .fn-featured .fn-frame-tl{position:absolute; top:18px; left:18px; z-index:4; width:30px; height:30px; border-top:2px solid rgba(57,255,122,0.85); border-left:2px solid rgba(57,255,122,0.85); border-top-left-radius:14px; pointer-events:none;}
-  .fn-featured .fn-frame-br{position:absolute; bottom:18px; right:18px; z-index:4; width:30px; height:30px; border-bottom:2px solid rgba(57,255,122,0.85); border-right:2px solid rgba(57,255,122,0.85); border-bottom-right-radius:14px; pointer-events:none;}
+  .fn-grid{display:grid; grid-template-columns:1.2fr 1fr; gap:26px; align-items:start;}
+  .fn-featured{position:relative; aspect-ratio:1.4/1; min-height:0; height:auto; border-radius:26px; overflow:hidden; border:1px solid rgba(57,255,122,0.18); background:linear-gradient(150deg, rgba(18,27,23,.9) 0%, rgba(7,13,11,.96) 100%);}
+  .fn-featured .fn-frame-tl,.fn-featured .fn-frame-br{display:none;}
   .fn-featured-media{position:absolute; inset:0; overflow:hidden;}
   .fn-featured-media::before{content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(to top, rgba(5,10,8,.82) 0%, rgba(5,10,8,.30) 40%, rgba(5,10,8,0) 65%); pointer-events:none;}
   .fn-showcase-img{position:absolute; inset:0; width:100%; height:100%; min-width:100%; min-height:100%; object-fit:cover; object-position:center center; border-radius:0; z-index:0; transform:scale(1); transition:opacity 0.28s ease, transform 0.28s ease;}
@@ -264,10 +264,14 @@
   .fn-featured-copy{position:absolute; bottom:0; left:0; z-index:3; padding:30px 34px 34px;}
   .fn-featured-copy h3{font-size:25px; font-weight:600; letter-spacing:-0.02em; margin:0 0 10px; color:var(--white);}
   .fn-featured-copy p{color:rgba(255,255,255,.9); font-size:14.5px; line-height:1.6; max-width:440px; margin:0;}
+  .fn-feature-nav{position:absolute; top:50%; right:24px; z-index:5; display:flex; flex-direction:column; gap:10px; transform:translateY(-50%);}
+  .fn-feature-nav button{width:8px; height:36px; padding:0; border:0; border-radius:999px; background:rgba(242,244,242,.34); cursor:pointer; transition:background .25s ease, box-shadow .25s ease, transform .25s ease;}
+  .fn-feature-nav button:hover{background:rgba(242,244,242,.7); transform:scaleX(1.15);}
+  .fn-feature-nav button.active{background:var(--neon); box-shadow:0 0 12px rgba(57,255,122,.65);}
   .fn-feat-chip{display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon); border:1px solid rgba(57,255,122,0.3); background:rgba(57,255,122,0.06); border-radius:100px; padding:6px 14px; margin-bottom:16px;}
   .fn-rail{display:flex; flex-direction:column; gap:20px; align-content:start;}
-  .fn-thumbs{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-content:start;}
-  .fn-thumb{position:relative; display:block; width:100%; margin:0; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px rgba(57,255,122,0.14); transition:box-shadow .3s ease, transform .3s ease; aspect-ratio:16/11; -webkit-tap-highlight-color:transparent; text-align:left;}
+  .fn-thumbs{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; align-content:start;}
+  .fn-thumb{position:relative; display:block; width:100%; margin:0; padding:0; border:0; background:none; cursor:pointer; border-radius:14px; overflow:hidden; box-shadow:0 0 0 1px rgba(57,255,122,0.14); transition:box-shadow .3s ease, transform .3s ease; aspect-ratio:5/4; -webkit-tap-highlight-color:transparent; text-align:left;}
   .fn-thumb img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1); transition:transform .45s ease; filter:saturate(1.1) brightness(0.72);}
   .fn-thumb:hover{transform:translateY(-3px); box-shadow:0 0 0 1px rgba(57,255,122,0.5), 0 14px 26px rgba(0,0,0,0.4);}
   .fn-thumb:hover img{transform:scale(1.07); filter:saturate(1.15) brightness(0.85);}
@@ -280,12 +284,17 @@
   .fn-specs-icon{flex-shrink:0; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:rgba(57,255,122,0.08); border:1px solid rgba(57,255,122,0.24); color:var(--neon); filter:drop-shadow(0 0 10px rgba(57,255,122,0.22));}
   .fn-specs-title{font-size:17px; font-weight:600; letter-spacing:-0.01em; line-height:1.25; color:var(--white); margin:2px 0 6px; position:relative; z-index:1;}
   .fn-specs-desc{font-size:12.5px; color:var(--muted); line-height:1.6; margin:0; position:relative; z-index:1;}
+  .fn-specs-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px 22px; margin-top:20px; position:relative; z-index:1;}
+  .fn-spec-item{display:flex; align-items:center; gap:10px; min-width:0;}
+  .fn-spec-item .fn-specs-icon{width:34px; height:34px; border-radius:10px; flex-shrink:0;}
+  .fn-spec-item-label{display:block; color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px;}
+  .fn-spec-item-value{display:block; color:var(--white); font-size:13px; font-weight:600; line-height:1.2; white-space:nowrap;}
   .fn-rent-list{list-style:none; margin:14px 0 0; padding:0; display:flex; gap:8px; flex-wrap:wrap; position:relative; z-index:1;}
   .fn-rent-list li{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--white); line-height:1; font-weight:500; background:rgba(57,255,122,0.07); border:1px solid rgba(57,255,122,0.18); border-radius:100px; padding:6px 12px;}
   .fn-rent-list li::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon); flex-shrink:0;}
   .fn-strip{position:relative; display:flex; align-items:center; width:100%; margin-top:34px; height:52px; border:1px solid rgba(57,255,122,0.16); border-radius:18px; background:linear-gradient(150deg, rgba(18,27,23,.92) 0%, rgba(7,13,11,.97) 100%); overflow:hidden;}
   .fn-strip::before{content:""; position:absolute; inset:0; background:radial-gradient(120% 100% at 15% 0%, rgba(57,255,122,0.07), transparent 55%); pointer-events:none;}
-  .fn-strip-track{display:flex; width:max-content; align-items:center; gap:0; padding:0; transform:translateX(0); animation:fnStripScroll 36s linear infinite;}
+  .fn-strip-track{display:flex; width:max-content; align-items:center; gap:0; padding:0; transform:translateX(0); animation:fnStripScroll 90s linear infinite;}
   .fn-strip-half{display:flex; align-items:center; gap:0; flex-shrink:0;}
   .fn-strip-blk{display:flex; align-items:center; gap:10px; white-space:nowrap; flex-shrink:0; margin-right:24px; font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted);}
   .fn-strip-blk span:not(.fn-water-i){color:rgba(255,255,255,.9);}
@@ -307,6 +316,8 @@
     .fn-featured-copy{padding:20px 16px 22px;}
     .fn-featured-copy h3{font-size:18px;}
     .fn-thumbs{grid-template-columns:1fr 1fr; gap:10px;}
+    .fn-feature-nav{right:14px; gap:7px;}
+    .fn-feature-nav button{width:6px; height:26px;}
     .fn-specs{padding:18px;}
     .fn-featured .fn-frame-tl{top:10px; left:10px;}
     .fn-featured .fn-frame-br{bottom:10px; right:10px;}
@@ -380,11 +391,11 @@
   /* ===== FLOATING COMMUNICATION WIDGET — "ON Assistant" ===== */
   .comm-fab-wrap{position:fixed; right:26px; bottom:26px; z-index:9999; width:54px; height:54px;}
   .comm-fab-wrap::before{content:""; position:absolute; inset:-18px; border-radius:50%; background:radial-gradient(circle, rgba(57,255,122,0.30) 0%, rgba(57,255,122,0.12) 45%, transparent 70%); pointer-events:none;}
-  .comm-fab-ring{display:block; position:absolute; inset:-3px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 20px rgba(57,255,122,0.5), inset 0 0 8px rgba(57,255,122,0.3); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
+  .comm-fab-ring{display:none; position:absolute; inset:-3px; border:1px solid rgba(57,255,122,0.9); border-radius:50%; box-shadow:0 0 8px rgba(57,255,122,0.9), 0 0 20px rgba(57,255,122,0.5), inset 0 0 8px rgba(57,255,122,0.3); pointer-events:none; animation:fabRingPulse 2.4s ease-in-out infinite;}
   @keyframes fabRingPulse{0%,100%{opacity:.65; transform:scale(.98);} 50%{opacity:1; transform:scale(1.04);}}
   .comm-fab-ring::before{content:""; position:absolute; top:-2px; left:50%; width:4px; height:4px; margin-left:-2px; border-radius:50%; background:var(--neon); box-shadow:0 0 8px var(--neon);}
   .comm-fab{position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 50% 32%, #123b28 0%, #06221a 55%, #02110c 100%); border:1px solid rgba(57,255,122,0.85); padding:4px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(57,255,122,0.45), inset 0 0 12px rgba(57,255,122,0.25); transition:transform .3s cubic-bezier(.2,.8,.2,1); animation:fabFloat 4s ease-in-out infinite;}
-  .comm-fab img{width:26px; height:26px; object-fit:contain; position:relative; z-index:1;}
+  .comm-fab img{width:100%; height:100%; object-fit:contain; display:block; visibility:visible; opacity:1; position:relative; z-index:1;}
   @keyframes fabFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);}}
   .comm-fab:hover{transform:scale(1.08);}
   .comm-fab-wrap .cdot{position:absolute; top:-1px; right:-1px; width:10px; height:10px; border-radius:50%; background:var(--blue); border:2px solid var(--black); z-index:2;}
@@ -866,6 +877,8 @@
     .pin--edge-right .pin-tip{ left:auto; right:15px; transform:none; }
     /* center dot (card 02): keep this panel fully inside the card on mobile */
     .pin--mid .pin-tip{ left:12px; right:auto; transform:none; width:min(200px, calc(46vw - 20px)); }
+    /* lower marker: open its panel upward so it stays clear of the card corner */
+    .pin--bottom .pin-tip{ top:auto; bottom:calc(100% + 12px); }
 
     /* Interactive gallery carousel: snap the first card to the left edge so it starts fully
        inside the viewport (no part of a card is ever cut off on the left), and make each
@@ -1037,7 +1050,7 @@
       <div class="pin pin--edge-right" style="top:22%; left:72%;">
         <div class="pin-tip"><div class="tnum">03</div><h4>Boundary lighting</h4><p>Edge-mounted floods keep sidelines as bright as center pitch.</p></div>
       </div>
-      <div class="pin pin--edge-right" style="top:72%; left:78%;">
+      <div class="pin pin--edge-right pin--bottom" style="top:72%; left:78%;">
         <div class="pin-tip"><div class="tnum">04</div><h4>Sideline benches</h4><p>Covered seating for subs and spectators, pitch-side.</p></div>
       </div>
       <div class="pin pin--edge-right" style="top:45%; left:70%;">
@@ -1067,7 +1080,7 @@
   </section>
 
   <!-- FACILITIES -->
-  <section id="facilities" style="padding-left:0; padding-right:0;">
+  <section id="facilities" style="display:none; padding-left:0; padding-right:0;">
     <div class="reveal" style="padding:0 8vw; margin-bottom:42px;">
       <div class="eyebrow">Facilities</div>
       <h2 class="section-title">Facilities &amp; Amenities</h2>
@@ -1328,10 +1341,39 @@
             <p id="fnFeatDesc">Clean. Fresh. Ready.</p>
           </div>
         </div>
+        <div class="fn-feature-nav" id="fnFeatureNav" role="group" aria-label="Select facility image">
+          <button type="button" class="active" data-index="0" aria-label="Show facility image 01"></button>
+          <button type="button" data-index="1" aria-label="Show facility image 02"></button>
+          <button type="button" data-index="2" aria-label="Show facility image 03"></button>
+          <button type="button" data-index="3" aria-label="Show facility image 04"></button>
+          <button type="button" data-index="4" aria-label="Show facility image 05"></button>
+          <button type="button" data-index="5" aria-label="Show facility image 06"></button>
+        </div>
       </div>
 
       <div class="fn-rail fn-reveal">
         <div class="fn-thumbs" id="fnThumbs" role="group" aria-label="Facility thumbnails"></div>
+        <div class="fn-specs">
+          <h3 class="fn-specs-title">Pitch Specs</h3>
+          <div class="fn-specs-grid">
+            <div class="fn-spec-item">
+              <div class="fn-specs-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 4 15 15"/><path d="M3 6.5 6.5 3 21 17.5 17.5 21Z"/><path d="m8 6 2-2M11 9l2-2M14 12l2-2M17 15l2-2"/></svg></div>
+              <div><span class="fn-spec-item-label">Pitch size</span><strong class="fn-spec-item-value">40 × 20 m</strong></div>
+            </div>
+            <div class="fn-spec-item">
+              <div class="fn-specs-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></div>
+              <div><span class="fn-spec-item-label">Lighting</span><strong class="fn-spec-item-value">High-mast floodlights</strong></div>
+            </div>
+            <div class="fn-spec-item">
+              <div class="fn-specs-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+              <div><span class="fn-spec-item-label">Capacity</span><strong class="fn-spec-item-value">7-a-side</strong></div>
+            </div>
+            <div class="fn-spec-item">
+              <div class="fn-specs-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/></svg></div>
+              <div><span class="fn-spec-item-label">Location</span><strong class="fn-spec-item-value">Cuddalore</strong></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1370,8 +1412,16 @@
       var titleEl = document.getElementById('fnFeatTitle');
       var descEl = document.getElementById('fnFeatDesc');
       var thumbsBox = document.getElementById('fnThumbs');
+      var featureNav = document.getElementById('fnFeatureNav');
 
       function pad(n){ return (n < 10 ? '0' : '') + n; }
+
+      function updateFeatureNav(activeIndex){
+        if(!featureNav){ return; }
+        featureNav.querySelectorAll('button').forEach(function(btn){
+          btn.classList.toggle('active', parseInt(btn.getAttribute('data-index'), 10) === activeIndex);
+        });
+      }
 
       function renderThumbs(activeIndex){
         var html = '';
@@ -1388,6 +1438,7 @@
             selectFacility(parseInt(this.getAttribute('data-index'), 10));
           });
         });
+        updateFeatureNav(activeIndex);
       }
 
       function selectFacility(index, animate) {
@@ -1409,6 +1460,14 @@
         titleEl.textContent = f.title;
         descEl.textContent = f.desc;
         renderThumbs(index);
+      }
+
+      if(featureNav){
+        featureNav.querySelectorAll('button').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            selectFacility(parseInt(this.getAttribute('data-index'), 10));
+          });
+        });
       }
 
       selectFacility(0, false);
@@ -1574,6 +1633,7 @@
           <div class="qr-box"><img id="bkQrImage" class="dynamic-qr" alt="Dynamic UPI payment QR code"><span id="bkQrStatus" style="font-size:11px; color:#111; font-family:'JetBrains Mono',monospace;">Generating QR...</span></div>
           <p style="font-size:13px; color:var(--muted); margin-bottom:6px;">Please scan the QR Code using any UPI application to complete your payment.</p>
           <p class="mono" style="font-size:13px; color:var(--neon);" data-site-upi>turfon24@okaxis</p>
+          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="openUpiAppPicker(event)">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
           <div style="text-align:left; margin-top:22px; padding-top:18px; border-top:1px solid var(--border);">
             <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:14px;"><span>Date</span><span class="mono" style="color:var(--white);" id="bkPayDate">—</span></div>
             <div id="bkPaySlots"></div>
@@ -1583,9 +1643,8 @@
               <div style="display:flex; justify-content:space-between; font-weight:600;"><span>Total Amount</span><span class="mono" style="color:var(--neon);" id="bkPayAmt">—</span></div>
             </div>
           </div>
-          <div class="payment-actions"><a class="btn btn-glow" id="bkPayApp" href="#" onclick="openUpiAppPicker(event)">Pay using UPI app</a><button class="btn btn-outline" type="button" onclick="copyPaymentUpi()">Copy UPI ID</button></div>
           <p class="payment-pending" id="bkPaymentStatus">Payment pending. Scan the QR and complete payment in your UPI app.</p>
-          <button class="btn btn-glow" id="bkCompletePaymentButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="bkCompletePayment()">I have completed my payment</button>
+          <button class="btn btn-glow" id="bkCompletePaymentButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="bkCompletePayment()">Submit payment verification</button>
         </div>
       </div>
     </div>
@@ -2185,6 +2244,11 @@
   let bkOtpResendCount = 0;
   let bkMsg91Inited = false;
   const bkOtpCooldownSecs = 30;
+  const BK_OTP_ENABLED = true;
+  function bkApplyOtpGate(){
+    const continueButton = document.getElementById('bkVerifyContinue');
+    if(continueButton) continueButton.disabled = BK_OTP_ENABLED && !bkOtpVerified;
+  }
   // ============================================================
   // MSG91 OTP WIDGET CONFIGURATION (Hourly Booking only)
   // ------------------------------------------------------------
@@ -2199,6 +2263,7 @@
   //    emptied or the button stays disabled by design.
   // ============================================================
   const bkMsg91Config = { widgetId: '3669636b3053363130373435', tokenAuth: '567261Tfna7ojRBkf6a995ed0P1' };
+  bkApplyOtpGate();
 
   // ===== Hourly booking session persistence (survives refresh; cleared on full completion/close) =====
   const BK_SESSION_KEY = 'bkHourlySession';
@@ -3100,7 +3165,7 @@
     document.getElementById('bkOtp').value = '';
     document.getElementById('bkOtpBlock').style.display = 'none';
     document.getElementById('bkOtpStatus').style.display = 'none';
-    document.getElementById('bkVerifyContinue').setAttribute('disabled', '');
+    bkApplyOtpGate();
     document.querySelectorAll('#bkDurationPills .pill, #bkTimePills .pill').forEach(p=>p.classList.remove('sel'));
     bkCalYear = calendarYear; bkCalMonth = calendarMonth;
     renderBkCalendar();
@@ -3120,7 +3185,7 @@
     const payTotalDur = document.getElementById('bkPayTotalDur');
     if(payTotalDur) payTotalDur.textContent = '—';
     const completeBtn = document.getElementById('bkCompletePaymentButton');
-    if(completeBtn){ completeBtn.disabled = false; completeBtn.textContent = 'I have completed my payment'; }
+    if(completeBtn){ completeBtn.disabled = false; completeBtn.textContent = 'Submit payment verification'; }
     const payStatus = document.getElementById('bkPaymentStatus');
     if(payStatus) payStatus.textContent = 'Payment pending. Scan the QR and complete payment in your UPI app.';
     const slotsList = document.getElementById('bkSlotsList');

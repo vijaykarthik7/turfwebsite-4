@@ -539,7 +539,7 @@
       <div class="nav-item" data-page="calendar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="nav-label">Calendar</span></div>
       <div class="nav-item" data-page="payments"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 9h5M17 9h5"/></svg><span class="nav-label">Payment Received</span></div>
       <div class="nav-item" data-page="whatsapp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.55L4 20l1.05-4.42A8.5 8.5 0 1 1 21 11.5Z"/></svg><span class="nav-label">WhatsApp Enquiries</span></div>
-      <div class="nav-item" data-page="chatbot"><img class="nav-icon" src="/logo-assets/LogoWater.png" alt="Chatbot" style="width:18px;height:18px;object-fit:contain;flex-shrink:0;"><span class="nav-label">Chatbot Conversations</span><span class="nav-notice" title="New chat conversation"></span></div>
+      <div class="nav-item" data-page="chatbot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v13H8l-4 4Z"/></svg><span class="nav-label">Chatbot Conversations</span><span class="nav-notice" title="New chat conversation"></span></div>
       <div class="nav-divider"></div>
       <div class="nav-item" data-page="settings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V19a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.5V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.5 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span class="nav-label">Website Settings</span></div>
       <div class="nav-item" data-page="profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="nav-label">Profile</span></div>
@@ -588,11 +588,11 @@
         </div>
         <div class="mono" style="font-size:10.5px; color:var(--muted);">Live · updated just now</div>
       </div>
-      <div class="stat-grid" id="statGrid"></div>
       <div class="panel">
         <h3>Recent activity</h3>
         <div id="activityList"></div>
       </div>
+      <div class="stat-grid" id="statGrid"></div>
     </div>
 
     <!-- ANALYTICS -->
@@ -611,7 +611,8 @@
           <div class="analytics-dropdown-menu" id="analyticsDropdownMenu" role="listbox" aria-label="Booking categories"></div>
         </div>
         <div class="range-pills" id="rangePills" role="tablist" aria-label="Select date range">
-          <button type="button" class="range-pill sel" role="tab" aria-selected="true" data-range="7">Last 7 Days</button>
+          <button type="button" class="range-pill sel" role="tab" aria-selected="true" data-range="today">Today</button>
+          <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="7">Last 7 Days</button>
           <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="30">Last 30 Days</button>
           <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="90">Last 3 Months</button>
           <button type="button" class="range-pill" role="tab" aria-selected="false" data-range="custom">Custom Date</button>
@@ -1812,11 +1813,11 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     enq:        { title:'Extended Booking Enquiries Analytics', label:'Enquiries', subtitle:'Enquiries received per day', rows:()=>enquiries, date:r=>r[8] },
     completed:  { title:'Completed Bookings Analytics', label:'Completed bookings', subtitle:'Completed bookings per day', rows:()=>bookings.filter(b=>normalizeStatus(b[8])==='confirmed'), date:r=>r[9] },
     cancelled:  { title:'Cancelled Bookings Analytics', label:'Cancelled bookings', subtitle:'Cancelled bookings per day', rows:()=>bookings.filter(b=>normalizeStatus(b[8])==='cancelled'), date:r=>r[9] },
-    customers:  { title:'Total Customers Analytics', label:'New customers', subtitle:'New customers registered per day', rows:()=>customerHistory.hourly.concat(customerHistory.extended), date:r=>r[2], firstSeen:true },
+    customers:  { title:'Total Customers Analytics', label:'Customers', subtitle:'Unique booking customers per day', rows:()=>customerHistory.hourly.concat(customerHistory.extended), date:r=>r[2], uniqueByDay:true },
     wa:         { title:'WhatsApp Enquiries Analytics', label:'WhatsApp enquiries', subtitle:'WhatsApp enquiries received per day', rows:()=>waEnquiries, date:r=>r[6] },
     chat:       { title:'Chatbot Conversations Analytics', label:'Conversations', subtitle:'Conversations created per day', rows:()=>chatConvos, date:r=>r[6] },
   };
-  let analyticsState = { metric:null, range:'7', anchor:'' };
+  let analyticsState = { metric:null, range:'today', anchor:'' };
   function isoDay(value){ return String(value||'').slice(0,10); }
   function addDaysIso(dateStr, n){
     const d = new Date(dateStr + 'T00:00:00Z');
@@ -1848,7 +1849,16 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     const map = {};
     let cursor = start;
     while(cursor <= end){ map[cursor] = 0; cursor = addDaysIso(cursor, 1); }
-    if(opts.firstSeen){
+    if(opts.uniqueByDay){
+      const customersByDay = {};
+      rows.forEach(r=>{
+        const d = isoDay(dateFn(r));
+        if(!d || d < start || d > end) return;
+        if(!customersByDay[d]) customersByDay[d] = new Set();
+        customersByDay[d].add(String(r[1]||'').trim() + '|' + String(r[0]||'').trim().toLowerCase());
+      });
+      for(const d in customersByDay) map[d] = customersByDay[d].size;
+    } else if(opts.firstSeen){
       const first = {};
       rows.forEach(r=>{
         const d = isoDay(dateFn(r));
@@ -2007,8 +2017,9 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     active.forEach((p,i)=>{
       const frac = p.value / total;
       const a1 = a0 + frac * 2 * Math.PI;
+      const arcEnd = frac >= 0.999999 ? a0 + 2 * Math.PI - 0.0001 : a1;
       const color = DONUT_PALETTE[i % DONUT_PALETTE.length];
-      arcs += '<path class="donut-seg" d="' + donutArc(cx, cy, rOut, rIn, a0, a1) + '" fill="' + color + '"><title>' + label + ': ' + formatAnalyticsValue(p.value, currency) + ' on ' + formatAnalyticsDate(p.date) + ' (' + Math.round(frac*100) + '%)</title></path>';
+      arcs += '<path class="donut-seg" d="' + donutArc(cx, cy, rOut, rIn, a0, arcEnd) + '" fill="' + color + '"><title>' + label + ': ' + formatAnalyticsValue(p.value, currency) + ' on ' + formatAnalyticsDate(p.date) + ' (' + Math.round(frac*100) + '%)</title></path>';
       segs.push({ p:p, color:color, frac:frac });
       a0 = a1;
     });
@@ -2023,6 +2034,9 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
   }
   function currentRangeBounds(){
     const end = analyticsState.anchor;
+    if(analyticsState.range === 'today'){
+      return { start: end, end };
+    }
     if(analyticsState.range === '90'){
       return { start: subtractMonthsIso(end, 3), end };
     }
@@ -2143,9 +2157,9 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
     const metric = analyticsMetrics[metricKey];
     if(!metric) return;
     const rows = metric.rows();
-    analyticsState = { metric, range:'7', anchor: seriesAnchor(rows, metric.date), points: null };
+    analyticsState = { metric, range:'today', anchor: seriesAnchor(rows, metric.date), points: null };
     setActiveMetricSelect(metricKey);
-    setAnalyticsRange('7');
+    setAnalyticsRange('today');
   }
   function openAnalytics(stat){
     const metric = analyticsMetrics[stat.metric];
