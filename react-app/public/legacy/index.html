@@ -1667,10 +1667,10 @@
       <div id="bkPane7" class="bk-pane bk-confirmation-pane" style="display:none;">
         <div class="bk-confirmation-card">
           <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg></div>
-          <h3>Payment Confirmation</h3>
-          <p class="bk-confirmation-title">I have completed the payment</p>
-          <p>After clicking, our team will verify your payment.</p>
-          <button class="btn btn-glow magnetic" type="button" onclick="bkFinishPayment()">I HAVE PAID</button>
+          <h3>Payment successful</h3>
+          <p class="bk-confirmation-title">Payment successful. Our team will contact you soon.</p>
+          <p>Your payment was verified by our team.</p>
+          <button class="btn btn-glow magnetic" type="button" onclick="bkFinishPayment()">Start a new booking</button>
         </div>
       </div>
     </div>
@@ -1713,10 +1713,10 @@
     <button class="modal-close" onclick="bkFinishPayment()" aria-label="Close"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     <canvas id="paymentConfettiCanvas" style="position:absolute; inset:0; z-index:1; pointer-events:none;"></canvas>
     <div class="modal-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6"/></svg></div>
-    <h3>Payment Confirmation</h3>
-    <p style="font-size:20px; color:var(--white); font-weight:600;">I have completed the payment</p>
-    <p>After clicking, our team will verify your payment.</p>
-    <button class="btn btn-glow magnetic" onclick="bkFinishPayment()">I HAVE PAID</button>
+    <h3>Payment pending</h3>
+    <p style="font-size:20px; color:var(--white); font-weight:600;">Payment is awaiting manual verification.</p>
+    <p>Returning from the UPI app does not confirm payment.</p>
+    <button class="btn btn-glow magnetic" onclick="acknowledgePaymentPending()">I HAVE PAID</button>
   </div>
 </div>
 
@@ -2210,7 +2210,7 @@
   }
 
   let paymentSession = null;
-  let paymentAppLeftPage = false;
+  let paymentPollingTimer = null;
   async function createPaymentSession(type, details){
     const response = await fetch('/api/payment/create', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type, ...details}) });
     if(!response.ok) throw new Error((await response.json().catch(()=>({}))).message || 'Payment setup failed');
@@ -2233,6 +2233,7 @@
   }
   async function showPayment(session, imageId, statusId, appId){
     paymentSession = session;
+    stopPaymentPolling();
     const image = document.getElementById(imageId);
     const status = document.getElementById(statusId);
     document.querySelectorAll('[data-site-upi]').forEach(el=>{ el.textContent=session.upiId; });
@@ -2240,6 +2241,12 @@
     if (!qrRenderer) throw new Error('QR generator is unavailable');
     await qrRenderer(image, status, session.upiUri);
     document.getElementById(appId).href = session.upiUri;
+    const paymentStatus = document.getElementById('bkPaymentStatus');
+    if(paymentStatus){
+      paymentStatus.style.display = 'block';
+      paymentStatus.textContent = 'Payment pending. Complete the UPI payment and wait for manual verification.';
+    }
+    startPaymentPolling();
   }
   function formatAmount(amount){ return `₹${Number(amount).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}`; }
   async function submitExtended(){
@@ -3129,17 +3136,7 @@
   function payNow(event){
     if(event && event.preventDefault) event.preventDefault();
     if(!paymentSession?.upiUri) return;
-    paymentAppLeftPage = false;
-    const handlePaymentReturn = ()=>{
-      if(document.visibilityState === 'hidden'){
-        paymentAppLeftPage = true;
-      } else if(paymentAppLeftPage){
-        paymentAppLeftPage = false;
-        document.removeEventListener('visibilitychange', handlePaymentReturn);
-        bkCompletePayment();
-      }
-    };
-    document.addEventListener('visibilitychange', handlePaymentReturn);
+    startPaymentPolling();
     window.location.href = paymentSession.upiUri;
   }
   function payWithUpiApp(app){
@@ -3153,7 +3150,17 @@
         ? 'Open PhonePe and scan the QR code above using your phone.'
         : 'Payment pending. Scan the QR and complete payment in your UPI app.';
     }
+    startPaymentPolling();
     window.location.href = paymentSession.upiUri;
+  }
+  function stopPaymentPolling(){
+    if(paymentPollingTimer){ clearInterval(paymentPollingTimer); paymentPollingTimer = null; }
+  }
+  function startPaymentPolling(){
+    stopPaymentPolling();
+    if(!paymentSession?.reference) return;
+    checkPaymentStatus();
+    paymentPollingTimer = setInterval(checkPaymentStatus, 4000);
   }
   async function checkPaymentStatus(){
     if(!paymentSession) return;
@@ -3162,10 +3169,37 @@
       const response = await fetch(`/api/payment/status?reference=${encodeURIComponent(paymentSession.reference)}`);
       result = await response.json();
     } catch (error) { }
-    const message = result.status === 'PAID' ? 'Payment verified. Booking confirmed.' : result.status === 'EXPIRED' ? 'Payment session expired. Please generate a new QR.' : 'Payment pending. No verified payment was found yet.';
+    if(result.status === 'PAID'){
+      paymentSession.status = 'PAID';
+      stopPaymentPolling();
+      document.querySelectorAll('.payment-pending').forEach(el=>{ el.style.display='block'; el.textContent='Payment successful. Our team will contact you soon.'; });
+      bkCompletePayment();
+      return;
+    }
+    if(result.status === 'EXPIRED'){
+      paymentSession.status = 'EXPIRED';
+      stopPaymentPolling();
+      document.querySelectorAll('.payment-pending').forEach(el=>{ el.style.display='block'; el.innerHTML='Payment session expired. Please start payment again. <button class="btn btn-outline" type="button" onclick="restartPaymentSession()">Start payment again</button>'; });
+      return;
+    }
+    const message = 'Payment pending. No verified payment was found yet.';
     document.querySelectorAll('.payment-pending').forEach(el=>{ el.textContent=message; });
   }
+  async function restartPaymentSession(){
+    if(!paymentSession || paymentSession.status !== 'EXPIRED') return;
+    await bkFillPayment();
+  }
+  function acknowledgePaymentPending(){
+    closeModal('paymentConfirmModal');
+    const status = document.getElementById('bkPaymentStatus');
+    if(status){
+      status.style.display = 'block';
+      status.textContent = 'Payment pending. Our team will verify the UPI transaction before confirming your booking.';
+    }
+    startPaymentPolling();
+  }
   function bkCompletePayment(){
+    if(paymentSession?.status !== 'PAID') return;
     bkGoStep(7);
     fireConfetti('paymentConfettiCanvas');
   }
@@ -3238,8 +3272,8 @@
     bkSetAddSlotBtn(false);
     const paySlots = document.getElementById('bkPaySlots');
     if(paySlots) paySlots.innerHTML = '';
+    stopPaymentPolling();
     paymentSession = null;
-    paymentAppLeftPage = false;
   }
   function bkFinishPayment(){
     bkResetBooking();

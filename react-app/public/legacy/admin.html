@@ -699,8 +699,7 @@
       </div>
       <div class="toolbar">
         <input id="paymentSearch" type="text" placeholder="Search by name, mobile, booking ID...">
-        <div class="filt-pill sel today-filter" aria-label="Showing today">Today</div><span class="date-wrap" hidden><span class="date-ph">dd-mm-yyyy</span><input id="paymentDate" class="date-filter" type="text" readonly aria-label="Choose payment date" title="Choose payment date"><input id="paymentDate-picker" class="date-picker" type="date" tabindex="-1" aria-hidden="true"></span>
-        <div class="filt-pill" data-payment-status="all">All</div><div class="filt-pill" data-payment-status="verified">Verified</div>
+        <div class="filt-pill sel" data-payment-status="all">All</div><div class="filt-pill" data-payment-status="payment_pending">Pending</div><div class="filt-pill" data-payment-status="paid">Paid / Verified</div><div class="filt-pill" data-payment-status="expired">Expired</div><div class="filt-pill" data-payment-status="failed">Failed</div>
         <div class="spacer"></div>
         <button class="btn btn-ghost" id="paymentExport"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Download CSV</button>
       </div>
@@ -1681,84 +1680,71 @@ const waStatusLbl = {new:'New', pending:'Contacted', confirmed:'Resolved'};
   renderBookings();
   renderEnquiries();
 
-  // ---- Payment Received table (derived from verified bookings) ----
-  function buildPayments(){
-    return bookings
-      .filter(b => normalizeStatus(b[7]) === 'verified')
-      .map(b => ({
-        id: b[0], name: b[1], mobile: b[2], type: 'Hourly', date: b[3], iso: b[9],
-        time: b[4], amount: b[6], status: 'Verified'
-      }));
-  }
+  // ---- Payment sessions (server-verified records) ----
   let paymentStatus = 'all';
-  let paymentAllDates = false;
   let payments = [];
-  let paymentHistoryMode = false;
-  const paymentsTodayKey = bookings.reduce((mx,b)=> b[9] > mx ? b[9] : mx, '');
-  function paymentRows(){
-    const search = (document.getElementById('paymentSearch').value || '').trim().toLowerCase();
-    return payments.filter(p=>{
-      const matchesStatus = paymentStatus === 'all' || normalizeStatus(p.status) === paymentStatus;
-      const matchesSearch = !search || (p.id + ' ' + p.name + ' ' + p.mobile).toLowerCase().includes(search);
-      const matchesDate = paymentHistoryMode || paymentAllDates || matchesDateRange(p.iso, p.iso, 'paymentRange', 'paymentDate');
-      return matchesStatus && matchesSearch && matchesDate;
-    });
+  let paymentRequestId = 0;
+  function paymentStatusLabel(status){ return {PAYMENT_PENDING:'Pending', PAID:'Paid / Verified', EXPIRED:'Expired', FAILED:'Failed'}[status] || status; }
+  function paymentBadgeClass(status){ return status === 'PAID' ? 'verified' : status === 'PAYMENT_PENDING' ? 'pending' : status === 'FAILED' ? 'cancelled' : 'confirmed'; }
+  function paymentValue(data, keys){
+    for(const key of keys){ if(data && data[key] !== undefined && data[key] !== null && data[key] !== '') return data[key]; }
+    return '—';
   }
-  function renderPayments(){
-    payments = buildPayments();
-    const rows = paymentRows();
-    document.getElementById('paymentsBody').innerHTML = rows.length ? rows.map(p=>`
-      <tr><td class="mono">${p.id}</td><td>${p.name}</td><td class="mono">${p.mobile}</td><td>${p.type}</td><td>${p.iso}</td><td>${p.time}</td><td class="mono">${p.amount}</td>
-      <td><span class="badge verified">Verified</span></td>
-      <td><div class="row-actions">
-        <button onclick='openBookingDetail(${JSON.stringify(bookings.filter(function(b){return b[0]===p.id;})[0])})' title="View"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
-      </div></td></tr>`).join('') : `<tr><td colspan="9" class="tbl-empty">${paymentHistoryMode ? 'No received payments found' : 'No payments received today'}</td></tr>`;
-    const totalAmount = rows.reduce((sum,p)=>sum + Number(String(p.amount).replace(/[₹,]/g,'')), 0);
-    document.getElementById('paymentsTotalCount').textContent = String(rows.length);
-    document.getElementById('paymentsTotalAmount').textContent = '₹' + totalAmount.toLocaleString('en-IN');
-    document.getElementById('paymentsCountLabel').textContent = paymentHistoryMode ? 'Total payments' : 'Today\u2019s payments';
-    document.getElementById('paymentsFoot').textContent = paymentHistoryMode ? 'Showing all received payments' : 'Showing today\u2019s received payments';
-  }
-  function setPaymentHistoryMode(on){
-    paymentHistoryMode = on;
-    const dateEl = document.getElementById('paymentDate');
-    const datePicker = document.getElementById('paymentDate-picker');
-    if(on){
-      if(dateEl) dateEl.value = '';
-      if(datePicker) datePicker.value = '';
-    } else {
-      if(dateEl) dateEl.value = paymentsTodayKey;
-      if(datePicker) datePicker.value = paymentsTodayKey;
+  function escapePaymentHtml(value){ return String(value ?? '—').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char])); }
+  async function renderPayments(){
+    const requestId = ++paymentRequestId;
+    const search = (document.getElementById('paymentSearch').value || '').trim();
+    const params = new URLSearchParams();
+    if(paymentStatus !== 'all') params.set('status', paymentStatus === 'paid' ? 'PAID' : paymentStatus.toUpperCase());
+    if(search) params.set('search', search);
+    try {
+      const response = await fetch('/api/admin/payment-sessions?' + params.toString(), {credentials:'same-origin'});
+      const data = await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(data.message || 'Unable to load payment records.');
+      if(requestId !== paymentRequestId) return;
+      payments = Array.isArray(data.sessions) ? data.sessions : [];
+      const rows = payments;
+      document.getElementById('paymentsBody').innerHTML = rows.length ? rows.map(p=>{
+        const booking = p.bookingData || {};
+        const name = paymentValue(booking, ['name','customerName']);
+        const mobile = paymentValue(booking, ['mobile','phone']);
+        const date = paymentValue(booking, ['date','dateLabel']);
+        const time = paymentValue(booking, ['startTime','time']);
+        const status = paymentStatusLabel(p.status);
+        const action = p.status === 'PAYMENT_PENDING' ? `<button onclick="markPaymentPaid('${escapePaymentHtml(p.reference)}')" title="Mark paid"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5 5L20 6"/></svg></button>` : '';
+        return `<tr><td class="mono">${escapePaymentHtml(p.reference)}</td><td>${escapePaymentHtml(name)}</td><td class="mono">${escapePaymentHtml(mobile)}</td><td>${escapePaymentHtml(p.bookingType)}</td><td>${escapePaymentHtml(date)}</td><td>${escapePaymentHtml(time)}</td><td class="mono">₹${Number(p.amount).toLocaleString('en-IN')}</td><td><span class="badge ${paymentBadgeClass(p.status)}">${status}</span></td><td><div class="row-actions">${action}</div></td></tr>`;
+      }).join('') : '<tr><td colspan="9" class="tbl-empty">No payment sessions found</td></tr>';
+      const totalAmount = rows.reduce((sum,p)=>sum + Number(p.amount || 0), 0);
+      document.getElementById('paymentsTotalCount').textContent = String(rows.length);
+      document.getElementById('paymentsTotalAmount').textContent = '₹' + totalAmount.toLocaleString('en-IN');
+      document.getElementById('paymentsCountLabel').textContent = 'Payment sessions';
+      document.getElementById('paymentsFoot').textContent = 'Showing payment sessions from the server';
+    } catch (error) {
+      if(requestId !== paymentRequestId) return;
+      document.getElementById('paymentsBody').innerHTML = `<tr><td colspan="9" class="tbl-empty">${escapePaymentHtml(error.message)}</td></tr>`;
+      showToast(error.message);
     }
-    syncDateDisplay();
-    const btn = document.getElementById('paymentHistoryLabel');
-    if(btn) btn.textContent = on ? 'Back to Today\u2019s Payments' : 'View Payment History';
-    renderPayments();
+  }
+  async function markPaymentPaid(reference){
+    try {
+      const response = await fetch('/api/admin/payment-sessions', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify({reference})});
+      const data = await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(data.message || 'Unable to verify payment.');
+      showToast('Payment marked as paid');
+      renderPayments();
+    } catch (error) { showToast(error.message); }
   }
   document.querySelectorAll('[data-payment-status]').forEach(button=>button.addEventListener('click', ()=>{
     paymentStatus = button.dataset.paymentStatus;
-    paymentAllDates = paymentStatus === 'all';
     document.querySelectorAll('[data-payment-status]').forEach(item=>item.classList.toggle('sel', item === button));
     renderPayments();
   }));
   document.getElementById('paymentSearch').addEventListener('input', renderPayments);
-  document.getElementById('paymentDate').addEventListener('change', ()=>{
-    if(paymentHistoryMode){
-      paymentHistoryMode = false;
-      document.getElementById('paymentHistoryLabel').textContent = 'View Payment History';
-    }
-    renderPayments();
-  });
   document.getElementById('paymentExport').addEventListener('click', ()=>{
-    const rows = paymentRows();
+    const rows = payments;
     if(!rows.length){ showToast('No data available to export'); return; }
-    exportCsv(`payment-received-${new Date().toISOString().slice(0,10)}.csv`, [{key:'id',label:'Booking ID'},{key:'name',label:'Customer Name'},{key:'mobile',label:'Mobile'},{key:'type',label:'Booking Type'},{key:'date',label:'Booking Date'},{key:'time',label:'Payment Time'},{key:'amount',label:'Amount Received'},{key:'status',label:'Payment Status'}], rows);
+    exportCsv(`payment-sessions-${new Date().toISOString().slice(0,10)}.csv`, [{key:'reference',label:'Payment Reference'},{key:'amount',label:'Amount'},{key:'bookingType',label:'Booking Type'},{key:'status',label:'Payment Status'}], rows);
   });
-  const paymentDateEl = document.getElementById('paymentDate');
-  const paymentDatePickerEl = document.getElementById('paymentDate-picker');
-  if(paymentDateEl) paymentDateEl.value = paymentsTodayKey;
-  if(paymentDatePickerEl) paymentDatePickerEl.value = paymentsTodayKey;
-  syncDateDisplay();
   renderPayments();
 
   const customerHistory = {
